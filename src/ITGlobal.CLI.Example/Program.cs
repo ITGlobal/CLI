@@ -39,7 +39,7 @@ namespace ITGlobal.CommandLine.Example
 
                 app.HelpCommand();
 
-                return app.Run(args).Run();
+                return app.Parse(args).Run();
             });
         }
 
@@ -49,7 +49,7 @@ namespace ITGlobal.CommandLine.Example
         }
 
         private static int TableDemo(string args)
-        {
+        {            
             var n = _count.Value;
             var data = new List<Xyz>();
             for (var x = 0; x <= n; x++)
@@ -73,7 +73,7 @@ namespace ITGlobal.CommandLine.Example
         private static int ProgressBarDemo(string args)
         {
             using (var ctrlC = CLI.CtrlC())
-            {
+            {                
                 ctrlC.CancellationToken.Register(() =>
                 {
                     Console.WriteLine("Cancelled!");

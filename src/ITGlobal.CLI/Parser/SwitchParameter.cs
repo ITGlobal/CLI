@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using static ITGlobal.CommandLine.CLI;
 
 // ReSharper disable once CheckNamespace
 namespace ITGlobal.CommandLine
@@ -14,7 +15,7 @@ namespace ITGlobal.CommandLine
         public SwitchParameter(string name)
         {
             _name = name;
-            _aliases.Add("-" + name);
+            _aliases.Add(GetAliasFor(name));
         }
 
         public bool IsSet { get; private set; }
@@ -23,7 +24,7 @@ namespace ITGlobal.CommandLine
 
         public ISwitch Alias(string name)
         {
-            _aliases.Add("--" + name);
+            _aliases.Add(GetAliasFor(name));
             return this;
         }
 

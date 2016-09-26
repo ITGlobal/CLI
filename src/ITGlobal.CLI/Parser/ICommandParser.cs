@@ -112,7 +112,7 @@ namespace ITGlobal.CommandLine
         ///     Command line parser result
         /// </returns>
         [PublicAPI]
-        ICommandParserResult Run([NotNull] params string[] args);
+        ICommandParserResult Parse([NotNull] params string[] args);
 
         /// <summary>
         ///     Gets a command line usage information

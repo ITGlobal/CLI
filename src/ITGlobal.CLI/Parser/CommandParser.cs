@@ -88,7 +88,7 @@ namespace ITGlobal.CommandLine
             return this;
         }
 
-        public ICommandParserResult Run(params string[] args)
+        public ICommandParserResult Parse(params string[] args)
         {
             try
             {

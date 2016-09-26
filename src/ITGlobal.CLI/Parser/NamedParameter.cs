@@ -18,7 +18,7 @@ namespace ITGlobal.CommandLine
         public NamedParameter(string name)
         {
             _name = name;
-            _aliases.Add("-" + name);
+            _aliases.Add(GetAliasFor(name));
         }
 
         public bool IsSet { get; private set; }
@@ -30,7 +30,7 @@ namespace ITGlobal.CommandLine
 
         public INamedParameter<T> Alias(string name)
         {
-            _aliases.Add("--" + name);
+            _aliases.Add(GetAliasFor(name));
             return this;
         }
 
