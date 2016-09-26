@@ -244,5 +244,4 @@ ModelManifest.xml
 # FAKE - F# Make
 .fake/
 
-# CAKE
-tools
+artifacts
