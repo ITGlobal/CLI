@@ -1,0 +1,39 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{A8AA4F6A-B745-4D2B-801C-5F64C0202718}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3830325F-81A0-45C9-AB51-E3096E307BD7}"
+	ProjectSection(SolutionItems) = preProject
+		global.json = global.json
+	EndProjectSection
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "ITGlobal.CLI", "src\ITGlobal.CLI\ITGlobal.CLI.xproj", "{1306CAAE-0D2B-44F1-8162-0CFD5CD4BE26}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "ITGlobal.CLI.Example", "src\ITGlobal.CLI.Example\ITGlobal.CLI.Example.xproj", "{9F5E51E6-FCCC-44CF-8974-8AA02CF92015}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1306CAAE-0D2B-44F1-8162-0CFD5CD4BE26}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1306CAAE-0D2B-44F1-8162-0CFD5CD4BE26}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1306CAAE-0D2B-44F1-8162-0CFD5CD4BE26}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1306CAAE-0D2B-44F1-8162-0CFD5CD4BE26}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9F5E51E6-FCCC-44CF-8974-8AA02CF92015}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F5E51E6-FCCC-44CF-8974-8AA02CF92015}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F5E51E6-FCCC-44CF-8974-8AA02CF92015}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F5E51E6-FCCC-44CF-8974-8AA02CF92015}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{1306CAAE-0D2B-44F1-8162-0CFD5CD4BE26} = {A8AA4F6A-B745-4D2B-801C-5F64C0202718}
+		{9F5E51E6-FCCC-44CF-8974-8AA02CF92015} = {A8AA4F6A-B745-4D2B-801C-5F64C0202718}
+	EndGlobalSection
+EndGlobal

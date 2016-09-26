@@ -1,0 +1,18 @@
+﻿{
+  "version": "1.0.0-*",
+  "buildOptions": {
+    "emitEntryPoint": true
+  },
+
+  "dependencies": {
+    "ITGlobal.CLI": "*"
+  },
+
+  "frameworks": {
+    "net45": {}
+  },
+
+  "runtimes": {
+    "win7-x64": {} 
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "ITGlobal.CLI.Example": {
+      "commandName": "Project",
+      "commandLineArgs": "help"
+    }
+  }
+}
