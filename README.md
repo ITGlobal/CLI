@@ -1,6 +1,6 @@
 # ITGlobal CLI
 
-[![Build status](https://ci.appveyor.com/api/projects/status/k5fhuej05wjgv6t5/branch/master?svg=true)](https://ci.appveyor.com/project/kapitanov/cli/branch/master)
+[![Build status](https://ci.appveyor.com/api/projects/status/y7e2wbpoeelabba1/branch/master?svg=true)](https://ci.appveyor.com/project/kapitanov/cli/branch/master)
 
 This library is a set of various utilities to build command line application in C#.
 
