@@ -7,6 +7,10 @@ This library is a set of various utilities to build command line application in 
 
 ## Features
 
+### Cross-platform
+
+`ITGlobal CLI` supports both .NET 4.5 and .NET Core. It has no external dependencies and may run on Windows, Linux or MacOS.
+
 ### Easy color management
 
 ```csharp
@@ -28,7 +32,7 @@ using(CLI.WithForeground(ConsoleColor.Red))
 
 ### Graceful Ctrl+C handlers
 
-```charp
+```csharp
 using(var ctrlC = CLI.CtrlC())
 {
     var token = ctrlC.CancellationToken;
@@ -61,7 +65,7 @@ await CLI.HandleErrorsAsync(async () =>
 
 ### Localizable text resources
 
-```charp
+```csharp
 CLI.UseLocalizedText(new MyLocalizedText());
 ```
 
