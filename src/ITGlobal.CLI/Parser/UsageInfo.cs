@@ -19,8 +19,8 @@ namespace ITGlobal.CommandLine
             string title,
             string version,
             string helpText,
-            IReadOnlyList<CommandInfo> commands,
-            IReadOnlyList<ParameterInfo> parameters)
+            CommandInfo[] commands,
+            ParameterInfo[] parameters)
         {
             ExecutableName = executableName ?? Process.GetCurrentProcess().ProcessName;
 
@@ -66,13 +66,23 @@ namespace ITGlobal.CommandLine
         ///     Gets a list of defined commands
         /// </summary>
         [PublicAPI, NotNull]
+#if !NET40
         public IReadOnlyList<CommandInfo> Commands { get; }
+#else
+        public IList<CommandInfo> Commands { get; }
+#endif
+        
 
         /// <summary>
         ///     Gets a list of defined global parameters
         /// </summary>
         [PublicAPI, NotNull]
+       
+#if !NET40
         public IReadOnlyList<ParameterInfo> Parameters { get; }
+#else
+        public IList<ParameterInfo> Parameters { get; }
+#endif
 
         internal static UsageInfo Create(
             string executableName,

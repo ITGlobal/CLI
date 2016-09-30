@@ -18,7 +18,7 @@ namespace ITGlobal.CommandLine
         private ParameterInfo(
             string name,
             string helpText,
-            IReadOnlyList<string> aliases = null,
+            string[] aliases = null,
             int? position = null,
             bool isRequired = false,
             bool isSwitch = false)
@@ -47,8 +47,12 @@ namespace ITGlobal.CommandLine
         ///     Parameter aliases. Always empty for positional parameters, always non-empty for other parameters.
         /// </summary>
         [PublicAPI, NotNull]
+#if !NET40
         public IReadOnlyList<string> Aliases { get; }
-
+#else
+        public IList<string> Aliases { get; }
+#endif
+        
         /// <summary>
         ///     Positional parameter index. Null for any non-positional parameters.
         /// </summary>

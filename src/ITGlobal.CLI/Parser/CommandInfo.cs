@@ -16,8 +16,8 @@ namespace ITGlobal.CommandLine
         private CommandInfo(
             string name,
             string helpText,
-            IReadOnlyList<string> aliases,
-            IReadOnlyList<ParameterInfo> parameters)
+            string[] aliases,
+            ParameterInfo[] parameters)
         {
             Name = name;
             HelpText = helpText ?? "";
@@ -41,13 +41,23 @@ namespace ITGlobal.CommandLine
         ///     Command's aliases. Contains at least one item.
         /// </summary>
         [PublicAPI, NotNull]
+#if !NET40
         public IReadOnlyList<string> Aliases { get; }
+#else
+        public IList<string> Aliases { get; }
+#endif
+        
 
         /// <summary>
         ///     Command's parameters. Also includes global parameters.
         /// </summary>
         [PublicAPI, NotNull]
+#if !NET40
         public IReadOnlyList<ParameterInfo> Parameters { get; }
+#else
+        public IList<ParameterInfo> Parameters { get; }
+#endif
+        
 
         internal UsageInfo Parent { get; set; }
 

@@ -40,12 +40,21 @@ namespace ITGlobal.CommandLine
             catch (CommandLineException e)
             {
                 PrintException(e);
+#if !NET40
                 return e.HResult;
+#else
+                return -1;        
+#endif
+                
             }
             catch (Exception e)
             {
                 PrintException(e);
+#if !NET40
                 return e.HResult;
+#else
+                return -1;        
+#endif
             }
         }
 
@@ -53,6 +62,7 @@ namespace ITGlobal.CommandLine
         ///     Handles errors during execution of an async action
         /// </summary>
         [PublicAPI]
+#if !NET40
         public static Task<int> HandleErrorsAsync([NotNull] Func<Task> action)
         {
             return HandleErrorsAsync(async () =>
@@ -61,11 +71,21 @@ namespace ITGlobal.CommandLine
                 return 0;
             });
         }
+#else
+        public static Task<int> HandleErrorsAsync([NotNull] Func<Task> action)
+        {
+            return HandleErrorsAsync(() =>
+            {
+                return action().ContinueWith(_=>0, TaskContinuationOptions.OnlyOnRanToCompletion);
+            });
+        }
+#endif
 
         /// <summary>
         ///     Handles errors during execution of an async action
         /// </summary>
         [PublicAPI]
+#if !NET40
         public static async Task<int> HandleErrorsAsync([NotNull] Func<Task<int>> action)
         {
             try
@@ -85,9 +105,38 @@ namespace ITGlobal.CommandLine
             catch (Exception e)
             {
                 PrintException(e);
-                return e.HResult;
+                return e.HResult;    
             }
         }
+
+#else
+        public static Task<int> HandleErrorsAsync([NotNull] Func<Task<int>> action)
+        {
+            return action().ContinueWith(task => {
+                if(task.IsCanceled)
+                {
+                    return -1;
+                }
+
+                if(task.IsFaulted)
+                {
+                    var commandLineException = task.Exception.InnerException as CommandLineException;
+                    if(commandLineException != null)
+                    {
+                         PrintException(commandLineException);
+                    }
+                    else
+                    {
+                       PrintException(task.Exception.InnerException);
+                    }
+                    
+                    return -1;
+                }
+
+                 return task.Result;
+            });
+        }
+#endif
 
         private static void PrintException(CommandLineException e)
         {

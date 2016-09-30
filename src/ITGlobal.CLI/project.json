@@ -20,6 +20,13 @@
     "copyright": "2016 IT Global LLC",
     "dependencies": {},
     "frameworks": {
+        "net40": {
+            "buildOptions": {
+                "define": [
+                    "NET40"
+                ]
+            }
+        },
         "net45": {},
         "netstandard1.6": {
             "dependencies": {

@@ -14,7 +14,12 @@ namespace ITGlobal.CommandLine
 
         private readonly object _consoleLock = new object();
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
+        
+#if !NET40
         private readonly Task _backgroundTask;
+#else
+        private readonly Thread _backgroundThread;
+#endif          
 
         private string _title;
         private int _index;
@@ -31,7 +36,13 @@ namespace ITGlobal.CommandLine
             Console.SetError(new SafeTextWriter(_stdErr, this));
 
             DrawOnce();
+
+#if !NET40
             _backgroundTask = Task.Run(RedrawWorkerAsync);
+#else
+            _backgroundThread = new Thread(RedrawWorker);
+            _backgroundThread.Start();
+#endif            
         }
 
         public void SetTitle(string title)
@@ -42,7 +53,11 @@ namespace ITGlobal.CommandLine
         public void Dispose()
         {
             _cts.Cancel();
+#if !NET40
             _backgroundTask.Wait();
+#else
+            _backgroundThread.Join();
+#endif    
 
             ClearLine();
             Console.SetOut(_stdOut);
@@ -86,6 +101,7 @@ namespace ITGlobal.CommandLine
             }
         }
 
+#if !NET40
         private async Task RedrawWorkerAsync()
         {
             try
@@ -100,7 +116,20 @@ namespace ITGlobal.CommandLine
                 }
             }
             catch (OperationCanceledException) { }
+        }          
+#else
+        private void RedrawWorker()
+        {
+            var token = _cts.Token;
+            while (!token.IsCancellationRequested)
+            {
+                DrawOnce();
+
+                Thread.Sleep(SPINNER_SLEEP_TIME);
+                Interlocked.Increment(ref _index);
+            }
         }
+#endif
 
         private void DrawOnce()
         {

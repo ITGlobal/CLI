@@ -9,7 +9,13 @@ This library is a set of various utilities to build command line application in 
 
 ### Cross-platform
 
-`ITGlobal CLI` supports both .NET 4.5 and .NET Core. It has no external dependencies and may run on Windows, Linux or MacOS.
+`ITGlobal CLI` supports:
+
+* .NET 4.0
+* .NET 4.5
+* .NET Core (`netstandard1.6`)
+
+It has no external dependencies and may run on Windows, Linux or MacOS.
 
 ### Easy color management
 

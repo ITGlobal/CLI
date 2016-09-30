@@ -18,9 +18,18 @@ if($VERSION) {
 
 Write-Host "Restoring packages" -ForegroundColor Cyan
 & dotnet restore $PROJECT
+if($LASTEXITCODE) {
+    exit 1
+}
 
 Write-Host "Building project" -ForegroundColor Cyan
 & dotnet build $PROJECT -c config
+if($LASTEXITCODE) {
+    exit 1
+}
 
 Write-Host "Packaging project" -ForegroundColor Cyan
 & dotnet pack $PROJECT -c $CONFIGURATION -o $OUTDIR
+if($LASTEXITCODE) {
+    exit 1
+}
