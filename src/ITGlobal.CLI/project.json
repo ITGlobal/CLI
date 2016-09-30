@@ -1,31 +1,31 @@
 ﻿{
-  "version": "1.0.0-*",
-  "title": "ITGlobal CLI library",
-  "description": "A set of useful utilities to build a console app",
-   
-  "authors": [ "IT Global LLC" ],
-  "packOptions": {
-    "repository": {
-      "type": "git",
-      "url": ""
+    "version": "1.0.0-*",
+    "title": "ITGlobal CLI library",
+    "description": "A set of useful utilities to build a console app",
+    "authors": [
+        "IT Global LLC"
+    ],
+    "packOptions": {
+        "repository": {
+            "type": "git",
+            "url": ""
+        },
+        "licenseUrl": "http://www.opensource.org/licenses/MIT",
+        "tags": [
+            "command line",
+            "command line parser",
+            "cli"
+        ]
     },
-    "licenseUrl": "http://www.opensource.org/licenses/MIT",
-    "tags": [ "command line", "command line parser", "cli" ]
-  },
-  
-  "copyright": "2016 IT Global LLC",
-
-  "dependencies": {
-    "NETStandard.Library": "1.6.0"
-  },
-
-  "frameworks": {
-    "net45": { },
-    "netstandard1.6": {
-      "imports": "dnxcore50",
-      "dependencies": {
-        "System.Diagnostics.Process": "4.1.0"
-      }
+    "copyright": "2016 IT Global LLC",
+    "dependencies": {},
+    "frameworks": {
+        "net45": {},
+        "netstandard1.6": {
+            "dependencies": {
+                "NETStandard.Library": "1.6.0",
+                "System.Diagnostics.Process": "4.1.0"
+            }
+        }
     }
-  }
 }

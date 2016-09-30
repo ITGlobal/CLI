@@ -20,7 +20,7 @@ Write-Host "Restoring packages" -ForegroundColor Cyan
 & dotnet restore $PROJECT
 
 Write-Host "Building project" -ForegroundColor Cyan
-& dotnet build $PROJECT -c config --no-dependencies
+& dotnet build $PROJECT -c config
 
 Write-Host "Packaging project" -ForegroundColor Cyan
-& dotnet pack $PROJECT -c $CONFIGURATION --no-build -o $OUTDIR
+& dotnet pack $PROJECT -c $CONFIGURATION -o $OUTDIR
