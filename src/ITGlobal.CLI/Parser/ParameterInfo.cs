@@ -100,6 +100,7 @@ namespace ITGlobal.CommandLine
             }
             else
             {
+                Console.Write('>');
                 color = WithForeground(ConsoleColor.Magenta);
             }
 
@@ -112,12 +113,23 @@ namespace ITGlobal.CommandLine
                 else
                 {
                     Console.Write(string.Join("|", Aliases));
+                    if(!IsSwitch)
+                    {
+                        Console.Write(' ');
+                        Console.Write('<');
+                        Console.Write(Name);
+                        Console.Write('>');
+                    }
                 }
             }
 
             if (!IsRequired)
             {
                 Console.Write(']');
+            }
+            else
+            {
+                Console.Write('>');
             }
         }
 

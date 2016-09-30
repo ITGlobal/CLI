@@ -16,7 +16,7 @@ namespace ITGlobal.CommandLine
 
         internal static string GetAliasFor(string name)
         {
-            if (name.All(char.IsLetterOrDigit))
+            if (name.All(char.IsLetterOrDigit) && name.Length == 1)
             {
                 return "-" + name;
             }
