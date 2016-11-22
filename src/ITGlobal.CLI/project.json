@@ -5,7 +5,7 @@
     "authors": [
         "IT Global LLC"
     ],
-    "projectUrl" : "https://github.com/ITGlobal/CLI"
+    "projectUrl" : "https://github.com/ITGlobal/CLI",
     "packOptions": {
         "repository": {
             "type": "git",
