@@ -5,10 +5,11 @@
     "authors": [
         "IT Global LLC"
     ],
+    "projectUrl" : "https://github.com/ITGlobal/CLI"
     "packOptions": {
         "repository": {
             "type": "git",
-            "url": ""
+            "url": "https://github.com/ITGlobal/CLI.git"
         },
         "licenseUrl": "http://www.opensource.org/licenses/MIT",
         "tags": [
