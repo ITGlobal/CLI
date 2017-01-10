@@ -4,14 +4,14 @@
     "description": "A set of useful utilities to build a console app",
     "authors": [
         "IT Global LLC"
-    ],
-    "projectUrl" : "https://github.com/ITGlobal/CLI",
+    ],    
     "packOptions": {
         "repository": {
             "type": "git",
             "url": "https://github.com/ITGlobal/CLI.git"
         },
         "licenseUrl": "http://www.opensource.org/licenses/MIT",
+        "projectUrl" : "https://github.com/ITGlobal/CLI",
         "tags": [
             "command line",
             "command line parser",
