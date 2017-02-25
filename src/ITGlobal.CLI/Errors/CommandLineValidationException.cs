@@ -6,6 +6,7 @@ namespace ITGlobal.CommandLine
     public class CommandLineValidationException : CommandLineException
     {
         public CommandLineValidationException(string[] errors)
+            : base(GetMessage(errors))
         {
             ValidationErrors = errors;
         }
