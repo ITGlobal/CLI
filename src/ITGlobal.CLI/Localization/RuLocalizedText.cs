@@ -1,7 +1,7 @@
 ﻿// ReSharper disable once CheckNamespace
 namespace ITGlobal.CommandLine
 {
-    internal class RuLocalizedText : LocalizedText
+    public class RuLocalizedText : LocalizedText
     {
         public override string AmbiguousCommandAlias => "Название '{0}' используется более чем для одной команды: {1}";
         public override string AmbiguousParameter => "Название '{0}' используетя более чем для одного параметра: {1}";

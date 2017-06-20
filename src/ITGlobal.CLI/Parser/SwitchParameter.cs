@@ -39,20 +39,20 @@ namespace ITGlobal.CommandLine
 
         void IParameterParser.Reset() => IsSet = false;
 
-        bool IParameterParser.TryConsume(string[] args, ref int index)
+        ParameterParserResult IParameterParser.TryConsume(string[] args, ref int index)
         {
             var name = args[index];
             if (_aliases.Contains(name))
             {
                 IsSet = true;
                 OnValueParsed();
-                return true;
+                return ParameterParserResult.Consumed;
             }
 
-            return false;
+            return ParameterParserResult.NotConsumed;
         }
 
-        bool IParameterParser.TryConsumeAt(string[] args, int index) => false;
+        ParameterParserResult IParameterParser.TryConsumeAt(string[] args, int index) => ParameterParserResult.NotConsumed;
 
         void IParameterParser.Validate(IList<string> errors) { }
         ParameterInfo IParameterParser.GetParameterInfo() => ParameterInfo.Switch(_name, _aliases, _helpText);

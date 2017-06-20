@@ -48,6 +48,15 @@ namespace ITGlobal.CommandLine
                 usage.Print();
                 return 0;
             });
+            ((Command) command).SuppressValidation = true;
+
+            parser.Callback(_ =>
+            {
+                parser.Usage().Print();
+                return 0;
+            });
+
+            ((CommandParser) parser).SuppressValidation = true;
 
             return command;
         }

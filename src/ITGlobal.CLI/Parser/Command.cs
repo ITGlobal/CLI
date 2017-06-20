@@ -65,6 +65,7 @@ namespace ITGlobal.CommandLine
 
         public string Name => _name;
         public string[] Aliases => _aliases.ToArray();
+        public bool SuppressValidation { get; set; }
 
         public CommandInfo GetCommandInfo(IEnumerable<IParameterParser> globalParameters)
         {
@@ -81,6 +82,10 @@ namespace ITGlobal.CommandLine
         public ICommandParserResult Run(CommandParser parser, CommandLineInfo commandLine)
         {
             commandLine.Parse(_parameters);
+            if (!SuppressValidation)
+            {
+                commandLine.ThrowIfNotValid();
+            }
             commandLine.AddFreeArguments();
 
             return new CommandParserResult(parser, _callback, commandLine);

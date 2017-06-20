@@ -61,9 +61,9 @@ namespace ITGlobal.CommandLine
             Value = _default;
         }
 
-        bool IParameterParser.TryConsume(string[] args, ref int index) => false;
+        ParameterParserResult IParameterParser.TryConsume(string[] args, ref int index) => ParameterParserResult.NotConsumed;
 
-        bool IParameterParser.TryConsumeAt(string[] args, int index)
+        ParameterParserResult IParameterParser.TryConsumeAt(string[] args, int index)
         {
             if (index == _index)
             {
@@ -71,10 +71,10 @@ namespace ITGlobal.CommandLine
                 var rawValue = args[index];
                 Value = _parser(rawValue);
                 OnValueParsed();
-                return true;
+                return ParameterParserResult.Consumed;
             }
 
-            return false;
+            return ParameterParserResult.NotConsumed;
         }
 
         void IParameterParser.Validate(IList<string> errors)

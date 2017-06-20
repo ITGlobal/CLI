@@ -6,7 +6,7 @@ namespace ITGlobal.CommandLine
     /// <summary>
     ///     Localication provider
     /// </summary>
-    public class LocalizedText
+    public abstract class LocalizedText
     {
         [NotNull]
         public virtual string AmbiguousCommandAlias => "Alias '{0}' points to more than one command: {1}";

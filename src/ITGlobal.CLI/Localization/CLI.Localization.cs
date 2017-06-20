@@ -13,9 +13,10 @@ namespace ITGlobal.CommandLine
         private static readonly Dictionary<string, Func<LocalizedText>> _Localizations = new Dictionary
             <string, Func<LocalizedText>>
         {
-            {"RU", () => new RuLocalizedText()}
+            {"EN", () => new EnLocalizedText()},
+            {"RU", () => new RuLocalizedText()},
         };
-        private static readonly LocalizedText DefautLocalizedText = new LocalizedText();
+        private static readonly LocalizedText DefautLocalizedText = new EnLocalizedText();
 
         internal static LocalizedText Text { get; private set; } = DefautLocalizedText;
 

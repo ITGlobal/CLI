@@ -20,7 +20,7 @@ namespace ITGlobal.CommandLine
         public int Run()
         {
             _parser.PrintLogo();
-            var exitCode = _handler(_commandLine.FreeRemainder);
+            var exitCode = _handler(_commandLine.UnconsumedArgs.ToArray());
             return exitCode;
         }
     }

@@ -21,7 +21,7 @@ namespace ITGlobal.CommandLine.Example
                 app.ExecutableName("cli-example");
                 app.FromAssembly(typeof(Program).Assembly);
                 app.HelpText("Demo application for IT Global CLI");
-
+                
                 _verbose = app.Switch("v").Alias("verbose").HelpText("Enable vesbose output. This is a global switch");
 
                 var tableCmd = app.Command("table");
@@ -37,18 +37,22 @@ namespace ITGlobal.CommandLine.Example
                     .HelpText("Run a 'spinner' demo")
                     .Callback(SpinnerDemo);
 
+                app.Command("run")
+                    .HelpText("Run an 'unconsumed arguments' demo")
+                    .Callback(UnconsumedArgumentsDemo);
+
                 app.HelpCommand();
 
                 return app.Parse(args).Run();
             });
-        }
+        }        
 
         struct Xyz
         {
             public int X, Y, Z;
         }
 
-        private static int TableDemo(string args)
+        private static int TableDemo(string[] args)
         {            
             var n = _count.Value;
             var data = new List<Xyz>();
@@ -70,7 +74,7 @@ namespace ITGlobal.CommandLine.Example
             return 0;
         }
 
-        private static int ProgressBarDemo(string args)
+        private static int ProgressBarDemo(string[] args)
         {
             using (var ctrlC = CLI.CtrlC())
             {                
@@ -111,7 +115,7 @@ namespace ITGlobal.CommandLine.Example
             return 0;
         }
 
-        private static int SpinnerDemo(string args)
+        private static int SpinnerDemo(string[] args)
         {
             using (var ctrlC = CLI.CtrlC())
             {
@@ -148,6 +152,11 @@ namespace ITGlobal.CommandLine.Example
                 }).Wait();
             }
 
+            return 0;
+        }
+
+        private static int UnconsumedArgumentsDemo(string[] args)
+        {
             return 0;
         }
     }

@@ -68,14 +68,14 @@ namespace ITGlobal.CommandLine
             Value = _default;
         }
 
-        bool IParameterParser.TryConsume(string[] args, ref int index)
+        ParameterParserResult IParameterParser.TryConsume(string[] args, ref int index)
         {
             var name = args[index];
             if (_aliases.Contains(name))
             {
                 if (index >= args.Length - 1)
                 {
-                    throw new CommandLineParameterException(string.Format(Text.RequiredParameterIsNotSet, _name));
+                    return ParameterParserResult.Failure(string.Format(Text.RequiredParameterIsNotSet, _name));
                 }
 
                 index++;
@@ -85,13 +85,13 @@ namespace ITGlobal.CommandLine
                 Value = _parser(rawValue);
                 OnValueParsed();
 
-                return true;
+                return ParameterParserResult.Consumed;
             }
 
-            return false;
+            return ParameterParserResult.NotConsumed;
         }
 
-        bool IParameterParser.TryConsumeAt(string[] args, int index) => false;
+        ParameterParserResult IParameterParser.TryConsumeAt(string[] args, int index) => ParameterParserResult.NotConsumed;
 
         void IParameterParser.Validate(IList<string> errors)
         {

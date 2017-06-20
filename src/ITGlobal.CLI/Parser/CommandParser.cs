@@ -23,6 +23,9 @@ namespace ITGlobal.CommandLine
 
         private UsageInfo _usage;
 
+
+        public bool SuppressValidation { get; set; }
+
         public ICommandParser ExecutableName(string exeName)
         {
             _executableName = exeName;
@@ -92,7 +95,7 @@ namespace ITGlobal.CommandLine
         {
             try
             {
-                Initailize();
+                Initialize();
                 
                 var commandLine = new CommandLineInfo(args);
                 commandLine.Parse(_parameters);
@@ -100,6 +103,10 @@ namespace ITGlobal.CommandLine
                 if (_commands.Count <= 0 || !_commandNameParameter.IsSet)
                 {
                     commandLine.AddFreeArguments();
+                    if (!SuppressValidation)
+                    {
+                        commandLine.ThrowIfNotValid();
+                    }
                     return new CommandParserResult(this, _callback, commandLine);
                 }
                 
@@ -109,7 +116,7 @@ namespace ITGlobal.CommandLine
                 {
                     throw new CommandNotFoundException(name);
                 }
-
+                
                 return command.Run(this, commandLine);
             }
             catch
@@ -121,7 +128,7 @@ namespace ITGlobal.CommandLine
 
         public UsageInfo Usage()
         {
-            Initailize();
+            Initialize();
 
             return _usage = _usage ?? UsageInfo.Create(
                 _executableName,
@@ -157,10 +164,9 @@ namespace ITGlobal.CommandLine
                 }
                 Console.WriteLine();
             }
-
         }
 
-        private void Initailize()
+        private void Initialize()
         {
             if (!_isInitialized)
             {
@@ -170,8 +176,7 @@ namespace ITGlobal.CommandLine
                 }
 
                 var errors = new List<string>();
-
-
+                
                 var ambiguousParameters =
                     from g in (
                         from p in _parameters

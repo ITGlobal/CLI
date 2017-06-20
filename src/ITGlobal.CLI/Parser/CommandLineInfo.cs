@@ -7,14 +7,15 @@ namespace ITGlobal.CommandLine
     internal sealed class CommandLineInfo
     {
         private string[] _args;
-        private string _freeRemainder = "";
 
         public CommandLineInfo(string[] args)
         {
             _args = args;
         }
 
-        public string FreeRemainder => _freeRemainder;
+        public List<string> UnconsumedArgs { get; } = new List<string>();
+
+        public List<string> Errors { get; } = new List<string>();
 
         public void Parse(IList<IParameterParser> parsers)
         {
@@ -31,10 +32,16 @@ namespace ITGlobal.CommandLine
                 var isConsumed = false;
                 foreach (var parser in parsers)
                 {
-                    if (parser.TryConsume(_args, ref index))
+                    var result = parser.TryConsume(_args, ref index);
+                    if (result.IsConsumed)
                     {
                         isConsumed = true;
                         break;
+                    }
+
+                    if (!result.IsSuccess)
+                    {
+                        Errors.Add(result.Error);
                     }
                 }
 
@@ -56,7 +63,7 @@ namespace ITGlobal.CommandLine
                     index++;
                     for (; index < _args.Length; index++)
                     {
-                        _freeRemainder += _args[index];
+                        UnconsumedArgs.Add(_args[index]);
                     }
                     break;
                 }
@@ -64,10 +71,16 @@ namespace ITGlobal.CommandLine
                 var isConsumed = false;
                 foreach (var parser in parsers)
                 {
-                    if (parser.TryConsumeAt(_args, index))
+                    var result = parser.TryConsumeAt(_args, index);
+                    if (result.IsConsumed)
                     {
                         isConsumed = true;
                         break;
+                    }
+
+                    if (!result.IsSuccess)
+                    {
+                        Errors.Add(result.Error);
                     }
                 }
 
@@ -77,25 +90,30 @@ namespace ITGlobal.CommandLine
                 }
             }
 
-            var errors = new List<string>();
             foreach (var parser in parsers)
             {
-                parser.Validate(errors);
-            }
-
-            if (errors.Count > 0)
-            {
-                throw new CommandLineValidationException(errors.ToArray());
+                parser.Validate(Errors);
             }
 
             _args = remainingArgs.ToArray();
+        }
+
+        public void ThrowIfNotValid()
+        {
+            if (Errors.Count > 0)
+            {
+                throw new CommandLineValidationException(Errors.ToArray());
+            }
         }
 
         public void AddFreeArguments()
         {
             if (_args.Length > 0)
             {
-                _freeRemainder = string.Join(" ", _args) + " " + _freeRemainder;
+                foreach (var arg in _args)
+                {
+                    UnconsumedArgs.Add(arg);
+                }
             }
         }
     }
