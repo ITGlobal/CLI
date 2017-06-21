@@ -150,7 +150,7 @@ namespace ITGlobal.CommandLine
         {
             using (WithColors(ConsoleColor.White, ConsoleColor.DarkRed))
             {
-                Console.WriteLine($"{Text.Error}! [{e.GetType().FullName}]");
+                Console.WriteLine($"{Text.Error} [{e.GetType().FullName}]");
                 Console.WriteLine(e.Message);
                 Console.WriteLine(e.StackTrace);
             }

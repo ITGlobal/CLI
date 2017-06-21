@@ -142,7 +142,7 @@ namespace ITGlobal.CommandLine
 
         public CommandInfo Usage(string commandName)
         {
-            return Usage().Commands.First(_ => _.Aliases.Contains(commandName));
+            return Usage().Commands.FirstOrDefault(_ => _.Aliases.Contains(commandName));
         }
 
         internal void PrintLogo()
