@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace ITGlobal.CommandLine.Example
@@ -19,7 +20,7 @@ namespace ITGlobal.CommandLine.Example
                 var app = CLI.Parser();
 
                 app.ExecutableName("cli-example");
-                app.FromAssembly(typeof(Program).Assembly);
+                app.FromAssembly(typeof(Program).GetTypeInfo().Assembly);
                 app.HelpText("Demo application for IT Global CLI");
                 
                 _verbose = app.Switch("v").Alias("verbose").HelpText("Enable vesbose output. This is a global switch");

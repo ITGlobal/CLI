@@ -1,0 +1,1 @@
+& dotnet run --no-launch-profile --project ./src/ITGlobal.CLI.Example/ITGlobal.CLI.Example.csproj -- $args
