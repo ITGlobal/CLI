@@ -26,19 +26,19 @@ namespace ITGlobal.CommandLine.Example
                 var tableCmd = app.Command("table");
                 _count = tableCmd.Parameter<int>("n").DefaultValue(2).HelpText("Row count");
                 tableCmd.HelpText("Run a 'table' demo");
-                tableCmd.Callback(TableDemo);
+                tableCmd.Handler(TableDemo);
 
                 app.Command("progress")
                     .HelpText("Run a 'progressbar' demo")
-                    .Callback(ProgressBarDemo);
+                    .Handler(ProgressBarDemo);
 
                 app.Command("spinner")
                     .HelpText("Run a 'spinner' demo")
-                    .Callback(SpinnerDemo);
+                    .Handler(SpinnerDemo);
 
                 app.Command("run")
                     .HelpText("Run an 'unconsumed arguments' demo")
-                    .Callback(UnconsumedArgumentsDemo);
+                    .Handler(UnconsumedArgumentsDemo);
 
                 app.HelpCommand();
 

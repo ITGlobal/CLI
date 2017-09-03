@@ -55,16 +55,16 @@ namespace ITGlobal.CommandLine
         IPositionalParameter<T> Parameter<T>(int index, [NotNull] string name);
 
         /// <summary>
-        ///     Sets a callback function for the command
+        ///     Sets a handler function for the command
         /// </summary>
         /// <param name="callback">
-        ///     Callback function
+        ///     Handler function
         /// </param>
         /// <returns>
         ///     Command
         /// </returns>
         [PublicAPI, NotNull]
-        ICommand Callback([NotNull] CommandHandler callback);
+        ICommand Handler([NotNull] CommandHandler handler);
 
         /// <summary>
         ///     Adds an alias for the command

@@ -97,10 +97,16 @@ namespace ITGlobal.CommandLine
         ICommand Command([NotNull] string name);
 
         /// <summary>
-        ///     Sets a callback function. This function is triggered if no command has been matched.
+        ///     Sets a handler function. This function is triggered if no command has been matched.
         /// </summary>
         [PublicAPI, NotNull]
-        ICommandParser Callback([NotNull] CommandHandler callback);
+        ICommandParser Handler([NotNull] CommandHandler handler);
+
+        /// <summary>
+        ///     Sets a hook function. This function is triggered before any handler is executed.
+        /// </summary>
+        [PublicAPI, NotNull]
+        ICommandParser Hook([NotNull] CommandHook hook);
 
         /// <summary>
         ///     Runs the parser

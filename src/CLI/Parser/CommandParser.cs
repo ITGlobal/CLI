@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
 using static ITGlobal.CommandLine.CLI;
 
 // ReSharper disable once CheckNamespace
@@ -11,7 +12,8 @@ namespace ITGlobal.CommandLine
         private readonly List<IParameterParser> _parameters = new List<IParameterParser>();
         private readonly List<Command> _commands = new List<Command>();
 
-        private readonly PositionalParameter<string> _commandNameParameter = new PositionalParameter<string>(0, "command");
+        private readonly PositionalParameter<string> _commandNameParameter = 
+            new PositionalParameter<string>(0, "command");
         private bool _isInitialized;
 
         private string _executableName;
@@ -19,7 +21,8 @@ namespace ITGlobal.CommandLine
         private string _version;
         private string _helpText;
         private bool _suppressLogo;
-        private CommandHandler _callback = _ => 0;
+        private CommandHandler _handler = _ => 0;
+        private CommandHook _hook;
 
         private UsageInfo _usage;
 
@@ -85,9 +88,15 @@ namespace ITGlobal.CommandLine
             return command;
         }
 
-        public ICommandParser Callback(CommandHandler callback)
+        public ICommandParser Handler(CommandHandler handler)
         {
-            _callback = callback;
+            _handler = handler;
+            return this;
+        }
+
+        public ICommandParser Hook([NotNull] CommandHook hook)
+        {
+            _hook = hook;
             return this;
         }
 
@@ -96,7 +105,7 @@ namespace ITGlobal.CommandLine
             try
             {
                 Initialize();
-                
+
                 var commandLine = new CommandLineInfo(args);
                 commandLine.Parse(_parameters);
 
@@ -107,17 +116,17 @@ namespace ITGlobal.CommandLine
                     {
                         commandLine.ThrowIfNotValid();
                     }
-                    return new CommandParserResult(this, _callback, commandLine);
+                    return new CommandParserResult(this, _handler, _hook, commandLine);
                 }
-                
+
                 var name = _commandNameParameter.Value;
                 var command = _commands.FirstOrDefault(_ => _.MatchesAlias(name));
                 if (command == null)
                 {
                     throw new CommandNotFoundException(name);
                 }
-                
-                return command.Run(this, commandLine);
+
+                return command.Run(this, _hook, commandLine);
             }
             catch
             {
@@ -176,7 +185,7 @@ namespace ITGlobal.CommandLine
                 }
 
                 var errors = new List<string>();
-                
+
                 var ambiguousParameters =
                     from g in (
                         from p in _parameters

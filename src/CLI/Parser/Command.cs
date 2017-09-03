@@ -13,7 +13,7 @@ namespace ITGlobal.CommandLine
         private readonly string _name;
         private string _helpText;
 
-        private CommandHandler _callback = _ => 0;
+        private CommandHandler _handler = _ => 0;
 
         public Command(string name)
         {
@@ -43,9 +43,9 @@ namespace ITGlobal.CommandLine
         }
 
 
-        public ICommand Callback(CommandHandler callback)
+        public ICommand Handler(CommandHandler handler)
         {
-            _callback = callback;
+            _handler = handler;
             return this;
         }
 
@@ -79,7 +79,7 @@ namespace ITGlobal.CommandLine
             );
         }
 
-        public ICommandParserResult Run(CommandParser parser, CommandLineInfo commandLine)
+        public ICommandParserResult Run(CommandParser parser, CommandHook hook, CommandLineInfo commandLine)
         {
             commandLine.Parse(_parameters);
             if (!SuppressValidation)
@@ -88,7 +88,7 @@ namespace ITGlobal.CommandLine
             }
             commandLine.AddFreeArguments();
 
-            return new CommandParserResult(parser, _callback, commandLine);
+            return new CommandParserResult(parser, _handler, hook, commandLine);
         }
 
         public void Validate(List<string> errors)

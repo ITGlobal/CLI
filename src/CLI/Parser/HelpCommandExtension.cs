@@ -30,7 +30,7 @@ namespace ITGlobal.CommandLine
             var target = command.Parameter<string>(0, "command");
 
             command.HelpText(Text.ShowHelp);
-            command.Callback(_ =>
+            command.Handler(_ =>
             {
                 if (!target.IsSet)
                 {
@@ -50,7 +50,7 @@ namespace ITGlobal.CommandLine
             });
             ((Command) command).SuppressValidation = true;
 
-            parser.Callback(_ =>
+            parser.Handler(_ =>
             {
                 parser.Usage().Print();
                 return 0;

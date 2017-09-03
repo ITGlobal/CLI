@@ -4,7 +4,7 @@ using JetBrains.Annotations;
 namespace ITGlobal.CommandLine
 {
     /// <summary>
-    ///     Callback for a command
+    ///     Handler for a command
     /// </summary>
     /// <param name="args">
     ///     Unconsumed arguments

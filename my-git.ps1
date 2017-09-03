@@ -1,0 +1,1 @@
+& dotnet run --no-launch-profile --project ./src/git-example/git-example.csproj -- $args
