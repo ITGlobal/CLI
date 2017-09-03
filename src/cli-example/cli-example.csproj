@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ITGlobal.CLI\ITGlobal.CLI.csproj" />
+    <ProjectReference Include="..\CLI\CLI.csproj" />
   </ItemGroup>
 
 </Project>

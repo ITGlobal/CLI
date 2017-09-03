@@ -14,9 +14,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ITGlobal.CLI", "src\ITGlobal.CLI\ITGlobal.CLI.csproj", "{701E58D6-0AC5-43F3-9C9F-241692B616D0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CLI", "src\CLI\CLI.csproj", "{701E58D6-0AC5-43F3-9C9F-241692B616D0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ITGlobal.CLI.Example", "src\ITGlobal.CLI.Example\ITGlobal.CLI.Example.csproj", "{55CD719E-A9A4-486F-93C5-E5C16D1FDBDF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "cli-example", "src\cli-example\cli-example.csproj", "{55CD719E-A9A4-486F-93C5-E5C16D1FDBDF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

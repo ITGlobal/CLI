@@ -13,8 +13,6 @@ namespace ITGlobal.CommandLine.Example
 
         public static int Main(string[] args)
         {
-            CLI.UseDefaultLocalizedText();
-
             return CLI.HandleErrors(() =>
             {
                 var app = CLI.Parser();

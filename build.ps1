@@ -31,7 +31,7 @@ if($LASTEXITCODE -ne 0) {
 
 # PACK
 & dotnet pack /nologo -v q -c $CONFIGURATION /p:Version=$VERSION --include-symbols --include-source `
-    --no-restore --output $ARTIFACTS ./src/ITGlobal.CLI/ITGlobal.CLI.csproj
+    --no-restore --output $ARTIFACTS ./src/CLI/CLI.csproj
 if ($LASTEXITCODE -ne 0) {
     Write-Host "`"dotnet pack`" failed with $LASTEXITCODE"
     exit $LASTEXITCODE
