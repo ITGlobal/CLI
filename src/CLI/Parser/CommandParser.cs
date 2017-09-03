@@ -22,12 +22,14 @@ namespace ITGlobal.CommandLine
         private string _helpText;
         private bool _suppressLogo;
         private CommandHandler _handler = _ => 0;
-        private CommandHook _hook;
+        private readonly List<CommandHook> _hooks = new List<CommandHook>();
 
         private UsageInfo _usage;
 
 
         public bool SuppressValidation { get; set; }
+        public IList<Command> Commands => _commands;
+        public PositionalParameter<string> CommandNameParameter => _commandNameParameter;
 
         public ICommandParser ExecutableName(string exeName)
         {
@@ -96,7 +98,7 @@ namespace ITGlobal.CommandLine
 
         public ICommandParser Hook([NotNull] CommandHook hook)
         {
-            _hook = hook;
+            _hooks.Add(hook);
             return this;
         }
 
@@ -112,11 +114,19 @@ namespace ITGlobal.CommandLine
                 if (_commands.Count <= 0 || !_commandNameParameter.IsSet)
                 {
                     commandLine.AddFreeArguments();
+
+                    var result = HookFunc();
+                    if (result != null)
+                    {
+                        return new CommandParserHookResult(result.Value);
+                    }
+
                     if (!SuppressValidation)
                     {
                         commandLine.ThrowIfNotValid();
                     }
-                    return new CommandParserResult(this, _handler, _hook, commandLine);
+
+                    return new CommandParserResult(this, _handler, commandLine);
                 }
 
                 var name = _commandNameParameter.Value;
@@ -126,7 +136,15 @@ namespace ITGlobal.CommandLine
                     throw new CommandNotFoundException(name);
                 }
 
-                return command.Run(this, _hook, commandLine);
+                {
+                    var result = HookFunc();
+                    if (result != null)
+                    {
+                        return new CommandParserHookResult(result.Value);
+                    }
+                }
+
+                return command.Run(this, commandLine);
             }
             catch
             {
@@ -243,6 +261,20 @@ namespace ITGlobal.CommandLine
 
                 _isInitialized = true;
             }
+        }
+
+        private int? HookFunc()
+        {
+            foreach(var hook in _hooks)
+            {
+                var result = hook();
+                if(result != null)
+                {
+                    return result;
+                }
+            }
+
+            return null;
         }
     }
 }

@@ -50,8 +50,8 @@ namespace ITGlobal.CommandLine.GitExample
             // 'commit' command
             CommitCommand(app);
 
-            // An auto-generated 'help' command
-            app.HelpCommand();
+            // An auto-generated '--help' switch
+            app.HelpSwitch();
 
             // Parse command line and execute command
             return CLI.HandleErrors(() => app.Parse(args).Run());

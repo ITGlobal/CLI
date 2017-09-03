@@ -90,7 +90,7 @@ namespace ITGlobal.CommandLine
             );
         }
 
-        public ICommandParserResult Run(CommandParser parser, CommandHook hook, CommandLineInfo commandLine)
+        public ICommandParserResult Run(CommandParser parser, CommandLineInfo commandLine)
         {
             commandLine.Parse(_parameters);
             if (!SuppressValidation)
@@ -99,7 +99,7 @@ namespace ITGlobal.CommandLine
             }
             commandLine.AddFreeArguments();
 
-            return new CommandParserResult(parser, _handler, hook, commandLine);
+            return new CommandParserResult(parser, _handler, commandLine);
         }
 
         public void Validate(List<string> errors)
