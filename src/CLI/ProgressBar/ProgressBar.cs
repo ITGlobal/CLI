@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 using static ITGlobal.CommandLine.CLI;
 
 // ReSharper disable once CheckNamespace
@@ -9,19 +10,27 @@ namespace ITGlobal.CommandLine
     {
         private readonly TextWriter _stdOut;
         private readonly TextWriter _stdErr;
+        private readonly Encoding _outputEncoding;
+
+        private readonly ProgressBarStyle _style;
 
         private int _progress;
         private string _text;
 
         private bool _shouldCleanLine = true;
 
-        public ProgressBar()
+        public ProgressBar(ProgressBarStyle style)
         {
             _stdOut = Console.Out;
             _stdErr = Console.Error;
+            _outputEncoding = Console.OutputEncoding;
+
+            _style = style;
 
             Console.SetOut(new SafeTextWriter(_stdOut, this));
             Console.SetError(new SafeTextWriter(_stdErr, this));
+
+            Console.OutputEncoding = Encoding.UTF8;
 
             Draw();
         }
@@ -56,6 +65,7 @@ namespace ITGlobal.CommandLine
             ClearLine();
             Console.SetOut(_stdOut);
             Console.SetError(_stdErr);
+            Console.OutputEncoding = _outputEncoding;
         }
 
         private void Draw()
@@ -66,44 +76,96 @@ namespace ITGlobal.CommandLine
             Console.CursorVisible = false;
             Console.CursorLeft = 0;
 
-            var i = 0;
-            var labelWidth = Math.Min(text.Length, PROGRESS_BAR_LABEL_WIDTH);
-            using (WithForeground(ConsoleColor.Yellow))
+            if (_style.EnableLabel)
             {
-                for (; i < labelWidth; i++)
+                var i = 0;
+                var labelWidth = Math.Min(text.Length, _style.LabelWidth);
+                using (WithColors(_style.LabelFgColor, _style.LabelBgColor))
                 {
-                    _stdOut.Write(text[i]);
-                }
-                for (; i < PROGRESS_BAR_LABEL_WIDTH; i++)
-                {
+                    for (; i < labelWidth; i++)
+                    {
+                        _stdOut.Write(text[i]);
+                    }
+                    for (; i < _style.LabelWidth; i++)
+                    {
+                        _stdOut.Write(' ');
+                    }
+
                     _stdOut.Write(' ');
                 }
             }
 
-            _stdOut.Write(' ');
-            _stdOut.Write('[');
+            if (_style.FrameStart != null)
+            {
+                using (WithColors(_style.FrameFgColor, _style.FrameBgColor))
+                {
+                    _stdOut.Write(_style.FrameStart.Value);
+                }
+            }
 
-            var progressBarWidth = Console.WindowWidth - PROGRESS_BAR_LABEL_WIDTH - 3 - 6;
+            var progressBarWidth = Console.WindowWidth - 1;
+            if (_style.FrameStart != null)
+            {
+                progressBarWidth--;
+            }
+            if (_style.FrameEnd != null)
+            {
+                progressBarWidth--;
+            }
+            if (_style.EnableLabel)
+            {
+                progressBarWidth -= _style.LabelWidth;
+                progressBarWidth -= 1;
+            }
+
+            if (_style.EnableProgress)
+            {
+                progressBarWidth -= 5;
+            }
 
             var fillWidth = (int)Math.Ceiling(progressBarWidth * _progress / 100f);
             var j = 0;
-            using (WithForeground(ConsoleColor.Cyan))
+            using (WithColors(_style.FillFgColor, _style.FillBgColor))
             {
                 for (; j < fillWidth; j++)
                 {
-                    _stdOut.Write('#');
+                    if (j == fillWidth - 1)
+                    {
+                        using (WithColors(_style.FillEndFgColor, _style.FillEndBgColor))
+                        {
+                            _stdOut.Write(_style.FillEnd);
+                        }
+                    }
+                    else
+                    {
+                        _stdOut.Write(_style.Fill);
+                    }
                 }
             }
-            for (; j < progressBarWidth; j++)
+
+            using (WithColors(_style.EmptyFgColor, _style.EmptyBgColor))
             {
-                _stdOut.Write(' ');
+                for (; j < progressBarWidth; j++)
+                {
+                    _stdOut.Write(_style.Empty);
+                }
             }
 
-            _stdOut.Write(']');
-            _stdOut.Write(' ');
-            using (WithForeground(ConsoleColor.Yellow))
+            if (_style.FrameEnd != null)
             {
-                _stdOut.Write("{0,3:D}%", _progress);
+                using (WithColors(_style.FrameFgColor, _style.FrameBgColor))
+                {
+                    _stdOut.Write(_style.FrameEnd.Value);
+                }
+            }
+
+            if (_style.EnableProgress)
+            {
+                using (WithColors(_style.ProgressFgColor, _style.ProgressBgColor))
+                {
+                    _stdOut.Write(' ');
+                    _stdOut.Write("{0,3:D}%", _progress);
+                }
             }
 
             Console.CursorVisible = isCursorVisible;

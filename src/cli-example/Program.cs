@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
@@ -12,7 +11,7 @@ namespace ITGlobal.CommandLine.Example
         private static INamedParameter<int> _count;
 
         public static int Main(string[] args)
-        {
+        {            
             return CLI.HandleErrors(() =>
             {
                 var app = CLI.Parser();

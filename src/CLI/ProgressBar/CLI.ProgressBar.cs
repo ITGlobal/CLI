@@ -14,6 +14,21 @@ namespace ITGlobal.CommandLine
         ///     A console process bar object
         /// </returns>
         [PublicAPI, NotNull]
-        public static IProgressBar ProgressBar() => new ProgressBar();
+        public static IProgressBar ProgressBar()
+            => new ProgressBar(ProgressBarStyle.Default);
+
+        /// <summary>
+        ///     Creates a progress bar
+        /// </summary>
+        /// <param name="style">
+        ///     Progress bar style
+        /// </param>
+        /// <returns>
+        ///     A console process bar object
+        /// </returns>
+        [PublicAPI, NotNull]
+        public static IProgressBar ProgressBar([NotNull] ProgressBarStyle style)
+            => new ProgressBar(style);
+        
     }
 }
