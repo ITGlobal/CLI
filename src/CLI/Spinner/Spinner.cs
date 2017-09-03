@@ -14,20 +14,23 @@ namespace ITGlobal.CommandLine
 
         private readonly object _consoleLock = new object();
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
-        
+
 #if !NET40
         private readonly Task _backgroundTask;
 #else
         private readonly Thread _backgroundThread;
-#endif          
+#endif
 
+        private readonly SpinnerStyle _style;
         private string _title;
+
         private int _index;
         private bool _shouldCleanLine = true;
 
-        public Spinner(string title)
+        public Spinner(string title, SpinnerStyle style)
         {
             _title = title;
+            _style = style;
 
             _stdOut = Console.Out;
             _stdErr = Console.Error;
@@ -111,12 +114,12 @@ namespace ITGlobal.CommandLine
                 {
                     DrawOnce();
 
-                    await Task.Delay(SPINNER_SLEEP_TIME, token);
+                    await Task.Delay(_style.AnimationInterval, token);
                     Interlocked.Increment(ref _index);
                 }
             }
             catch (OperationCanceledException) { }
-        }          
+        }
 #else
         private void RedrawWorker()
         {
@@ -125,7 +128,7 @@ namespace ITGlobal.CommandLine
             {
                 DrawOnce();
 
-                Thread.Sleep(SPINNER_SLEEP_TIME);
+                Thread.Sleep(_style.AnimationInterval);
                 Interlocked.Increment(ref _index);
             }
         }
@@ -135,7 +138,7 @@ namespace ITGlobal.CommandLine
         {
             var title = Interlocked.CompareExchange(ref _title, null, null);
             var index = Interlocked.CompareExchange(ref _index, 0, 0);
-            index = index % SPINNER_CHARS.Length;
+            index = index % _style.Glyphs.Length;
 
             lock (_consoleLock)
             {
@@ -143,15 +146,15 @@ namespace ITGlobal.CommandLine
                 Console.CursorVisible = false;
                 Console.CursorLeft = 0;
 
-                using (WithForeground(ConsoleColor.Cyan))
+                using (WithColors(_style.SpinnerFgColor, _style.SpinnerBgColor))
                 {
-                    _stdOut.Write(SPINNER_CHARS[index]);
+                    _stdOut.Write(_style.Glyphs[index]);
                 }
 
                 _stdOut.Write(' ');
                 var maxLabelWidth = Console.WindowWidth - 3;
                 var labelWidth = Math.Min(title.Length, maxLabelWidth);
-                using (WithForeground(ConsoleColor.Yellow))
+                using (WithColors(_style.TitleFgColor, _style.TitleBgColor))
                 {
                     var i = 0;
                     for (; i < labelWidth; i++)
