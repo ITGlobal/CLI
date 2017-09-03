@@ -13,7 +13,7 @@ namespace ITGlobal.CommandLine
         private readonly List<Command> _commands = new List<Command>();
 
         private readonly PositionalParameter<string> _commandNameParameter = 
-            new PositionalParameter<string>(0, "command");
+            (PositionalParameter<string>)new PositionalParameter<string>(0, "command").Hidden();
         private bool _isInitialized;
 
         private string _executableName;
@@ -144,14 +144,16 @@ namespace ITGlobal.CommandLine
                 _title,
                 _version,
                 _helpText,
-                from c in _commands select c.GetCommandInfo(from p in _parameters where p != _commandNameParameter select p),
-                from p in _parameters select p.GetParameterInfo()
+                from c in _commands
+                select c.GetCommandInfo(from p in _parameters where p != _commandNameParameter select p),
+                from p in _parameters
+                select p.GetParameterInfo()
             );
         }
 
-        public CommandInfo Usage(string commandName)
+        public CommandInfo Usage(string command)
         {
-            return Usage().Commands.FirstOrDefault(_ => _.Aliases.Contains(commandName));
+            return Usage().Commands.FirstOrDefault(_ => _.Aliases.Contains(command));
         }
 
         internal void PrintLogo()

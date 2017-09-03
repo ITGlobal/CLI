@@ -13,16 +13,40 @@ namespace ITGlobal.CommandLine
     [PublicAPI]
     public sealed class CommandInfo
     {
+        private readonly List<ParameterInfo> _globalParameters = new List<ParameterInfo>();
+        private readonly List<ParameterInfo> _commandParameters = new List<ParameterInfo>();
+        private readonly List<ParameterInfo> _visibleParameters = new List<ParameterInfo>();
+
         private CommandInfo(
             string name,
             string helpText,
             string[] aliases,
-            ParameterInfo[] parameters)
+            IEnumerable<ParameterInfo> globalParameters,
+            IEnumerable<ParameterInfo> commandParameters,
+            bool isHidden)
         {
             Name = name;
             HelpText = helpText ?? "";
             Aliases = aliases;
-            Parameters = parameters;
+            IsHidden = isHidden;
+
+            foreach (var parameter in globalParameters)
+            {
+                _globalParameters.Add(parameter);
+                if (!parameter.IsHidden)
+                {
+                    _visibleParameters.Add(parameter);
+                }
+            }
+
+            foreach (var parameter in commandParameters)
+            {
+                _commandParameters.Add(parameter);
+                if (!parameter.IsHidden)
+                {
+                    _visibleParameters.Add(parameter);
+                }
+            }
         }
 
         /// <summary>
@@ -46,32 +70,41 @@ namespace ITGlobal.CommandLine
 #else
         public IList<string> Aliases { get; }
 #endif
-        
+
 
         /// <summary>
         ///     Command's parameters. Also includes global parameters.
         /// </summary>
         [PublicAPI, NotNull]
 #if !NET40
-        public IReadOnlyList<ParameterInfo> Parameters { get; }
+        public IReadOnlyList<ParameterInfo> Parameters => _visibleParameters;
 #else
-        public IList<ParameterInfo> Parameters { get; }
+        public IList<ParameterInfo> Parameters => _visibleParameters;
 #endif
-        
+
+        /// <summary>
+        ///     Returns true for hidden commands
+        /// </summary>
+        [PublicAPI]
+        public bool IsHidden { get; }
 
         internal UsageInfo Parent { get; set; }
 
         internal static CommandInfo Create(
             string name,
             string helpText,
+            bool isHidden,
             IEnumerable<string> aliases,
-            IEnumerable<ParameterInfo> parameters)
+            IEnumerable<ParameterInfo> globalParameters,
+            IEnumerable<ParameterInfo> commandParameters)
         {
             return new CommandInfo(
                 name,
                 helpText,
                 aliases.ToArray(),
-                parameters.ToArray()
+                globalParameters,
+                commandParameters,
+                isHidden
             );
         }
 
@@ -80,7 +113,7 @@ namespace ITGlobal.CommandLine
         /// </summary>
         [PublicAPI]
         public void Print()
-        { 
+        {
             if (!string.IsNullOrEmpty(HelpText))
             {
                 Console.WriteLine(HelpText);
@@ -89,30 +122,42 @@ namespace ITGlobal.CommandLine
 
             PrintCommandLineExample();
 
-            if (Parameters.Count > 0)
+            if (_visibleParameters.Count > 0)
             {
                 Console.WriteLine();
-                ParameterInfo.PrintTable(Parameters);
+                ParameterInfo.PrintTable(_visibleParameters);
             }
-			
+
             Console.WriteLine();
         }
 
         private void PrintCommandLineExample()
         {
             Console.WriteLine(Text.Usage);
-            Console.Write(Parent.ExecutableName);
-            Console.Write(' ');
-            Console.Write(Aliases[0]);
+            using (WithForeground(ConsoleColor.Yellow))
+            {
+                Console.Write(Parent.ExecutableName);
+            }
             Console.Write(' ');
 
-            foreach (var param in Parameters.Where(_ => _.IsPositional).OrderBy(_ => _.Position.Value))
+            foreach (var param in _globalParameters.Where(_ => !_.IsPositional))
             {
                 param.PrintInline();
                 Console.Write(' ');
             }
 
-            foreach (var param in Parameters.Where(_ => !_.IsPositional))
+            Console.Write(Aliases[0]);
+            Console.Write(' ');
+
+            foreach (var param in _commandParameters.Where(_ => !_.IsPositional))
+            {
+                param.PrintInline();
+                Console.Write(' ');
+            }
+
+            foreach (var param in _globalParameters.Concat(_commandParameters)
+                .Where(_ => _.IsPositional)
+                .OrderBy(_ => _.Position.Value))
             {
                 param.PrintInline();
                 Console.Write(' ');
@@ -126,7 +171,7 @@ namespace ITGlobal.CommandLine
             Table(commands, table =>
             {
                 table.PrintHeader(false).PrintTitle().Title(Text.Commands);
-                table.Column("Command", _ => "  " + string.Join("|", _.Aliases), fg: _ => ConsoleColor.Cyan);
+                table.Column("Command", _ => "  " + string.Join(", ", _.Aliases), fg: _ => ConsoleColor.Cyan);
                 table.Column("Description", _ => _.HelpText);
             });
         }

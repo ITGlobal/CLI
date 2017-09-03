@@ -43,6 +43,12 @@ namespace ITGlobal.CommandLine
         IPositionalParameter<T> HelpText([NotNull] string text);
 
         /// <summary>
+        ///     Marks parameter as hidden (won't be shown in usage)
+        /// </summary>
+        [PublicAPI, NotNull]
+        IPositionalParameter<T> Hidden(bool hidden = true);
+
+        /// <summary>
         ///     Sets a default value for the parameter
         /// </summary>
         /// <param name="value">

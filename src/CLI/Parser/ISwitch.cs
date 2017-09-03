@@ -44,5 +44,11 @@ namespace ITGlobal.CommandLine
         /// </returns>
         [PublicAPI, NotNull]
         ISwitch HelpText([NotNull] string text);
+
+        /// <summary>
+        ///     Marks switch as hidden (won't be shown in usage)
+        /// </summary>
+        [PublicAPI, NotNull]
+        ISwitch Hidden(bool hidden = true);
     }
 }

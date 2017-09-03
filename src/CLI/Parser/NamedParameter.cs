@@ -40,6 +40,12 @@ namespace ITGlobal.CommandLine
             return this;
         }
 
+        public INamedParameter<T> Hidden(bool hidden = true)
+        {
+            IsHidden = hidden;
+            return this;
+        }
+
         public INamedParameter<T> DefaultValue(T value)
         {
             _default = value;
@@ -61,6 +67,7 @@ namespace ITGlobal.CommandLine
 
         string IParameterParser.Name => _name;
         string[] IParameterParser.Aliases => _aliases.ToArray();
+        public bool IsHidden { get; private set; }
 
         void IParameterParser.Reset()
         {
@@ -101,6 +108,7 @@ namespace ITGlobal.CommandLine
             }
         }
 
-        ParameterInfo IParameterParser.GetParameterInfo() => ParameterInfo.NamedParameter(_name, _helpText, _aliases, _isRequired);
+        ParameterInfo IParameterParser.GetParameterInfo()
+            => ParameterInfo.NamedParameter(_name, _helpText, _aliases, _isRequired, IsHidden);
     }
 }

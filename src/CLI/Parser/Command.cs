@@ -61,19 +61,30 @@ namespace ITGlobal.CommandLine
             return this;
         }
 
+        public ICommand Hidden(bool hidden = true)
+        {
+            IsHidden = hidden;
+            return this;
+        }
+
         public bool MatchesAlias(string name) => _aliases.Contains(name);
 
         public string Name => _name;
         public string[] Aliases => _aliases.ToArray();
         public bool SuppressValidation { get; set; }
+        public bool IsHidden { get; private set; }
 
         public CommandInfo GetCommandInfo(IEnumerable<IParameterParser> globalParameters)
         {
             return CommandInfo.Create(
                 _name,
                 _helpText,
+                IsHidden,
                 _aliases,
-                from p in globalParameters.Concat(_parameters)
+                from p in globalParameters
+                orderby p.Name
+                select p.GetParameterInfo(),
+                from p in _parameters
                 orderby p.Name
                 select p.GetParameterInfo()
             );

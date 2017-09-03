@@ -21,7 +21,8 @@ namespace ITGlobal.CommandLine
             string[] aliases = null,
             int? position = null,
             bool isRequired = false,
-            bool isSwitch = false)
+            bool isSwitch = false,
+            bool isHidden = false)
         {
             Name = name;
             HelpText = helpText ?? "";
@@ -29,6 +30,7 @@ namespace ITGlobal.CommandLine
             Position = position;
             IsRequired = isRequired;
             IsSwitch = isSwitch;
+            IsHidden = isHidden;
         }
 
         /// <summary>
@@ -83,12 +85,20 @@ namespace ITGlobal.CommandLine
         [PublicAPI]
         public bool IsSwitch { get; }
 
-        internal static ParameterInfo Switch(string name, IEnumerable<string> aliases, string helpText)
-            => new ParameterInfo(name, helpText, aliases.ToArray(), isSwitch: true);
-        internal static ParameterInfo NamedParameter(string name, string helpText, IEnumerable<string> aliases, bool isRequired)
-            => new ParameterInfo(name, helpText, aliases.ToArray(), isRequired: isRequired);
-        internal static ParameterInfo PositionalParameter(string name, string helpText, int position, bool isRequired)
-            => new ParameterInfo(name, helpText, position: position, isRequired: isRequired);
+        /// <summary>
+        ///     Returns true for hidden parameters
+        /// </summary>
+        [PublicAPI]
+        public bool IsHidden { get; }
+
+        internal static ParameterInfo Switch(string name, IEnumerable<string> aliases, string helpText, bool isHidden)
+            => new ParameterInfo(name, helpText, aliases.ToArray(), isSwitch: true, isHidden: isHidden);
+
+        internal static ParameterInfo NamedParameter(string name, string helpText, IEnumerable<string> aliases, bool isRequired, bool isHidden)
+            => new ParameterInfo(name, helpText, aliases.ToArray(), isRequired: isRequired, isHidden: isHidden);
+
+        internal static ParameterInfo PositionalParameter(string name, string helpText, int position, bool isRequired, bool isHidden)
+            => new ParameterInfo(name, helpText, position: position, isRequired: isRequired, isHidden: isHidden);
 
         internal void PrintInline()
         {
@@ -100,6 +110,7 @@ namespace ITGlobal.CommandLine
             }
             else
             {
+                Console.Write('<');
                 color = WithForeground(ConsoleColor.Magenta);
             }
 
@@ -111,7 +122,7 @@ namespace ITGlobal.CommandLine
                 }
                 else
                 {
-                    Console.Write(string.Join("|", Aliases));
+                    Console.Write(string.Join(" | ", Aliases));
                     if(!IsSwitch)
                     {
                         Console.Write(' ');
@@ -125,6 +136,10 @@ namespace ITGlobal.CommandLine
             if (!IsRequired)
             {
                 Console.Write(']');
+            }
+            else
+            {
+                Console.Write('>');
             }
         }
 
@@ -145,7 +160,7 @@ namespace ITGlobal.CommandLine
             {
                 return "  " + parameter.Name;
             }
-            return "  " + string.Join("|", parameter.Aliases);
+            return "  " + string.Join(", ", parameter.Aliases);
         }
     }
 }

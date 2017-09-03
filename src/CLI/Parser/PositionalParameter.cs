@@ -33,6 +33,12 @@ namespace ITGlobal.CommandLine
             return this;
         }
 
+        public IPositionalParameter<T> Hidden(bool hidden = true)
+        {
+            IsHidden = hidden;
+            return this;
+        }
+
         public IPositionalParameter<T> DefaultValue(T value)
         {
             _default = value;
@@ -54,6 +60,7 @@ namespace ITGlobal.CommandLine
 
         string IParameterParser.Name => _name;
         string[] IParameterParser.Aliases => EmptyArray;
+        public bool IsHidden { get; private set; }
 
         void IParameterParser.Reset()
         {
@@ -85,6 +92,7 @@ namespace ITGlobal.CommandLine
             }
         }
 
-        ParameterInfo IParameterParser.GetParameterInfo() => ParameterInfo.PositionalParameter(_name, _helpText, _index, _isRequired);
+        ParameterInfo IParameterParser.GetParameterInfo()
+            => ParameterInfo.PositionalParameter(_name, _helpText, _index, _isRequired, IsHidden);
     }
 }

@@ -34,8 +34,15 @@ namespace ITGlobal.CommandLine
             return this;
         }
 
+        public ISwitch Hidden(bool hidden = true)
+        {
+            IsHidden = hidden;
+            return this;
+        }
+
         string IParameterParser.Name => _name;
         string[] IParameterParser.Aliases => _aliases.ToArray();
+        public bool IsHidden { get; private set; }
 
         void IParameterParser.Reset() => IsSet = false;
 
@@ -55,6 +62,7 @@ namespace ITGlobal.CommandLine
         ParameterParserResult IParameterParser.TryConsumeAt(string[] args, int index) => ParameterParserResult.NotConsumed;
 
         void IParameterParser.Validate(IList<string> errors) { }
-        ParameterInfo IParameterParser.GetParameterInfo() => ParameterInfo.Switch(_name, _aliases, _helpText);
+        ParameterInfo IParameterParser.GetParameterInfo()
+            => ParameterInfo.Switch(_name, _aliases, _helpText, IsHidden);
     }
 }

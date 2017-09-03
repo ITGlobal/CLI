@@ -89,5 +89,11 @@ namespace ITGlobal.CommandLine
         /// </returns>
         [PublicAPI, NotNull]
         ICommand HelpText([NotNull] string text);
+
+        /// <summary>
+        ///     Marks command as hidden (won't be shown in usage)
+        /// </summary>
+        [PublicAPI, NotNull]
+        ICommand Hidden(bool hidden = true);
     }
 }

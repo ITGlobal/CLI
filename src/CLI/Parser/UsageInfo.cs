@@ -14,13 +14,16 @@ namespace ITGlobal.CommandLine
     [PublicAPI]
     public sealed class UsageInfo
     {
+        private readonly List<ParameterInfo> _allParameters = new List<ParameterInfo>();
+        private readonly List<ParameterInfo> _visibleParameters = new List<ParameterInfo>();
+
         private UsageInfo(
             string executableName,
             string title,
             string version,
             string helpText,
             CommandInfo[] commands,
-            ParameterInfo[] parameters)
+            IEnumerable<ParameterInfo> parameters)
         {
             ExecutableName = executableName ?? Process.GetCurrentProcess().ProcessName;
 
@@ -28,11 +31,19 @@ namespace ITGlobal.CommandLine
             Version = version ?? "";
             HelpText = helpText ?? "";
             Commands = commands;
-            Parameters = parameters;
 
             foreach (var command in commands)
             {
                 command.Parent = this;
+            }
+
+            foreach(var parameter in parameters)
+            {
+                _allParameters.Add(parameter);
+                if(!parameter.IsHidden)
+                {
+                    _visibleParameters.Add(parameter);
+                }
             }
         }
 
@@ -71,17 +82,17 @@ namespace ITGlobal.CommandLine
 #else
         public IList<CommandInfo> Commands { get; }
 #endif
-        
+
 
         /// <summary>
         ///     Gets a list of defined global parameters
         /// </summary>
         [PublicAPI, NotNull]
-       
+
 #if !NET40
-        public IReadOnlyList<ParameterInfo> Parameters { get; }
+        public IReadOnlyList<ParameterInfo> Parameters => _visibleParameters;
 #else
-        public IList<ParameterInfo> Parameters { get; }
+        public IList<ParameterInfo> Parameters => _visibleParameters;
 #endif
 
         internal static UsageInfo Create(
@@ -97,8 +108,8 @@ namespace ITGlobal.CommandLine
                 title,
                 version,
                 helpText,
-                commands.ToArray(),
-                parameters.ToArray()
+                commands.Where(_ => !_.IsHidden).ToArray(),
+                parameters
             );
         }
 
@@ -115,10 +126,10 @@ namespace ITGlobal.CommandLine
 
             PrintCommandLineExample();
 
-            if (Parameters.Count > 0)
+            if (_visibleParameters.Count > 0)
             {
                 Console.WriteLine();
-                ParameterInfo.PrintTable(Parameters);
+                ParameterInfo.PrintTable(_visibleParameters);
             }
 
             if (HasCommands)
@@ -130,16 +141,19 @@ namespace ITGlobal.CommandLine
         private void PrintCommandLineExample()
         {
             Console.WriteLine(Text.Usage);
-            Console.Write(ExecutableName);
+            using (WithForeground(ConsoleColor.Yellow))
+            {
+                Console.Write(ExecutableName);
+            }
             Console.Write(' ');
 
-            foreach (var param in Parameters.Where(_ => _.IsPositional).OrderBy(_ => _.Position.Value))
+            foreach (var param in _allParameters.Where(_ => !_.IsPositional))
             {
                 param.PrintInline();
                 Console.Write(' ');
             }
 
-            foreach (var param in Parameters.Where(_ => !_.IsPositional))
+            foreach (var param in _allParameters.Where(_ => _.IsPositional).OrderBy(_ => _.Position.Value))
             {
                 param.PrintInline();
                 Console.Write(' ');
