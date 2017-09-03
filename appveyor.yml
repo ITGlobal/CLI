@@ -1,5 +1,9 @@
 version: 1.0.{build}
 configuration: Release
+skip_tags: true
+image: Visual Studio 2017
+build:
+  verbosity: minimal
 environment:
   DOTNET_CLI_TELEMETRY_OPTOUT: 1
 cache: '%USERPROFILE%\.nuget\packages'
@@ -13,3 +17,10 @@ deploy:
   api_key:
     secure: r5vF3QENzP28+dU6gvmD7Sqbdt5Ti43yhuSye3O7TJxKT+6vuponJ7tVwkGkotH7
   skip_symbols: true
+notifications:
+- provider: Slack
+  incoming_webhook:
+     secure: a7TE9Xu2mdPphDJSk5r/BQn+2npcVDiJIrzR8tYselHQvWmSleO8NGdGVaLAxVw6yhVyzQh2IT9rEDXYssazCgdoW96THTdfjK2X2e0iLzk=
+  on_build_success: true
+  on_build_failure: true
+  on_build_status_changed: false
