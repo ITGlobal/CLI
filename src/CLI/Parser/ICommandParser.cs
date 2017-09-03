@@ -37,7 +37,14 @@ namespace ITGlobal.CommandLine
         ///     Suppresses application logo
         /// </summary>
         [PublicAPI, NotNull]
-        ICommandParser SuppressLogo(bool suppress);
+        ICommandParser SuppressLogo(bool suppress = true);
+
+        /// <summary>
+        ///     Enables 'strict' mode.
+        ///     In this mode parser will not allow any unconsumed arguments.
+        /// </summary>
+        [PublicAPI, NotNull]
+        ICommandParser StrictMode(bool enable = true);
 
         /// <summary>
         ///     Defines a command line switch
@@ -83,7 +90,7 @@ namespace ITGlobal.CommandLine
         /// </returns>
         [PublicAPI, NotNull]
         IPositionalParameter<T> Parameter<T>(int index, [NotNull] string name);
-        
+
         /// <summary>
         ///     Defines a command
         /// </summary>

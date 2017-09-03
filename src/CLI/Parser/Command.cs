@@ -93,11 +93,12 @@ namespace ITGlobal.CommandLine
         public ICommandParserResult Run(CommandParser parser, CommandLineInfo commandLine)
         {
             commandLine.Parse(_parameters);
+            commandLine.AddFreeArguments();
+
             if (!SuppressValidation)
             {
                 commandLine.ThrowIfNotValid();
             }
-            commandLine.AddFreeArguments();
 
             return new CommandParserResult(parser, _handler, commandLine);
         }

@@ -6,11 +6,13 @@ namespace ITGlobal.CommandLine
 {
     internal sealed class CommandLineInfo
     {
+        private readonly bool _strictMode;
         private string[] _args;
 
-        public CommandLineInfo(string[] args)
+        public CommandLineInfo(string[] args, bool strictMode)
         {
             _args = args;
+            _strictMode = strictMode;
         }
 
         public List<string> UnconsumedArgs { get; } = new List<string>();
@@ -100,6 +102,14 @@ namespace ITGlobal.CommandLine
 
         public void ThrowIfNotValid()
         {
+            if (_strictMode)
+            {
+                foreach (var arg in UnconsumedArgs)
+                {
+                    Errors.Add($"Unknown parameter: \"{arg}\"");
+                }
+            }
+
             if (Errors.Count > 0)
             {
                 throw new CommandLineValidationException(Errors.ToArray());
@@ -114,7 +124,7 @@ namespace ITGlobal.CommandLine
                 {
                     UnconsumedArgs.Add(arg);
                 }
-            }
+            }           
         }
     }
 }

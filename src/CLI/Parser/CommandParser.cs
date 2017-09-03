@@ -21,6 +21,7 @@ namespace ITGlobal.CommandLine
         private string _version;
         private string _helpText;
         private bool _suppressLogo;
+        private bool _strictMode;
         private CommandHandler _handler = _ => 0;
         private readonly List<CommandHook> _hooks = new List<CommandHook>();
 
@@ -58,6 +59,12 @@ namespace ITGlobal.CommandLine
         public ICommandParser SuppressLogo(bool suppress)
         {
             _suppressLogo = suppress;
+            return this;
+        }
+
+        public ICommandParser StrictMode(bool enable)
+        {
+            _strictMode = enable;
             return this;
         }
 
@@ -108,7 +115,7 @@ namespace ITGlobal.CommandLine
             {
                 Initialize();
 
-                var commandLine = new CommandLineInfo(args);
+                var commandLine = new CommandLineInfo(args, _strictMode);
                 commandLine.Parse(_parameters);
 
                 if (_commands.Count <= 0 || !_commandNameParameter.IsSet)
