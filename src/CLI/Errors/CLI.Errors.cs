@@ -39,7 +39,7 @@ namespace ITGlobal.CommandLine
             }
             catch (CommandLineException e)
             {
-                PrintException(e);
+                PrintExceptionImpl(e);
 #if !NET40
                 return e.HResult;
 #else
@@ -49,7 +49,7 @@ namespace ITGlobal.CommandLine
             }
             catch (Exception e)
             {
-                PrintException(e);
+                PrintExceptionImpl(e);
 #if !NET40
                 return e.HResult;
 #else
@@ -99,13 +99,13 @@ namespace ITGlobal.CommandLine
             }
             catch (CommandLineException e)
             {
-                PrintException(e);
+                PrintExceptionImpl(e);
                 return e.HResult;
             }
             catch (Exception e)
             {
-                PrintException(e);
-                return e.HResult;    
+                PrintExceptionImpl(e);
+                return e.HResult;
             }
         }
 
@@ -123,11 +123,11 @@ namespace ITGlobal.CommandLine
                     var commandLineException = task.Exception.InnerException as CommandLineException;
                     if(commandLineException != null)
                     {
-                         PrintException(commandLineException);
+                         PrintExceptionImpl(commandLineException);
                     }
                     else
                     {
-                       PrintException(task.Exception.InnerException);
+                       PrintExceptionImpl(task.Exception.InnerException);
                     }
                     
                     return -1;
@@ -138,7 +138,39 @@ namespace ITGlobal.CommandLine
         }
 #endif
 
-        private static void PrintException(CommandLineException e)
+        /// <summary>
+        ///     Pretty-prints an exception into console
+        /// </summary>
+        public static void PrintException([NotNull] Exception exception)
+        {
+            using (WithColors(ConsoleColor.White, ConsoleColor.DarkRed))
+            {
+                var e = exception;
+                while (e != null)
+                {
+                    if (e != exception)
+                    {
+                        Console.WriteLine("--- Inner Exception ---");
+                    }
+
+                    switch (e)
+                    {
+                        case CommandLineException ex:
+                            Console.WriteLine(ex.Message);
+                            break;
+
+                        default:
+                            Console.WriteLine($"[{e.GetType().FullName}] {e.Message}");
+                            Console.WriteLine(e.StackTrace);
+                            break;
+                    }
+
+                    e = e.InnerException;
+                }
+            }
+        }
+
+        private static void PrintExceptionImpl(CommandLineException e)
         {
             using (WithForeground(ConsoleColor.Red))
             {
@@ -146,7 +178,7 @@ namespace ITGlobal.CommandLine
             }
         }
 
-        private static void PrintException(Exception e)
+        private static void PrintExceptionImpl(Exception e)
         {
             using (WithColors(ConsoleColor.White, ConsoleColor.DarkRed))
             {
