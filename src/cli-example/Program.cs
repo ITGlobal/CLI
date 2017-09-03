@@ -9,6 +9,7 @@ namespace ITGlobal.CommandLine.Example
     {
         private static ISwitch _verbose;
         private static INamedParameter<int> _count;
+        private static ISwitch _paged;
 
         public static int Main(string[] args)
         {            
@@ -24,6 +25,7 @@ namespace ITGlobal.CommandLine.Example
 
                 var tableCmd = app.Command("table");
                 _count = tableCmd.Parameter<int>("n").DefaultValue(2).HelpText("Row count");
+                _paged = tableCmd.Switch("p").HelpText("Enable paging");
                 tableCmd.HelpText("Run a 'table' demo");
                 tableCmd.Handler(TableDemo);
 
@@ -64,6 +66,7 @@ namespace ITGlobal.CommandLine.Example
                 table =>
                 {
                     table.Title("XYZ data");
+                    table.EnablePaging(_paged.IsSet);
                     table.Column("X", _ => _.X.ToString(), _ => ConsoleColor.Red);
                     table.Column("Y", _ => _.Y.ToString(), _ => ConsoleColor.Green);
                     table.Column("Z", _ => _.Z.ToString(), _ => ConsoleColor.Blue);

@@ -2,7 +2,7 @@
   "profiles": {
     "ITGlobal.CLI.Example": {
       "commandName": "Project",
-      "commandLineArgs": "progress"
+      "commandLineArgs": "table -n 105 -p"
     }
   }
 }
