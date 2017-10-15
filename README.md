@@ -5,6 +5,16 @@
 
 This library is a set of various utilities to build command line application in C#.
 
+## Contents
+
+* [Cross-platform](#cross-platform)
+* [Easy color management](#easy-color-management)
+* [Graceful Ctrl+C handlers](#graceful-ctrlc-handlers)
+* [Unified error handling](#unified-error-handling)
+* [Command line parser](#command-line-parser)
+* [Progress Bars and Spinners](#progress-bars-and-spinners)
+* [Formatted tables](#formatted-tables)
+
 ## Features
 
 ### Cross-platform
@@ -68,14 +78,6 @@ await CLI.HandleErrorsAsync(async () =>
     throw new Exception("This exception will be pretty-printed to console");
 });
 ```
-
-### Localizable text resources
-
-```csharp
-CLI.UseLocalizedText(new MyLocalizedText());
-```
-
-English and russian localizations are included out of the box.
 
 ### Command line parser
 
@@ -174,6 +176,14 @@ Parser supports:
 * both global and command-scoped parameters,
 * required parameter validation,
 * default parameter values.
+
+#### Localizable text resources
+
+```csharp
+CLI.UseLocalizedText(new MyLocalizedText());
+```
+
+English and russian localizations are included out of the box.
 
 ### Progress Bars and Spinners
 
