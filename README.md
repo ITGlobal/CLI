@@ -36,7 +36,7 @@ using(CLI.WithForeground(ConsoleColor.Red))
 
     using(CLI.WithForeground(ConsoleColor.White))
     {
-        using(CLI.WithForegWithBackgroundround(ConsoleColor.Red))
+        using(CLI.WithBackground(ConsoleColor.Red))
         {
             Console.WriteLine("This text will be written in WHITE font on RED background");
         }
