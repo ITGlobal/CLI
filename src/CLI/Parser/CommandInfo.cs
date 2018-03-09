@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ITGlobal.CommandLine.Internals;
+using ITGlobal.CommandLine.Table;
 using JetBrains.Annotations;
 using static ITGlobal.CommandLine.CLI;
 
@@ -134,7 +136,7 @@ namespace ITGlobal.CommandLine
         private void PrintCommandLineExample()
         {
             Console.WriteLine(Text.Usage);
-            using (WithForeground(ConsoleColor.Yellow))
+            using (Terminal.Stdout.WithForeground(ConsoleColor.Yellow))
             {
                 Console.Write(Parent.ExecutableName);
             }
@@ -168,12 +170,12 @@ namespace ITGlobal.CommandLine
 
         internal static void PrintTable(IEnumerable<CommandInfo> commands)
         {
-            Table(commands, table =>
-            {
-                table.PrintHeader(false).PrintTitle().Title(Text.Commands);
-                table.Column("Command", _ => "  " + string.Join(", ", _.Aliases), fg: _ => ConsoleColor.Cyan);
-                table.Column("Description", _ => _.HelpText);
-            });
+            Terminal.Stdout.WriteLine(Text.Commands.ToUpperInvariant().WithForeground(ConsoleColor.Cyan));
+
+            var table = TerminalTable.Create(commands, TableRenderer.Plain(drawHeaders: false));
+            table.Column("Command", _ => "  " + string.Join(", ", _.Aliases), fg: _ => ConsoleColor.Cyan);
+            table.Column("Description", _ => _.HelpText);
+            table.Draw();
         }
     }
 }

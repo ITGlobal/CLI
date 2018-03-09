@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ITGlobal.CommandLine.Internals;
+using ITGlobal.CommandLine.Table;
 using JetBrains.Annotations;
 using static ITGlobal.CommandLine.CLI;
 
@@ -106,12 +108,12 @@ namespace ITGlobal.CommandLine
             if (!IsRequired)
             {
                 Console.Write('[');
-                color = WithForeground(ConsoleColor.White);
+                color = Terminal.Stdout.WithForeground(ConsoleColor.White);
             }
             else
             {
                 Console.Write('<');
-                color = WithForeground(ConsoleColor.Magenta);
+                color = Terminal.Stdout.WithForeground(ConsoleColor.Magenta);
             }
 
             using (color)
@@ -145,13 +147,15 @@ namespace ITGlobal.CommandLine
 
         internal static void PrintTable(IEnumerable<ParameterInfo> parameters)
         {
-            Table(parameters, table =>
-            {
-                table.PrintHeader(false).PrintTitle().Title(Text.Parameters);
-                table.Column("Parameter", GetParameterNameOrAliases, fg: _ => ConsoleColor.Cyan);
-                table.Column("Description", _ => _.HelpText);
-                table.Column("Required", _ => _.IsRequired ? Text.RequiredParameter : "");
-            });
+            Terminal.Stdout.WriteLine(Text.Parameters.ToUpperInvariant().WithForeground(ConsoleColor.Cyan));
+
+            var table = TerminalTable.Create(parameters, TableRenderer.Plain(drawHeaders: false));
+            table.Column("Command", _ => "  " + string.Join(", ", _.Aliases), fg: _ => ConsoleColor.Cyan);
+            table.Column("Description", _ => _.HelpText);
+            table.Column("Parameter", GetParameterNameOrAliases, fg: _ => ConsoleColor.Cyan);
+            table.Column("Description", _ => _.HelpText);
+            table.Column("Required", _ => _.IsRequired ? Text.RequiredParameter : "");
+            table.Draw();
         }
 
         private static string GetParameterNameOrAliases(ParameterInfo parameter)

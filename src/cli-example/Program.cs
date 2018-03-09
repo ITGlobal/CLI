@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
+using ITGlobal.CommandLine.Errors;
+using ITGlobal.CommandLine.ProgressBars;
+using ITGlobal.CommandLine.Spinners;
+using ITGlobal.CommandLine.Table;
 
 namespace ITGlobal.CommandLine.Example
 {
@@ -12,15 +16,15 @@ namespace ITGlobal.CommandLine.Example
         private static ISwitch _paged;
 
         public static int Main(string[] args)
-        {            
-            return CLI.HandleErrors(() =>
+        {
+            return TerminalErrorHandler.Handle(() =>
             {
                 var app = CLI.Parser();
 
                 app.ExecutableName("cli-example");
                 app.FromAssembly(typeof(Program).GetTypeInfo().Assembly);
                 app.HelpText("Demo application for IT Global CLI");
-                
+
                 _verbose = app.Switch("v").Alias("verbose").HelpText("Enable vesbose output. This is a global switch");
 
                 var tableCmd = app.Command("table");
@@ -45,7 +49,7 @@ namespace ITGlobal.CommandLine.Example
 
                 return app.Parse(args).Run();
             });
-        }        
+        }
 
         struct Xyz
         {
@@ -53,39 +57,35 @@ namespace ITGlobal.CommandLine.Example
         }
 
         private static int TableDemo(string[] args)
-        {            
+        {
             var n = _count.Value;
             var data = new List<Xyz>();
             for (var x = 0; x <= n; x++)
             {
-                data.Add(new Xyz {X = x, Y = x, Z = x});
+                data.Add(new Xyz { X = x, Y = x, Z = x });
             }
 
-            CLI.Table(
-                data,
-                table =>
-                {
-                    table.Title("XYZ data");
-                    table.EnablePaging(_paged.IsSet);
-                    table.Column("Value of X parameter", _ => _.X.ToString(), _ => ConsoleColor.Red);
-                    table.Column("Value of Y parameter", _ => _.Y.ToString(), _ => ConsoleColor.Green);
-                    table.Column("Value of Z parameter", _ => _.Z.ToString(), _ => ConsoleColor.Blue);
-                });
+            var table = TerminalTable.Create(data, _paged.IsSet? TableRenderer.Paged() : null);
+
+            table.Column("Value of X parameter", _ => _.X.ToString(), _ => ConsoleColor.Red);
+            table.Column("Value of Y parameter", _ => _.Y.ToString(), _ => ConsoleColor.Green);
+            table.Column("Value of Z parameter", _ => _.Z.ToString(), _ => ConsoleColor.Blue);
+            table.Draw();
 
             return 0;
         }
 
         private static int ProgressBarDemo(string[] args)
         {
-            using (var ctrlC = CLI.CtrlC())
-            {                
+            using (var ctrlC = Terminal.Current.AttachCtrlCInterceptor())
+            {
                 ctrlC.CancellationToken.Register(() =>
                 {
                     Console.WriteLine("Cancelled!");
                 });
                 Task.Run(async () =>
                 {
-                    using (var progressBar = CLI.ProgressBar())
+                    using (var progressBar = TerminalProgressBar.Create())
                     {
                         var descr = new[] { "preparing", "fetching", "pulling", "pushing" };
                         while (true)
@@ -118,7 +118,7 @@ namespace ITGlobal.CommandLine.Example
 
         private static int SpinnerDemo(string[] args)
         {
-            using (var ctrlC = CLI.CtrlC())
+            using (var ctrlC = Terminal.Current.AttachCtrlCInterceptor())
             {
                 ctrlC.CancellationToken.Register(() =>
                 {
@@ -126,7 +126,7 @@ namespace ITGlobal.CommandLine.Example
                 });
                 Task.Run(async () =>
                 {
-                    using (var spinner = CLI.Spinner(""))
+                    using (var spinner = TerminalSpinner.Create())
                     {
                         var descr = new[] { "preparing", "fetching", "pulling", "pushing" };
                         while (true)

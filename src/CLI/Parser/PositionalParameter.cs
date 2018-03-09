@@ -59,7 +59,11 @@ namespace ITGlobal.CommandLine
         }
 
         string IParameterParser.Name => _name;
-        string[] IParameterParser.Aliases => EmptyArray;
+#if NET40 || NET45
+        string[] IParameterParser.Aliases { get; } = new string[0];
+#else
+        string[] IParameterParser.Aliases => Array.Empty<string>();
+#endif
         public bool IsHidden { get; private set; }
 
         void IParameterParser.Reset()

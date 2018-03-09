@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using ITGlobal.CommandLine.Internals;
 using JetBrains.Annotations;
 using static ITGlobal.CommandLine.CLI;
 
@@ -141,7 +142,7 @@ namespace ITGlobal.CommandLine
         private void PrintCommandLineExample()
         {
             Console.WriteLine(Text.Usage);
-            using (WithForeground(ConsoleColor.Yellow))
+            using (Terminal.Stdout.WithForeground(ConsoleColor.Yellow))
             {
                 Console.Write(ExecutableName);
             }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using ITGlobal.CommandLine.Errors;
 
 namespace ITGlobal.CommandLine.GitExample
 {
@@ -54,7 +55,7 @@ namespace ITGlobal.CommandLine.GitExample
             app.HelpSwitch();
 
             // Parse command line and execute command
-            return CLI.HandleErrors(() => app.Parse(args).Run());
+            return TerminalErrorHandler.Handle(() => app.Parse(args).Run());
         }
 
         private static void CloneCommand(ICommandParser app)

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ITGlobal.CommandLine.Internals;
 using JetBrains.Annotations;
 using static ITGlobal.CommandLine.CLI;
 
@@ -185,14 +186,14 @@ namespace ITGlobal.CommandLine
         {
             if (!_suppressLogo)
             {
-                using (WithForeground(ConsoleColor.Cyan))
+                using (Terminal.Stdout.WithForeground(ConsoleColor.Cyan))
                 {
                     Console.Write(_title);
                 }
                 if (!string.IsNullOrEmpty(_version))
                 {
                     Console.Write(" (");
-                    using (WithForeground(ConsoleColor.Yellow))
+                    using (Terminal.Stdout.WithForeground(ConsoleColor.Yellow))
                     {
                         Console.Write(_version);
                     }

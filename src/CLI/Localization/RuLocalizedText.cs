@@ -12,8 +12,6 @@ namespace ITGlobal.CommandLine
         public override string RequiredParameter => "(Обязателен)";
         public override string ShowHelp => "Показать справку";
         public override string RequiredParameterIsNotSet => "Параметр '{0}' не был задан";
-        public override string TableNextPageText => "--- Следующая страница ---";
         public override string UnknownCommand => "Команда '{0}' неизвестна";
-        public override string Error => "Ошибка!";
     }
 }

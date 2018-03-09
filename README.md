@@ -30,18 +30,34 @@ It has no external dependencies and may run on Windows, Linux or MacOS.
 ### Easy color management
 
 ```csharp
-using(CLI.WithForeground(ConsoleColor.Red))
-{
-    Console.WriteLine("This text will be written in RED font on default background");
+Terminal.Stdout.WriteLine(
+    "This text will be written in RED font on default background"
+        .WithForeground(ConsoleColor.Red)
+);
 
-    using(CLI.WithForeground(ConsoleColor.White))
+Terminal.Stdout.WriteLine(
+    "This text will be written in WHITE font on RED background"
+        .WithForeground(ConsoleColor.White)
+        .WithBackground(ConsoleColor.Red)
+);
+
+Terminal.Stdout.WriteLine(
+    "And this text will be written in WHITE font on default background"
+        .WithForeground(ConsoleColor.White)
+);
+
+using(Terminal.Stdout.WithForeground(ConsoleColor.Red))
+{
+    Terminal.Stdout.WriteLine("This text will be written in RED font on default background");
+
+    using(Terminal.Stdout.WithForeground(ConsoleColor.White))
     {
-        using(CLI.WithBackground(ConsoleColor.Red))
+        using(Terminal.Stdout.WithBackground(ConsoleColor.Red))
         {
-            Console.WriteLine("This text will be written in WHITE font on RED background");
+            Terminal.Stdout.WriteLine("This text will be written in WHITE font on RED background");
         }
 
-        Console.WriteLine("And this text will be written in WHITE font on default background");
+        Terminal.Stdout.WriteLine("And this text will be written in WHITE font on default background");
     }
 }
 ```
@@ -49,7 +65,7 @@ using(CLI.WithForeground(ConsoleColor.Red))
 ### Graceful Ctrl+C handlers
 
 ```csharp
-using(var ctrlC = CLI.CtrlC())
+using(var ctrlC = Terminal.Current.AttachCtrlCInterceptor())
 {
     var token = ctrlC.CancellationToken;
     token.Register(() => Console.WriteLine("This is a callback on a CancellationToken"));
@@ -63,7 +79,7 @@ using(var ctrlC = CLI.CtrlC())
 ### Unified error handling
 
 ```csharp
-CLI.HandleErrors(() =>
+TerminalErrorHandler.Handle(() =>
 {
     throw new Exception("This exception will be pretty-printed to console");
 });
@@ -72,7 +88,7 @@ CLI.HandleErrors(() =>
 Even for async functions!
 
 ```csharp
-await CLI.HandleErrorsAsync(async () =>
+await TerminalErrorHandler.HandleAsync(async () =>
 {
     await Task.Delay(100);
     throw new Exception("This exception will be pretty-printed to console");
@@ -180,6 +196,13 @@ Parser supports:
 #### Localizable text resources
 
 ```csharp
+TerminalErrorHandler.ErrorText = "Error!";
+TerminalErrorHandler.InnerExceptionText = "--- Inner Exception ---";
+
+TerminalTable.FooterRowsText = "Rows: {0}..{1}";
+TerminalTable.FooterTotalText = "Total {0} rows";
+TerminalTable.FooterPageNumberText = "Page {0} of {1}";
+
 CLI.UseLocalizedText(new MyLocalizedText());
 ```
 
@@ -190,7 +213,7 @@ English and russian localizations are included out of the box.
 You can draw progress bars and spinners using the following methods:
 
 ```csharp
-using (var spinner = CLI.Spinner("preparing"))
+using (var spinner = TerminalSpinner.Create("preparing"))
 {
     // Update a spinner label
     spinner.SetTitle("starting long operation");
@@ -203,7 +226,7 @@ using (var spinner = CLI.Spinner("preparing"))
     Console.WriteLine("A line of text");
 }
 
-using (var progressBar = CLI.ProgressBar())
+using (var progressBar = TerminalProgressBar.Create())
 {
     // Update progress bar label only
     progressBar.SetState(text: "Label1");
@@ -226,31 +249,30 @@ Print a strongly-typed table into console:
 ```csharp
 var data = GetMyDataArray();
 
-CLI.Table(data, config =>
-{
-    // Configure table header
-    table.Title("My table");
+var table = TerminalTable.Create(data);
 
-    // Define table columns
-    // A plain column
-    table.Column("Header 1", _ => _.Property1);
-    // A RED column
-    table.Column("Header 2", _ => _.Property2, _ => ConsoleColor.Red);
-    // A multi-colored column
-    table.Column("Header 2", _ => _.Property2, row => GetColorForRow(row)));
-    // A trimmed column
-    table.Column("Header 3", _ => _.Property1, maxWidth: 24);
-});
+// Define table columns
 
-// Table will be printed into current console after calling CLI.Table()
+// A plain column
+table.Column("Header 1", _ => _.Property1);
+// A RED column
+table.Column("Header 2", _ => _.Property2, _ => ConsoleColor.Red);
+// A multi-colored column
+table.Column("Header 2", _ => _.Property2, row => GetColorForRow(row)));
+// A trimmed column
+table.Column("Header 3", _ => _.Property1, maxWidth: 24);
+
+// Draw table
+table.Draw();
 
 ```
 
 `CLI.Table` suppports:
 
-* Configurable table header (might include or exclude table title and column headers)
+* Configurable table headers
 * Per-cell colorization
-* A pagination support (useful to view large tables in a console)
+* A pagination support (useful to view large tables in a console).
+  Set `renderer` parameter of `TerminalTable.Create()` method to `TableRenderer.Paged()` to enable it.
 
 ## How to build
 

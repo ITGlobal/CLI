@@ -1,8 +1,16 @@
 {
   "profiles": {
-    "ITGlobal.CLI.Example": {
+    "table": {
       "commandName": "Project",
       "commandLineArgs": "table -n 105 -p"
+    },
+    "spinner": {
+      "commandName": "Project",
+      "commandLineArgs": "spinner"
+    },
+    "progress": {
+      "commandName": "Project",
+      "commandLineArgs": "progress"
     }
   }
 }

@@ -27,10 +27,6 @@ namespace ITGlobal.CommandLine
         [NotNull]
         public virtual string RequiredParameterIsNotSet => "Parameter '{0}' is not set";
         [NotNull]
-        public virtual string TableNextPageText => "--- Next Page ---";
-        [NotNull]
         public virtual string UnknownCommand => "Command '{0}' is unknown";
-        [NotNull]
-        public virtual string Error => "Error!";
     }
 }
