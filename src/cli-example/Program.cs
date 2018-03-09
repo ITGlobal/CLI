@@ -67,9 +67,9 @@ namespace ITGlobal.CommandLine.Example
                 {
                     table.Title("XYZ data");
                     table.EnablePaging(_paged.IsSet);
-                    table.Column("X", _ => _.X.ToString(), _ => ConsoleColor.Red);
-                    table.Column("Y", _ => _.Y.ToString(), _ => ConsoleColor.Green);
-                    table.Column("Z", _ => _.Z.ToString(), _ => ConsoleColor.Blue);
+                    table.Column("Value of X parameter", _ => _.X.ToString(), _ => ConsoleColor.Red);
+                    table.Column("Value of Y parameter", _ => _.Y.ToString(), _ => ConsoleColor.Green);
+                    table.Column("Value of Z parameter", _ => _.Z.ToString(), _ => ConsoleColor.Blue);
                 });
 
             return 0;

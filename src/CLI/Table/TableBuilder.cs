@@ -11,8 +11,7 @@ namespace ITGlobal.CommandLine
         private readonly List<TableColumn<T>> _columns = new List<TableColumn<T>>();
         private string _title;
         private bool _enablePaging = false;
-        private bool _printTitle = true;
-        private bool _printColumns = true;
+        private TableStyle _style = TableStyle.Default;
 
         public ITableBuilder<T> Title(string title)
         {
@@ -22,19 +21,41 @@ namespace ITGlobal.CommandLine
 
         public ITableBuilder<T> PrintTitle(bool enable = true)
         {
-            _printTitle = enable;
+            if (enable)
+            {
+                _style |= TableStyle.HasTitle;
+            }
+            else
+            {
+                _style &= ~TableStyle.HasTitle;
+            }
+
             return this;
         }
 
         public ITableBuilder<T> PrintHeader(bool enable = true)
         {
-            _printColumns = enable;
+            if (enable)
+            {
+                _style |= TableStyle.HasHeaders;
+            }
+            else
+            {
+                _style &= ~TableStyle.HasHeaders;
+            }
+
             return this;
         }
 
         public ITableBuilder<T> EnablePaging(bool enable = true)
         {
             _enablePaging = enable;
+            return this;
+        }
+
+        public ITableBuilder<T> UseStyle(TableStyle style)
+        {
+            _style = style;
             return this;
         }
 
@@ -61,7 +82,10 @@ namespace ITGlobal.CommandLine
                     }
                 }
 
-                _printTitle &= !string.IsNullOrEmpty(_title);
+                if (string.IsNullOrEmpty(_title))
+                {
+                    _style &= ~TableStyle.HasTitle;
+                }
 
 #if NET40
             if (!_enablePaging)
@@ -79,15 +103,8 @@ namespace ITGlobal.CommandLine
 
         private void PrintNonInteractive(T[] rows)
         {
-            if (_printTitle)
-            {
-                PrintTitle();
-            }
-
-            if (_printColumns)
-            {
-                PrintHeader();
-            }
+            PrintTitle();
+            PrintHeader();
 
             for (var index = 0; index < rows.Length; index++)
             {
@@ -100,6 +117,7 @@ namespace ITGlobal.CommandLine
                         Console.Write(' ');
                     }
                 }
+
                 Console.WriteLine();
             }
 
@@ -109,17 +127,10 @@ namespace ITGlobal.CommandLine
         private void PrintInteractive(T[] rows)
         {
             var pageSize = Console.WindowHeight - 1;
-            if (_printTitle)
-            {
-                pageSize -= 3;
-            }
+            pageSize -= TitleHeight;
+            pageSize -= HeaderHeight;
 
-            if (_printColumns)
-            {
-                pageSize -= 2;
-            }
-
-            var pageCount = (int)Math.Ceiling(1f * rows.Length / pageSize);
+            var pageCount = (int) Math.Ceiling(1f * rows.Length / pageSize);
             if (pageCount <= 1)
             {
                 PrintNonInteractive(rows);
@@ -144,6 +155,7 @@ namespace ITGlobal.CommandLine
                         {
                             startIndex = lastAllowedIndex;
                         }
+
                         break;
                     case NavigationAction.PrevLine:
                         startIndex--;
@@ -151,6 +163,7 @@ namespace ITGlobal.CommandLine
                         {
                             startIndex = 0;
                         }
+
                         break;
 
                     case NavigationAction.NextPage:
@@ -159,6 +172,7 @@ namespace ITGlobal.CommandLine
                         {
                             startIndex = lastAllowedIndex;
                         }
+
                         break;
                     case NavigationAction.PrevPage:
                         startIndex -= pageSize;
@@ -166,6 +180,7 @@ namespace ITGlobal.CommandLine
                         {
                             startIndex = 0;
                         }
+
                         break;
 
                     case NavigationAction.FirstPage:
@@ -181,42 +196,110 @@ namespace ITGlobal.CommandLine
             }
         }
 
+        private int TitleHeight
+        {
+            get
+            {
+                var height = 0;
+                if (_style.HasFlag(TableStyle.HasTitle))
+                {
+                    height = 2;
+                    if (_style.HasFlag(TableStyle.UnderlinedTitle))
+                    {
+                        height++;
+                    }
+                }
+
+                return height;
+            }
+        }
+
         private void PrintTitle()
         {
+            if (!_style.HasFlag(TableStyle.HasTitle))
+            {
+                return;
+            }
+            
             using (WithForeground(ConsoleColor.Cyan))
             {
-                Console.WriteLine(_title);
+                var title = _title;
+                if (_style.HasFlag(TableStyle.UppercaseTitle))
+                {
+                    title = title.ToUpperInvariant();
+                }
+                Console.WriteLine(title);
             }
 
-            using (WithForeground(ConsoleColor.DarkYellow))
+            if (_style.HasFlag(TableStyle.UnderlinedTitle))
             {
-                Console.WriteLine(new string('=', _title.Length));
+                using (WithForeground(ConsoleColor.DarkYellow))
+                {
+                    Console.WriteLine(new string('=', _title.Length));
+                }
+            }
+
+            Console.WriteLine();
+        }
+
+        private int HeaderHeight
+        {
+            get
+            {
+                var height = 0;
+                if (_style.HasFlag(TableStyle.HasHeaders))
+                {
+                    height = 1;
+                    if (_style.HasFlag(TableStyle.UnderlinedHeaders))
+                    {
+                        height++;
+                    }
+                }
+
+                return height;
             }
         }
 
         private void PrintHeader()
         {
-            Console.WriteLine();
+            if (!_style.HasFlag(TableStyle.HasHeaders))
+            {
+                return;
+            }
+            
             using (WithForeground(ConsoleColor.White))
             {
                 foreach (var column in _columns)
                 {
+                    var title = column.Title;
+                    if (_style.HasFlag(TableStyle.UppercaseHeaders))
+                    {
+                        title = title.ToUpperInvariant();
+                    }
 
-                    Console.Write(column.Title);
+                    Console.Write(title);
                     Console.Write(' ');
                 }
             }
             Console.WriteLine();
-            using (WithForeground(ConsoleColor.DarkYellow))
+
+            if (_style.HasFlag(TableStyle.UnderlinedHeaders))
             {
-                foreach (var column in _columns)
+                using (WithForeground(ConsoleColor.DarkYellow))
                 {
-
-                    Console.Write(new string('-', column.Title.Length));
-                    Console.Write(' ');
+                    for (var i = 0; i < _columns.Count; i++)
+                    {
+                        var column = _columns[i];
+                        Console.Write(new string('-', column.Title.Length));
+                        if (i != _columns.Count - 1)
+                        {
+                            Console.Write(' ');
+                        }
+                    }
                 }
+
+                Console.WriteLine();
             }
-            Console.WriteLine();
         }
 
         private enum NavigationAction
@@ -232,15 +315,8 @@ namespace ITGlobal.CommandLine
 
         private NavigationAction PrintPage(T[] rows, int startIndex, int pageSize, int pageCount)
         {
-            if (_printTitle)
-            {
-                PrintTitle();
-            }
-
-            if (_printColumns)
-            {
-                PrintHeader();
-            }
+            PrintTitle();
+            PrintHeader();
 
             var endIndex = startIndex + pageSize;
             if (endIndex >= rows.Length)
@@ -259,6 +335,7 @@ namespace ITGlobal.CommandLine
                         Console.Write(' ');
                     }
                 }
+
                 Console.WriteLine();
             }
 

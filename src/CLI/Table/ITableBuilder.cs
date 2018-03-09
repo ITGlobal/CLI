@@ -23,12 +23,14 @@ namespace ITGlobal.CommandLine
         ///     Turn table title on or off
         /// </summary>
         [PublicAPI, NotNull]
+        [Obsolete("Use UseStyle() method instead")]
         ITableBuilder<T> PrintTitle(bool enable = true);
 
         /// <summary>
         ///     Turn table column headers on or off
         /// </summary>
         [PublicAPI, NotNull]
+        [Obsolete("Use UseStyle() method instead")]
         ITableBuilder<T> PrintHeader(bool enable = true);
 
         /// <summary>
@@ -36,6 +38,12 @@ namespace ITGlobal.CommandLine
         /// </summary>
         [PublicAPI, NotNull]
         ITableBuilder<T> EnablePaging(bool enable = true);
+
+        /// <summary>
+        ///     Set table rendering style
+        /// </summary>
+        [PublicAPI, NotNull]
+        ITableBuilder<T> UseStyle(TableStyle style);
 
         /// <summary>
         ///     Defines a table column
