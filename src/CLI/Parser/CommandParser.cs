@@ -110,7 +110,7 @@ namespace ITGlobal.CommandLine
             return this;
         }
 
-        public ICommandParserResult Parse(params string[] args)
+        public ICliParserResult Parse(params string[] args)
         {
             try
             {
@@ -177,7 +177,7 @@ namespace ITGlobal.CommandLine
             );
         }
 
-        public CommandInfo Usage(string command)
+        public CommandInfoOld Usage(string command)
         {
             return Usage().Commands.FirstOrDefault(_ => _.Aliases.Contains(command));
         }

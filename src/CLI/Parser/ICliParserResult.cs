@@ -7,7 +7,7 @@ namespace ITGlobal.CommandLine
     ///     Command line parser result
     /// </summary>
     [PublicAPI]
-    public interface ICommandParserResult
+    public interface ICliParserResult
     {
         /// <summary>
         ///     Executes parser result. A matching callback function will be triggered

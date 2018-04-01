@@ -1,7 +1,7 @@
 using ITGlobal.CommandLine.Internals;
 using Xunit;
 
-namespace ITGlobal.CommandLine
+namespace ITGlobal.CommandLine.Parsing
 {
     public class StringFormatParserTest
     {
@@ -36,10 +36,10 @@ namespace ITGlobal.CommandLine
             Assert.Equal(6, tokens.Length);
 
             AssertPlainText(tokens[0], "Plain ");
-            AssertFieldText(tokens[1], arg1, 0, "");
-            AssertFieldText(tokens[2], arg2, 0, "");
+            AssertFieldText(tokens[1], arg1, 0, null);
+            AssertFieldText(tokens[2], arg2, 0, null);
             AssertPlainText(tokens[3], " ");
-            AssertFieldText(tokens[4], arg1, 0, "");
+            AssertFieldText(tokens[4], arg1, 0, null);
             AssertPlainText(tokens[5], " input");
         }
 
@@ -52,11 +52,11 @@ namespace ITGlobal.CommandLine
             var tokens = StringFormatParser.Tokenize(input, new[] { arg });
             Assert.Single(tokens);
             
-            AssertFieldText(tokens[0], arg, padding, "");
+            AssertFieldText(tokens[0], arg, padding, null);
         }
 
         [Theory]
-        [InlineData("{0}", "")]
+        [InlineData("{0}", null)]
         [InlineData("{0:X04}", "X04")]
         public void Parse_format(string input, string format)
         {
@@ -68,11 +68,11 @@ namespace ITGlobal.CommandLine
         }
 
         [Theory]
-        [InlineData("{0}", 0, "")]
+        [InlineData("{0}", 0, null)]
         [InlineData("{0:X04}", 0, "X04")]
         [InlineData("{0,-4:X04}", -4, "X04")]
         [InlineData("{0:X04, -4}", 0, "X04, -4")]
-        [InlineData("{0,-4}", -4, "")]
+        [InlineData("{0,-4}", -4, null)]
         public void Parse_format_and_padding(string input, int padding, string format)
         {
             var _ = string.Format("{0,-1:X1}", 1);

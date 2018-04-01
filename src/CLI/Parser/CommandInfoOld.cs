@@ -13,13 +13,13 @@ namespace ITGlobal.CommandLine
     ///     Describes console command
     /// </summary>
     [PublicAPI]
-    public sealed class CommandInfo
+    public sealed class CommandInfoOld
     {
         private readonly List<ParameterInfo> _globalParameters = new List<ParameterInfo>();
         private readonly List<ParameterInfo> _commandParameters = new List<ParameterInfo>();
         private readonly List<ParameterInfo> _visibleParameters = new List<ParameterInfo>();
 
-        private CommandInfo(
+        private CommandInfoOld(
             string name,
             string helpText,
             string[] aliases,
@@ -92,7 +92,7 @@ namespace ITGlobal.CommandLine
 
         internal UsageInfo Parent { get; set; }
 
-        internal static CommandInfo Create(
+        internal static CommandInfoOld Create(
             string name,
             string helpText,
             bool isHidden,
@@ -100,7 +100,7 @@ namespace ITGlobal.CommandLine
             IEnumerable<ParameterInfo> globalParameters,
             IEnumerable<ParameterInfo> commandParameters)
         {
-            return new CommandInfo(
+            return new CommandInfoOld(
                 name,
                 helpText,
                 aliases.ToArray(),
@@ -168,7 +168,7 @@ namespace ITGlobal.CommandLine
             Console.WriteLine();
         }
 
-        internal static void PrintTable(IEnumerable<CommandInfo> commands)
+        internal static void PrintTable(IEnumerable<CommandInfoOld> commands)
         {
             Terminal.Stdout.WriteLine(Text.Commands.ToUpperInvariant().WithForeground(ConsoleColor.Cyan));
 

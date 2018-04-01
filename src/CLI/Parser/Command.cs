@@ -74,9 +74,9 @@ namespace ITGlobal.CommandLine
         public bool SuppressValidation { get; set; }
         public bool IsHidden { get; private set; }
 
-        public CommandInfo GetCommandInfo(IEnumerable<IParameterParser> globalParameters)
+        public CommandInfoOld GetCommandInfo(IEnumerable<IParameterParser> globalParameters)
         {
-            return CommandInfo.Create(
+            return CommandInfoOld.Create(
                 _name,
                 _helpText,
                 IsHidden,
@@ -90,7 +90,7 @@ namespace ITGlobal.CommandLine
             );
         }
 
-        public ICommandParserResult Run(CommandParser parser, CommandLineInfo commandLine)
+        public ICliParserResult Run(CommandParser parser, CommandLineInfo commandLine)
         {
             commandLine.Parse(_parameters);
             commandLine.AddFreeArguments();

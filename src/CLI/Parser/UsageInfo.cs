@@ -23,10 +23,10 @@ namespace ITGlobal.CommandLine
             string title,
             string version,
             string helpText,
-            CommandInfo[] commands,
+            CommandInfoOld[] commands,
             IEnumerable<ParameterInfo> parameters)
         {
-            ExecutableName = executableName ?? Process.GetCurrentProcess().ProcessName;
+            ExecutableName = executableName /* ?? Process.GetCurrentProcess().ProcessName */;
 
             Title = title ?? "";
             Version = version ?? "";
@@ -79,9 +79,9 @@ namespace ITGlobal.CommandLine
         /// </summary>
         [PublicAPI, NotNull]
 #if !NET40
-        public IReadOnlyList<CommandInfo> Commands { get; }
+        public IReadOnlyList<CommandInfoOld> Commands { get; }
 #else
-        public IList<CommandInfo> Commands { get; }
+        public IList<CommandInfoOld> Commands { get; }
 #endif
 
 
@@ -101,7 +101,7 @@ namespace ITGlobal.CommandLine
             string title,
             string version,
             string helpText,
-            IEnumerable<CommandInfo> commands,
+            IEnumerable<CommandInfoOld> commands,
             IEnumerable<ParameterInfo> parameters)
         {
             return new UsageInfo(
@@ -135,7 +135,7 @@ namespace ITGlobal.CommandLine
 
             if (HasCommands)
             {
-                CommandInfo.PrintTable(Commands);
+                CommandInfoOld.PrintTable(Commands);
             }
         }
 		

@@ -1,7 +1,7 @@
 // ReSharper disable once CheckNamespace
 namespace ITGlobal.CommandLine
 {
-    internal sealed class CommandParserResult : ICommandParserResult
+    internal sealed class CommandParserResult : ICliParserResult
     {
         private readonly CommandParser _parser;
         private readonly CommandHandler _handler;

@@ -118,7 +118,7 @@ namespace ITGlobal.CommandLine.Internals
 
             var argumentIndex = -1;
             var argumentPadding = 0;
-            var argumentFormat = "";
+            string argumentFormat = null;
 
             var i = index + 1;
             for (; i < format.Length && mode != FieldParseMode.Done; i++)

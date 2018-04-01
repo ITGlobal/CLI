@@ -125,7 +125,7 @@ namespace ITGlobal.CommandLine
         ///     Command line parser result
         /// </returns>
         [PublicAPI]
-        ICommandParserResult Parse([NotNull] params string[] args);
+        ICliParserResult Parse([NotNull] params string[] args);
 
         /// <summary>
         ///     Gets a command line usage information
@@ -140,6 +140,6 @@ namespace ITGlobal.CommandLine
         ///     Command usage information. null, if no matching command is found.
         /// </returns>
         [PublicAPI, CanBeNull]
-        CommandInfo Usage([NotNull] string command);
+        CommandInfoOld Usage([NotNull] string command);
     }
 }

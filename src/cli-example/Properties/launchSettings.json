@@ -11,6 +11,14 @@
     "progress": {
       "commandName": "Project",
       "commandLineArgs": "progress"
+    },
+    "simple-parser-help": {
+      "commandName": "Project",
+      "commandLineArgs": "simple-parser-help"
+    },
+    "tree-parser-help": {
+      "commandName": "Project",
+      "commandLineArgs": "tree-parser-help"
     }
   }
 }

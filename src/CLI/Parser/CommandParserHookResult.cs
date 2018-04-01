@@ -4,7 +4,7 @@ using System;
 namespace ITGlobal.CommandLine
 {
 
-    internal sealed class CommandParserHookResult : ICommandParserResult
+    internal sealed class CommandParserHookResult : ICliParserResult
     {
         private readonly int _exitCode;
 
