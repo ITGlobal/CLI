@@ -576,18 +576,18 @@ namespace ITGlobal.CommandLine.Parsing.Impl
             // Validate input
             if (raw.Errors.Count > 0)
             {
-                return new InvalidCliParserResult(Terminal, raw.Errors, GetUsage());
+                return new InvalidCliParserResult(Terminal, raw.Errors, command.GetUsage());
             }
 
             var unknownOptions = raw.GetUnconsumedOptions();
             if (unknownOptions.Length > 0 && !Flags.HasFlag(CliParserFlags.IgnoreUnknownOptions))
             {
-                return new UnknownOptionsCliParserResult(Terminal, unknownOptions, GetUsage());
+                return new UnknownOptionsCliParserResult(Terminal, unknownOptions, command.GetUsage());
             }
             
             if (unknownArguments.Length > 0 && !Flags.HasFlag(CliParserFlags.AllowFreeArguments))
             {
-                return new UnknownArgumentsCliParserResult(Terminal, unknownArguments, GetUsage());
+                return new UnknownArgumentsCliParserResult(Terminal, unknownArguments, command.GetUsage());
             }
             
             var handlers = command.EnumerateHandlers().ToArray();
