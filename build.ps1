@@ -1,14 +1,9 @@
 ﻿$SOLUTION_DIR = Resolve-Path "."
 $ARTIFACTS = Join-Path $SOLUTION_DIR "artifacts"
 $CONFIGURATION = $env:CONFIGURATION
-$VERSION = $env:APPVEYOR_BUILD_VERSION
 
 if (!$CONFIGURATION) {
     $CONFIGURATION = "Release"
-}
-
-if (!$VERSION) {
-    $VERSION = "0.0.0-dev"
 }
 
 # CLEAN
@@ -25,7 +20,16 @@ if ($LASTEXITCODE -ne 0) {
 
 # VERSION
 write-host "< version >" -f cyan
-$VERSION = "$(git describe --abbrev=0 --tags)"
+if((git tag | measure).Count -eq 0) {
+    write-host "there are no tags! Will use '0.0.0-dev' as version number" -f red
+    $VERSION = "0.0.0-dev"
+} else {
+    $VERSION = "$(git describe --abbrev=0 --tags)"
+
+    if($env:APPVEYOR) {
+        appveyor UpdateBuild -Version "$VERSION"
+    }
+}
 write-host "version number: $VERSION"
 write-host "build number  : $env:APPVEYOR_BUILD_VERSION"
 

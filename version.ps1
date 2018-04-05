@@ -1,3 +1,8 @@
+if((git tag | measure).Count -eq 0) {
+    write-host "there are no tags!" -f red
+    exit 1
+}
+
 $parts = "$(git describe --abbrev=0 --tags)".Split('.')
 $major = [int] ($parts[0])
 $minor = [int] ($parts[1])
