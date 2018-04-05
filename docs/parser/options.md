@@ -88,7 +88,8 @@ option.Validate(ValidationFunction);
 
 // This function will be called to validate a result of parsing
 // It will be called even if option is not set
-// Function should return null if value is valid and an error message otherwise
+// Function should return null if value is valid
+// and an error message otherwise
 string ValidationFunction(OptValue value, bool isSet)
 {
     if (!isSet)
@@ -236,12 +237,17 @@ Default values are applied before any validation takes place. So you should be c
 ```csharp
 var option = parser.Option<string>("option");
 option.DefaultValue("not-empty");
-option.Required(); // This validator could be omitted without any damage - it would never fire
+
+// This validator could be omitted without any damage,
+// it would never fire
+option.Required(); 
 
 // ...
 
 var option = parser.Option<string>("option");
-option.DefaultValue("1"); // This default value could be omitted since it would never pass validation
+// This default value could be omitted
+// since it would never pass validation
+option.DefaultValue("1");
 option.Validate(Validate_IsGood);
 
 string ValidationFunction(string value, bool isSet)
