@@ -24,7 +24,11 @@ var table = TerminalTable.Create(data);
 table.Column("ID", _ => _.Id);
 table.Column("Image", _ => _.Image);
 table.Column("Created", _ => _.Created);
-table.Column("Status", _ => _.Status, fg: _ => _.IsRunning ? ConsoleColor.Red : (ConsoleColor?) null);
+table.Column(
+  "Status",
+  _ => _.Status,
+  fg: _ => _.IsRunning ? ConsoleColor.Red : (ConsoleColor?) null
+);
 
 // Draw table to a terminal
 table.Draw();
