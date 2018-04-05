@@ -1,20 +1,20 @@
-using System;
+﻿using System;
 using JetBrains.Annotations;
 
 namespace ITGlobal.CommandLine.Table
 {
     /// <summary>
-    ///     Terminal table builder
+    ///     Extension methods for <see cref="ITableBuilder{T}"/>
     /// </summary>
-    /// <typeparam name="T">
-    ///     Row item type
-    /// </typeparam>
     [PublicAPI]
-    public interface ITableBuilder<out T>
+    public static class TableBuilderExtensions
     {
         /// <summary>
         ///     Defines a table column
         /// </summary>
+        /// <param name="table">
+        ///     Terminal table builder
+        /// </param>
         /// <param name="title">
         ///     Column header
         /// </param>
@@ -31,17 +31,22 @@ namespace ITGlobal.CommandLine.Table
         ///     Max column width
         /// </param>
         [PublicAPI, NotNull]
-        ITableBuilder<T> Column(
+        public static ITableBuilder<T> Column<T, TProperty>(
+            this ITableBuilder<T> table,
             string title,
-            Func<T, string> property,
+            Func<T, TProperty> property,
             Func<T, ConsoleColor?> fg = null,
             Func<T, ConsoleColor?> bg = null,
             int? maxWidth = null
+        )
+        {
+            return table.Column(
+                title,
+                row => property(row)?.ToString() ?? "",
+                fg,
+                bg,
+                maxWidth
             );
-
-        /// <summary>
-        ///     Draws table to screen
-        /// </summary>
-        void Draw();
+        }
     }
 }

@@ -41,21 +41,21 @@ namespace ITGlobal.CommandLine.Parsing
         ///     Add a command line repeatable named string option
         /// </summary>
         [NotNull]
-        public static MultiCliOption<string> MultiOption(
+        public static CliRepeatableOption<string> RepeatableOption(
             [NotNull] this ICliParser parser,
             [NotNull] string longName,
             string helpText = null,
             bool hidden = false
         )
         {
-            return parser.MultiOption<string>(longName, helpText, hidden);
+            return parser.RepeatableOption<string>(longName, helpText, hidden);
         }
 
         /// <summary>
         ///     Add a command line repeatable named string option
         /// </summary>
         [NotNull]
-        public static MultiCliOption<string> MultiOption(
+        public static CliRepeatableOption<string> RepeatableOption(
             [NotNull] this ICliParser parser,
             char shortName,
             string longName = null,
@@ -63,7 +63,7 @@ namespace ITGlobal.CommandLine.Parsing
             bool hidden = false
         )
         {
-            return parser.MultiOption<string>(shortName, longName, helpText, hidden);
+            return parser.RepeatableOption<string>(shortName, longName, helpText, hidden);
         }
 
         /// <summary>
@@ -85,7 +85,7 @@ namespace ITGlobal.CommandLine.Parsing
         ///     Add a command line repeatable positional string argument
         /// </summary>
         [NotNull]
-        public static MultiCliArgument<string> MultiArgument(
+        public static CliRepeatableArgument<string> RepeatableArgument(
             [NotNull] this ICliParser parser,
             [NotNull] string displayName,
             int position,
@@ -93,7 +93,7 @@ namespace ITGlobal.CommandLine.Parsing
             bool hidden = false
         )
         {
-            return parser.MultiArgument<string>(displayName, position, helpText, hidden);
+            return parser.RepeatableArgument<string>(displayName, position, helpText, hidden);
         }
     }
 }

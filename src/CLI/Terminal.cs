@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using ITGlobal.CommandLine.Internals;
 using JetBrains.Annotations;
 

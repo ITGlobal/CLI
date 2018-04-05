@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using ITGlobal.CommandLine.Parsing.Impl;
 using JetBrains.Annotations;
 
@@ -79,7 +79,7 @@ namespace ITGlobal.CommandLine.Parsing
         ///     Marks switch as a help one
         /// </summary>
         [NotNull]
-        public CliSwitch HelpSwitch(bool isHelpSwitch = true)
+        internal CliSwitch HelpSwitch(bool isHelpSwitch = true)
         {
             _isHelpSwitch = isHelpSwitch;
             return this;

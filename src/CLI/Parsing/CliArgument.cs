@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using ITGlobal.CommandLine.Parsing.Impl;
 using JetBrains.Annotations;
@@ -14,11 +14,10 @@ namespace ITGlobal.CommandLine.Parsing
         #region fields
 
         private readonly List<ValueValidator<T>> _validators = new List<ValueValidator<T>>();
+        private readonly List<DefaultValueProvider<T>> _defaultValueProviders = new List<DefaultValueProvider<T>>();
 
         private string _helpText;
         private bool _hidden;
-        private DefaultValueProvider<T> _defaultValueProvider;
-        private IValueParser<T> _parser = ValueParser.Get<T>();
         private bool _isRequired;
 
         #endregion
@@ -56,6 +55,8 @@ namespace ITGlobal.CommandLine.Parsing
         /// </summary>
         [NotNull]
         internal string Name { get; }
+
+        internal IValueParser<T> Parser { get; private set; } = ValueParser.Get<T>();
 
         #endregion
 
@@ -97,66 +98,22 @@ namespace ITGlobal.CommandLine.Parsing
                 throw new ArgumentNullException(nameof(parser));
             }
 
-            _parser = parser;
+            Parser = parser;
             return this;
         }
-
-        /// <summary>
-        ///     Sets argument default value
-        /// </summary>
-        [NotNull]
-        public CliArgument<T> DefaultValue(T defaultValue)
-        {
-            bool DefaultValueProvider(out T value)
-            {
-                value = defaultValue;
-                return true;
-            }
-
-            return DefaultValue(DefaultValueProvider);
-        }
-
-        /// <summary>
-        ///     Binds argument default value to an environment variable
-        /// </summary>
-        [NotNull]
-        public CliArgument<T> DefaultValueFromEnvironmentVariable(string name)
-        {
-            bool DefaultValueProvider(out T value)
-            {
-                value = default(T);
-
-                var env = Environment.GetEnvironmentVariable(name);
-                if (string.IsNullOrEmpty(env))
-                {
-                    return false;
-                }
-
-                var result = _parser.Parse(env);
-                if (!result.IsSuccess)
-                {
-                    return false;
-                }
-
-                value = result.Value;
-                return true;
-            }
-
-            return DefaultValue(DefaultValueProvider);
-        }
-
+        
         /// <summary>
         ///     Sets argument default value provider
         /// </summary>
         [NotNull]
-        public CliArgument<T> DefaultValue([NotNull] DefaultValueProvider<T> defaultValueProvider)
+        public CliArgument<T> DefaultValue([NotNull] DefaultValueProvider<T> provider)
         {
-            if (defaultValueProvider == null)
+            if (provider == null)
             {
-                throw new ArgumentNullException(nameof(defaultValueProvider));
+                throw new ArgumentNullException(nameof(provider));
             }
 
-            _defaultValueProvider = defaultValueProvider;
+            _defaultValueProviders.Add(provider);
             return this;
         }
 
@@ -215,7 +172,7 @@ namespace ITGlobal.CommandLine.Parsing
 
         void ICliConsumer.CheckConfiguration()
         {
-            if (_parser == null)
+            if (Parser == null)
             {
                 throw new Exception($"You should specify custom parser for {typeof(T).FullName} (see argument \"{Name}\")");
             }
@@ -226,7 +183,7 @@ namespace ITGlobal.CommandLine.Parsing
             var str = raw.ConsumeArgument(Position);
             if (str != null)
             {
-                var result = _parser.Parse(str);
+                var result = Parser.Parse(str);
                 if (result.IsSuccess)
                 {
                     Value = result.Value;
@@ -238,12 +195,16 @@ namespace ITGlobal.CommandLine.Parsing
                 }
             }
 
-            if (!IsSet && _defaultValueProvider != null)
+            if (!IsSet)
             {
-                if (_defaultValueProvider(out var value))
+                foreach (var provider in _defaultValueProviders)
                 {
-                    Value = value;
-                    IsSet = true;
+                    if (provider(out var value))
+                    {
+                        Value = value;
+                        IsSet = true;
+                        break;
+                    }
                 }
             }
 
@@ -261,11 +222,12 @@ namespace ITGlobal.CommandLine.Parsing
         void ICliConsumer.BuildUsage(IUsageBuilder builder)
         {
             string defaultValue = null;
-            if (_defaultValueProvider != null)
+            foreach (var provider in _defaultValueProviders)
             {
-                if (_defaultValueProvider(out var value))
+                if (provider(out var value))
                 {
-                    defaultValue = _parser.Format(value);
+                    defaultValue = Parser.Format(value);
+                    break;
                 }
             }
 

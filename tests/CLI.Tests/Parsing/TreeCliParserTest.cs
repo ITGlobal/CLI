@@ -81,7 +81,7 @@ namespace ITGlobal.CommandLine.Parsing
         public void Repeatable_switch_not_set()
         {
             var parser = CreateParser();
-            var sw = parser.MultiSwitch('s', "switch");
+            var sw = parser.RepeatableSwitch('s', "switch");
             Assert.Equal(0, parser.Parse().Run());
             Assert.False(sw);
         }
@@ -93,7 +93,7 @@ namespace ITGlobal.CommandLine.Parsing
         public void Repeatable_switch_set_by_short_name(int count)
         {
             var parser = CreateParser();
-            var sw = parser.MultiSwitch('s', "switch");
+            var sw = parser.RepeatableSwitch('s', "switch");
             var args = Enumerable.Range(0, count).Select(_ => "-s").ToArray();
             Assert.Equal(0, parser.Parse(args).Run());
             Assert.Equal(count, sw.RepeatCount);
@@ -106,7 +106,7 @@ namespace ITGlobal.CommandLine.Parsing
         public void Repeatable_switch_set_by_long_name(int count)
         {
             var parser = CreateParser();
-            var sw = parser.MultiSwitch('s', "switch");
+            var sw = parser.RepeatableSwitch('s', "switch");
             var args = Enumerable.Range(0, count).Select(_ => "--switch").ToArray();
             Assert.Equal(0, parser.Parse(args).Run());
             Assert.Equal(count, sw.RepeatCount);
@@ -116,7 +116,7 @@ namespace ITGlobal.CommandLine.Parsing
         public void Repeatable_switch_set_by_one_char_long_name()
         {
             var parser = CreateParser();
-            var sw = parser.MultiSwitch('s', "switch");
+            var sw = parser.RepeatableSwitch('s', "switch");
             Assert.Equal(ExitCodes.UnknownOptions, parser.Parse("--s").Run());
             Assert.False(sw);
         }
@@ -198,7 +198,7 @@ namespace ITGlobal.CommandLine.Parsing
         public void Repeatable_option_not_set()
         {
             var parser = CreateParser();
-            var option = parser.MultiOption('o', "option");
+            var option = parser.RepeatableOption('o', "option");
             Assert.Equal(0, parser.Parse().Run());
             Assert.False(option);
         }
@@ -207,7 +207,7 @@ namespace ITGlobal.CommandLine.Parsing
         public void Repeatable_option_set_by_short_name_without_value()
         {
             var parser = CreateParser();
-            var option = parser.MultiOption('o', "option");
+            var option = parser.RepeatableOption('o', "option");
             Assert.Equal(ExitCodes.UnknownOptions, parser.Parse("-o").Run());
             Assert.False(option);
         }
@@ -219,7 +219,7 @@ namespace ITGlobal.CommandLine.Parsing
         public void Repeatable_option_set_by_short_name(int count)
         {
             var parser = CreateParser();
-            var option = parser.MultiOption('o', "option");
+            var option = parser.RepeatableOption('o', "option");
             var args = Enumerable.Range(0, count)
                 .Select(x => new[] { "-o", $"value_{x}" })
                 .SelectMany(_ => _)
@@ -238,7 +238,7 @@ namespace ITGlobal.CommandLine.Parsing
         public void Repeatable_option_set_by_long_name_without_value()
         {
             var parser = CreateParser();
-            var option = parser.MultiOption('o', "option");
+            var option = parser.RepeatableOption('o', "option");
             Assert.Equal(ExitCodes.UnknownOptions, parser.Parse("--option").Run());
             Assert.False(option);
         }
@@ -250,7 +250,7 @@ namespace ITGlobal.CommandLine.Parsing
         public void Repeatable_option_set_by_long_name(int count)
         {
             var parser = CreateParser();
-            var option = parser.MultiOption('o', "option");
+            var option = parser.RepeatableOption('o', "option");
             var args = Enumerable.Range(0, count)
                 .Select(x => new[] { "--option", $"value_{x}" })
                 .SelectMany(_ => _)
@@ -269,7 +269,7 @@ namespace ITGlobal.CommandLine.Parsing
         public void Repeatable_option_set_by_one_char_long_name_without_value()
         {
             var parser = CreateParser();
-            var option = parser.MultiOption('o', "option");
+            var option = parser.RepeatableOption('o', "option");
             Assert.Equal(ExitCodes.UnknownOptions, parser.Parse("--o").Run());
             Assert.False(option);
         }
@@ -278,7 +278,7 @@ namespace ITGlobal.CommandLine.Parsing
         public void Repeatable_option_set_by_one_char_long_name()
         {
             var parser = CreateParser();
-            var option = parser.MultiOption('o', "option");
+            var option = parser.RepeatableOption('o', "option");
             Assert.Equal(ExitCodes.UnknownOptions, parser.Parse("--o", "value").Run());
             Assert.False(option);
         }
@@ -322,7 +322,7 @@ namespace ITGlobal.CommandLine.Parsing
         public void Repeatable_argument_not_set()
         {
             var parser = CreateParser();
-            var arg = parser.MultiArgument("arg", 0);
+            var arg = parser.RepeatableArgument("arg", 0);
             Assert.Equal(0, parser.Parse().Run());
             Assert.False(arg.IsSet);
         }
@@ -331,7 +331,7 @@ namespace ITGlobal.CommandLine.Parsing
         public void Repeatable_argument_is_set_once()
         {
             var parser = CreateParser();
-            var arg = parser.MultiArgument("arg", 0);
+            var arg = parser.RepeatableArgument("arg", 0);
             Assert.Equal(0, parser.Parse("value").Run());
             Assert.True(arg.IsSet);
             Assert.Single(arg.Values);
@@ -342,7 +342,7 @@ namespace ITGlobal.CommandLine.Parsing
         public void Repeatable_argument_is_set_few_times()
         {
             var parser = CreateParser();
-            var arg = parser.MultiArgument("arg", 0);
+            var arg = parser.RepeatableArgument("arg", 0);
             Assert.Equal(0, parser.Parse("value1", "value2").Run());
             Assert.True(arg.IsSet);
             Assert.Equal(2, arg.Values.Length);
@@ -354,7 +354,7 @@ namespace ITGlobal.CommandLine.Parsing
         public void Required_repeatable_argument_not_set()
         {
             var parser = CreateParser();
-            parser.MultiArgument("arg", 0).Required();
+            parser.RepeatableArgument("arg", 0).Required();
             Assert.Equal(ExitCodes.InvalidInput, parser.Parse().Run());
         }
 
@@ -467,7 +467,7 @@ namespace ITGlobal.CommandLine.Parsing
         {
             var parser = CreateParser();
             var cmd = parser.Command("cmd");
-            var sw = cmd.MultiSwitch('s', "switch");
+            var sw = cmd.RepeatableSwitch('s', "switch");
             Assert.Equal(0, parser.Parse("cmd").Run());
             Assert.False(sw);
         }
@@ -480,7 +480,7 @@ namespace ITGlobal.CommandLine.Parsing
         {
             var parser = CreateParser();
             var cmd = parser.Command("cmd");
-            var sw = cmd.MultiSwitch('s', "switch");
+            var sw = cmd.RepeatableSwitch('s', "switch");
             var args = new[] { "cmd" }.Concat(Enumerable.Range(0, count).Select(_ => "-s")).ToArray();
             Assert.Equal(0, parser.Parse(args).Run());
             Assert.Equal(count, sw.RepeatCount);
@@ -494,7 +494,7 @@ namespace ITGlobal.CommandLine.Parsing
         {
             var parser = CreateParser();
             var cmd = parser.Command("cmd");
-            var sw = cmd.MultiSwitch('s', "switch");
+            var sw = cmd.RepeatableSwitch('s', "switch");
             var args = new[] { "cmd" }.Concat(Enumerable.Range(0, count).Select(_ => "--switch")).ToArray();
             Assert.Equal(0, parser.Parse(args).Run());
             Assert.Equal(count, sw.RepeatCount);
@@ -505,7 +505,7 @@ namespace ITGlobal.CommandLine.Parsing
         {
             var parser = CreateParser();
             var cmd = parser.Command("cmd");
-            var sw = cmd.MultiSwitch('s', "switch");
+            var sw = cmd.RepeatableSwitch('s', "switch");
             Assert.Equal(ExitCodes.UnknownOptions, parser.Parse("cmd", "--s").Run());
             Assert.False(sw);
         }
@@ -595,7 +595,7 @@ namespace ITGlobal.CommandLine.Parsing
         {
             var parser = CreateParser();
             var cmd = parser.Command("cmd");
-            var option = cmd.MultiOption('o', "option");
+            var option = cmd.RepeatableOption('o', "option");
             Assert.Equal(0, parser.Parse("cmd").Run());
             Assert.False(option);
         }
@@ -605,7 +605,7 @@ namespace ITGlobal.CommandLine.Parsing
         {
             var parser = CreateParser();
             var cmd = parser.Command("cmd");
-            var option = cmd.MultiOption('o', "option");
+            var option = cmd.RepeatableOption('o', "option");
             Assert.Equal(ExitCodes.UnknownOptions, parser.Parse("cmd", "-o").Run());
             Assert.False(option);
         }
@@ -618,7 +618,7 @@ namespace ITGlobal.CommandLine.Parsing
         {
             var parser = CreateParser();
             var cmd = parser.Command("cmd");
-            var option = cmd.MultiOption('o', "option");
+            var option = cmd.RepeatableOption('o', "option");
             var args =
                 new[] { "cmd" }.Concat(
                         Enumerable.Range(0, count)
@@ -641,7 +641,7 @@ namespace ITGlobal.CommandLine.Parsing
         {
             var parser = CreateParser();
             var cmd = parser.Command("cmd");
-            var option = cmd.MultiOption('o', "option");
+            var option = cmd.RepeatableOption('o', "option");
             Assert.Equal(ExitCodes.UnknownOptions, parser.Parse("cmd", "--option").Run());
             Assert.False(option);
         }
@@ -654,7 +654,7 @@ namespace ITGlobal.CommandLine.Parsing
         {
             var parser = CreateParser();
             var cmd = parser.Command("cmd");
-            var option = cmd.MultiOption('o', "option");
+            var option = cmd.RepeatableOption('o', "option");
             var args =
                 new[] { "cmd" }.Concat(
                         Enumerable.Range(0, count)
@@ -677,7 +677,7 @@ namespace ITGlobal.CommandLine.Parsing
         {
             var parser = CreateParser();
             var cmd = parser.Command("cmd");
-            var option = cmd.MultiOption('o', "option");
+            var option = cmd.RepeatableOption('o', "option");
             Assert.Equal(ExitCodes.UnknownOptions, parser.Parse("cmd", "--o").Run());
             Assert.False(option);
         }
@@ -687,7 +687,7 @@ namespace ITGlobal.CommandLine.Parsing
         {
             var parser = CreateParser();
             var cmd = parser.Command("cmd");
-            var option = cmd.MultiOption('o', "option");
+            var option = cmd.RepeatableOption('o', "option");
             Assert.Equal(ExitCodes.UnknownOptions, parser.Parse("cmd", "--o", "value").Run());
             Assert.False(option);
         }
@@ -735,7 +735,7 @@ namespace ITGlobal.CommandLine.Parsing
         {
             var parser = CreateParser();
             var cmd = parser.Command("cmd");
-            var arg = cmd.MultiArgument("arg", 0);
+            var arg = cmd.RepeatableArgument("arg", 0);
             Assert.Equal(0, parser.Parse("cmd").Run());
             Assert.False(arg.IsSet);
         }
@@ -745,7 +745,7 @@ namespace ITGlobal.CommandLine.Parsing
         {
             var parser = CreateParser();
             var cmd = parser.Command("cmd");
-            var arg = cmd.MultiArgument("arg", 0);
+            var arg = cmd.RepeatableArgument("arg", 0);
             Assert.Equal(0, parser.Parse("cmd", "value").Run());
             Assert.True(arg.IsSet);
             Assert.Single(arg.Values);
@@ -757,7 +757,7 @@ namespace ITGlobal.CommandLine.Parsing
         {
             var parser = CreateParser();
             var cmd = parser.Command("cmd");
-            var arg = cmd.MultiArgument("arg", 0);
+            var arg = cmd.RepeatableArgument("arg", 0);
             Assert.Equal(0, parser.Parse("cmd", "value1", "value2").Run());
             Assert.True(arg.IsSet);
             Assert.Equal(2, arg.Values.Length);
@@ -770,7 +770,7 @@ namespace ITGlobal.CommandLine.Parsing
         {
             var parser = CreateParser();
             var cmd = parser.Command("cmd");
-            cmd.MultiArgument("arg", 0).Required();
+            cmd.RepeatableArgument("arg", 0).Required();
             Assert.Equal(ExitCodes.InvalidInput, parser.Parse("cmd").Run());
         }
 

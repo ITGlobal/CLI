@@ -190,13 +190,13 @@ namespace ITGlobal.CommandLine.Parsing.Impl
         /// <summary>
         ///     Add a command line repeteable switch
         /// </summary>
-        public MultiCliSwitch MultiSwitch(
+        public CliRepeatableSwitch RepeatableSwitch(
             char shortName,
             string longName = null,
             string helpText = null,
             bool hidden = false)
         {
-            var sw = new MultiCliSwitch();
+            var sw = new CliRepeatableSwitch();
             _consumers.Add(sw);
 
             sw.ShortName = shortName;
@@ -222,7 +222,7 @@ namespace ITGlobal.CommandLine.Parsing.Impl
         /// <summary>
         ///     Add a command line repeteable switch
         /// </summary>
-        public MultiCliSwitch MultiSwitch(
+        public CliRepeatableSwitch RepeatableSwitch(
             string longName,
             string helpText = null,
             bool hidden = false)
@@ -232,7 +232,7 @@ namespace ITGlobal.CommandLine.Parsing.Impl
                 throw new ArgumentNullException(nameof(longName));
             }
 
-            var sw = new MultiCliSwitch();
+            var sw = new CliRepeatableSwitch();
             _consumers.Add(sw);
 
             sw.LongName = longName;
@@ -289,7 +289,7 @@ namespace ITGlobal.CommandLine.Parsing.Impl
         /// <summary>
         ///     Add a command line repeatable positional argument
         /// </summary>
-        public MultiCliArgument<T> MultiArgument<T>(
+        public CliRepeatableArgument<T> RepeatableArgument<T>(
             string displayName,
             int position,
             string helpText = null,
@@ -301,7 +301,7 @@ namespace ITGlobal.CommandLine.Parsing.Impl
                 throw new ArgumentNullException(nameof(displayName));
             }
 
-            var arg = new MultiCliArgument<T>(position, displayName);
+            var arg = new CliRepeatableArgument<T>(position, displayName);
             _consumers.Add(arg);
 
             if (!string.IsNullOrEmpty(helpText))
@@ -385,13 +385,13 @@ namespace ITGlobal.CommandLine.Parsing.Impl
         /// <summary>
         ///     Add a command line repetable option
         /// </summary>
-        public MultiCliOption<T> MultiOption<T>(
+        public CliRepeatableOption<T> RepeatableOption<T>(
             char shortName,
             string longName = null,
             string helpText = null,
             bool hidden = false)
         {
-            var option = new MultiCliOption<T>();
+            var option = new CliRepeatableOption<T>();
             _consumers.Add(option);
 
             option.ShortName = shortName;
@@ -417,14 +417,14 @@ namespace ITGlobal.CommandLine.Parsing.Impl
         /// <summary>
         ///     Add a command line repetable option
         /// </summary>
-        public MultiCliOption<T> MultiOption<T>(string longName, string helpText = null, bool hidden = false)
+        public CliRepeatableOption<T> RepeatableOption<T>(string longName, string helpText = null, bool hidden = false)
         {
             if (string.IsNullOrEmpty(longName))
             {
                 throw new ArgumentNullException(nameof(longName));
             }
 
-            var sw = new MultiCliOption<T>();
+            var sw = new CliRepeatableOption<T>();
             _consumers.Add(sw);
 
             sw.LongName = longName;

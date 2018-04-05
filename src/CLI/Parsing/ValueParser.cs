@@ -1,11 +1,8 @@
 using System;
 using System.Globalization;
 using System.Linq;
-using JetBrains.Annotations;
-
-#if NETSTANDARD1_6
 using System.Reflection;
-#endif
+using JetBrains.Annotations;
 
 namespace ITGlobal.CommandLine.Parsing
 {
@@ -128,58 +125,104 @@ namespace ITGlobal.CommandLine.Parsing
         ///     Get a built-in value parser for specified type
         /// </summary>
         [CanBeNull]
-        public static IValueParser<T> Get<T>()
+        public static IValueParser<T> Get<T>() => (IValueParser<T>) Get(typeof(T));
+
+        /// <summary>
+        ///     Get a built-in value parser for enumtype
+        /// </summary>
+        private static IValueParser<T> GetEnumParser<T>()
         {
-#if NETSTANDARD1_6
-            if (typeof(T).GetTypeInfo().IsEnum)
-#else
-            if (typeof(T).IsEnum)
-#endif
+            return new EnumValueParser<T>();
+        }
+
+        /// <summary>
+        ///     Get a built-in value parser for enumtype
+        /// </summary>
+        private static IValueParser<T[]> GetArrayParser<T>()
+        {
+            var parser = Get<T>();
+            if (parser == null)
             {
-                return new EnumValueParser<T>();
+                return null;
             }
 
-            switch (Type.GetTypeCode(typeof(T)))
+            return new ArrayValueParserImpl<T>(parser);
+        }
+
+        private static object Get(Type type)
+        {
+#if NETSTANDARD1_6
+            if (type.GetTypeInfo().IsEnum)
+#else
+            if (type.IsEnum)
+#endif
+            {
+                return typeof(ValueParser)
+#if NETSTANDARD1_6
+                    .GetTypeInfo()
+#endif
+                    .GetMethod(nameof(GetEnumParser), BindingFlags.Static | BindingFlags.NonPublic)
+                    ?.MakeGenericMethod(type)
+                    .Invoke(null, new object[0]);
+            }
+
+#if NETSTANDARD1_6
+            if (type.GetTypeInfo().IsEnum)
+#else
+            if (type.IsArray)
+#endif
+            {
+                var itemType = type.GetElementType();
+                return typeof(ValueParser)
+#if NETSTANDARD1_6
+                    .GetTypeInfo()
+#endif
+                    .GetMethod(nameof(GetArrayParser), BindingFlags.Static | BindingFlags.NonPublic)
+                    ?.MakeGenericMethod(itemType)
+                    .Invoke(null, new object[0]);
+            }
+
+            switch (Type.GetTypeCode(type))
             {
                 case TypeCode.Boolean:
-                    return (IValueParser<T>)Bool;
+                    return Bool;
 
                 case TypeCode.Byte:
-                    return (IValueParser<T>)Byte;
+                    return Byte;
                 case TypeCode.SByte:
-                    return (IValueParser<T>)SByte;
+                    return SByte;
 
                 case TypeCode.Int16:
-                    return (IValueParser<T>)Short;
+                    return Short;
                 case TypeCode.UInt16:
-                    return (IValueParser<T>)Ushort;
+                    return Ushort;
 
                 case TypeCode.Int32:
-                    return (IValueParser<T>)Int;
+                    return Int;
                 case TypeCode.UInt32:
-                    return (IValueParser<T>)UInt;
+                    return UInt;
 
                 case TypeCode.Int64:
-                    return (IValueParser<T>)Long;
+                    return Long;
                 case TypeCode.UInt64:
-                    return (IValueParser<T>)Ulong;
+                    return Ulong;
 
 
                 case TypeCode.Single:
-                    return (IValueParser<T>)Float;
+                    return Float;
                 case TypeCode.Double:
-                    return (IValueParser<T>)Double;
+                    return Double;
 
                 case TypeCode.Decimal:
-                    return (IValueParser<T>)Decimal;
+                    return Decimal;
 
                 case TypeCode.Char:
-                    return (IValueParser<T>)Char;
+                    return Char;
                 case TypeCode.String:
-                    return (IValueParser<T>)String;
+                    return String;
 
                 case TypeCode.DateTime:
-                    return (IValueParser<T>)DateTime;
+                    return DateTime;
 
                 default:
                     return null;
@@ -273,6 +316,39 @@ namespace ITGlobal.CommandLine.Parsing
                        ?.ToString(null, CultureInfo.InvariantCulture)
                        ?? value?.ToString()
                        ?? "";
+            }
+        }
+
+        private sealed class ArrayValueParserImpl<T> : IValueParser<T[]>
+        {
+            private readonly IValueParser<T> _parser;
+
+            public ArrayValueParserImpl(IValueParser<T> parser)
+            {
+                _parser = parser;
+            }
+
+            public string Format(T[] values) => string.Join(", ", values.Select(_parser.Format));
+
+            public ValueParserResult<T[]> Parse(string str)
+            {
+                try
+                {
+                    var values = str.Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries)
+                        .Select(_parser.Parse)
+                        .ToArray();
+                    var error = values.FirstOrDefault(_ => !_.IsSuccess);
+                    if (error.ErrorMessage != null)
+                    {
+                        return ValueParserResult.Error<T[]>(error.ErrorMessage);
+                    }
+
+                    return ValueParserResult.Success(values.Select(_ => _.Value).ToArray());
+                }
+                catch (Exception e)
+                {
+                    return ValueParserResult.Error<T[]>(e.Message);
+                }
             }
         }
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using ITGlobal.CommandLine.Parsing.Impl;
 using JetBrains.Annotations;
 
@@ -8,7 +8,7 @@ namespace ITGlobal.CommandLine.Parsing
     ///     Command line repeteable switch
     /// </summary>
     [PublicAPI]
-    public sealed class MultiCliSwitch : ICliConsumer
+    public sealed class CliRepeatableSwitch : ICliConsumer
     {
         #region fields
 
@@ -20,7 +20,7 @@ namespace ITGlobal.CommandLine.Parsing
         
         #region .ctor
 
-        internal MultiCliSwitch() { }
+        internal CliRepeatableSwitch() { }
 
         #endregion
         
@@ -48,7 +48,7 @@ namespace ITGlobal.CommandLine.Parsing
         ///     Set a help text
         /// </summary>
         [NotNull]
-        public MultiCliSwitch HelpText([NotNull] string text)
+        public CliRepeatableSwitch HelpText([NotNull] string text)
         {
             if (string.IsNullOrEmpty(text))
             {
@@ -63,7 +63,7 @@ namespace ITGlobal.CommandLine.Parsing
         ///     Mark switch as hidden (won't be shown in usage)
         /// </summary>
         [NotNull]
-        public MultiCliSwitch Hidden(bool hidden = true)
+        public CliRepeatableSwitch Hidden(bool hidden = true)
         {
             _hidden = hidden;
             return this;
@@ -73,7 +73,7 @@ namespace ITGlobal.CommandLine.Parsing
         ///     Sets switch display order
         /// </summary>
         [NotNull]
-        public MultiCliSwitch DisplayOrder(int displayOrder)
+        public CliRepeatableSwitch DisplayOrder(int displayOrder)
         {
             _displayOrder = displayOrder;
             return this;
@@ -86,12 +86,12 @@ namespace ITGlobal.CommandLine.Parsing
         /// <summary>
         ///     Implicit convertion to boolean
         /// </summary>
-        public static implicit operator bool(MultiCliSwitch option) => option.IsSet;
+        public static implicit operator bool(CliRepeatableSwitch option) => option.IsSet;
 
         /// <summary>
         ///     Implicit convertion to int
         /// </summary>
-        public static implicit operator int(MultiCliSwitch option) => option.RepeatCount;
+        public static implicit operator int(CliRepeatableSwitch option) => option.RepeatCount;
 
         #endregion
 

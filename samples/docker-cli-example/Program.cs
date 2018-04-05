@@ -19,8 +19,8 @@ namespace ITGlobal.CommandLine.Example
 
             // -H, --host list          Daemon socket(s) to connect to
             //                          Defaults $DOCKER_HOST or to unix://var/run/docker.sock
-            var hostsOption = parser.MultiOption<string>('H', "host", helpText: "Daemon socket(s) to connect to")
-                .DefaultValueFromEnvironmentVariable("DOCKER_HOST")
+            var hostsOption = parser.RepeatableOption<string>('H', "host", helpText: "Daemon socket(s) to connect to")
+                .FromEnvironmentVariable("DOCKER_HOST")
                 .DefaultValue("unix://var/run/docker.sock");
             
             // -l, --log-level string   Set the logging level
@@ -63,9 +63,9 @@ namespace ITGlobal.CommandLine.Example
                         .Option<string>('f', "file", helpText: "Name of the Dockerfile")
                         .DefaultValue("./Dockerfile");
                     var tagsOption = imageBuildCommand
-                        .MultiOption<string>('t', "tags", "Name and optionally a tag in the 'name:tag' format");
+                        .RepeatableOption<string>('t', "tags", "Name and optionally a tag in the 'name:tag' format");
                     var labelsOption = imageBuildCommand
-                        .MultiOption<string>("label", "Set metadata for an image");
+                        .RepeatableOption<string>("label", "Set metadata for an image");
                     var quietSwitch = imageBuildCommand
                         .Switch('q', "quiet", helpText: "Suppress the build output and print image ID on success");
                     var buildContextOption = imageBuildCommand

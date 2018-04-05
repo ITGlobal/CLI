@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using ITGlobal.CommandLine.Parsing.Impl;
@@ -10,16 +10,15 @@ namespace ITGlobal.CommandLine.Parsing
     ///     Command line named repetable option
     /// </summary>
     [PublicAPI]
-    public sealed class MultiCliOption<T> : ICliConsumer
+    public sealed class CliRepeatableOption<T> : ICliConsumer
     {
         #region fields
 
         private readonly List<ValueValidator<T[]>> _validators = new List<ValueValidator<T[]>>();
+        private readonly List<DefaultValueProvider<T[]>> _defaultValueProviders = new List<DefaultValueProvider<T[]>>();
 
         private string _helpText;
         private bool _hidden;
-        private DefaultValueProvider<T[]> _defaultValueProvider;
-        private IValueParser<T> _parser = ValueParser.Get<T>();
         private bool _isRequired;
         private int _displayOrder;
 
@@ -27,7 +26,7 @@ namespace ITGlobal.CommandLine.Parsing
 
         #region .ctor
 
-        internal MultiCliOption() { }
+        internal CliRepeatableOption() { }
 
         #endregion
 
@@ -59,6 +58,8 @@ namespace ITGlobal.CommandLine.Parsing
         [NotNull]
         internal string Name => LongName != null ? $"--{LongName}" : $"-{ShortName}";
 
+        internal IValueParser<T> Parser { get; private set; } = ValueParser.Get<T>();
+
         #endregion
 
         #region methods
@@ -67,7 +68,7 @@ namespace ITGlobal.CommandLine.Parsing
         ///     Sets a help text
         /// </summary>
         [NotNull]
-        public MultiCliOption<T> HelpText([NotNull] string text)
+        public CliRepeatableOption<T> HelpText([NotNull] string text)
         {
             if (string.IsNullOrEmpty(text))
             {
@@ -82,7 +83,7 @@ namespace ITGlobal.CommandLine.Parsing
         ///     Marks option as hidden (won't be shown in usage)
         /// </summary>
         [NotNull]
-        public MultiCliOption<T> Hidden(bool hidden = true)
+        public CliRepeatableOption<T> Hidden(bool hidden = true)
         {
             _hidden = hidden;
             return this;
@@ -92,74 +93,29 @@ namespace ITGlobal.CommandLine.Parsing
         ///     Sets custom value parser
         /// </summary>
         [NotNull]
-        public MultiCliOption<T> UseParser([NotNull] IValueParser<T> parser)
+        public CliRepeatableOption<T> UseParser([NotNull] IValueParser<T> parser)
         {
             if (parser == null)
             {
                 throw new ArgumentNullException(nameof(parser));
             }
 
-            _parser = parser;
+            Parser = parser;
             return this;
-        }
-
-        /// <summary>
-        ///     Sets option default value
-        /// </summary>
-        [NotNull]
-        public MultiCliOption<T> DefaultValue(params T[] defaultValues)
-        {
-            bool DefaultValueProvider(out T[] value)
-            {
-                value = defaultValues;
-                return true;
-            }
-
-            return DefaultValue(DefaultValueProvider);
-        }
-
-        /// <summary>
-        ///     Binds option default value to an environment variable
-        /// </summary>
-        [NotNull]
-        public MultiCliOption<T> DefaultValueFromEnvironmentVariable(string name)
-        {
-            bool DefaultValueProvider(out T[] values)
-            {
-                values = default(T[]);
-
-                var env = Environment.GetEnvironmentVariable(name);
-                if (string.IsNullOrEmpty(env))
-                {
-                    return false;
-                }
-
-                var result = _parser.Parse(env);
-                if (!result.IsSuccess)
-                {
-                    return false;
-                }
-
-                var value = result.Value;
-                values = new[] {value};
-                return true;
-            }
-
-            return DefaultValue(DefaultValueProvider);
         }
 
         /// <summary>
         ///     Sets option default value provider
         /// </summary>
         [NotNull]
-        public MultiCliOption<T> DefaultValue([NotNull] DefaultValueProvider<T[]> defaultValueProvider)
+        public CliRepeatableOption<T> DefaultValue([NotNull] DefaultValueProvider<T[]> provider)
         {
-            if (defaultValueProvider == null)
+            if (provider == null)
             {
-                throw new ArgumentNullException(nameof(defaultValueProvider));
+                throw new ArgumentNullException(nameof(provider));
             }
 
-            _defaultValueProvider = defaultValueProvider;
+            _defaultValueProviders.Add(provider);
             return this;
         }
 
@@ -167,7 +123,7 @@ namespace ITGlobal.CommandLine.Parsing
         ///     Marks option as required
         /// </summary>
         [NotNull]
-        public MultiCliOption<T> Required(string errorMessage = null)
+        public CliRepeatableOption<T> Required(string errorMessage = null)
         {
             errorMessage = errorMessage ?? $"Option \"{Name}\" is missing";
             _isRequired = true;
@@ -187,7 +143,7 @@ namespace ITGlobal.CommandLine.Parsing
         ///     Adds a value validator
         /// </summary>
         [NotNull]
-        public MultiCliOption<T> Validate([NotNull] ValueValidator<T[]> validator)
+        public CliRepeatableOption<T> Validate([NotNull] ValueValidator<T[]> validator)
         {
             if (validator == null)
             {
@@ -202,7 +158,7 @@ namespace ITGlobal.CommandLine.Parsing
         ///     Sets option display order
         /// </summary>
         [NotNull]
-        public MultiCliOption<T> DisplayOrder(int displayOrder)
+        public CliRepeatableOption<T> DisplayOrder(int displayOrder)
         {
             _displayOrder = displayOrder;
             return this;
@@ -215,12 +171,12 @@ namespace ITGlobal.CommandLine.Parsing
         /// <summary>
         ///     Implicit convertion to boolean
         /// </summary>
-        public static implicit operator bool(MultiCliOption<T> option) => option.IsSet;
+        public static implicit operator bool(CliRepeatableOption<T> option) => option.IsSet;
 
         /// <summary>
         ///     Implicit convertion to T[]
         /// </summary>
-        public static implicit operator T[] (MultiCliOption<T> cliOption) => cliOption.Values;
+        public static implicit operator T[] (CliRepeatableOption<T> cliOption) => cliOption.Values;
 
         #endregion
 
@@ -228,7 +184,7 @@ namespace ITGlobal.CommandLine.Parsing
 
         void ICliConsumer.CheckConfiguration()
         {
-            if (_parser == null)
+            if (Parser == null)
             {
                 throw new Exception($"You should specify custom parser for {typeof(T).FullName} (see option \"{Name}\")");
             }
@@ -257,7 +213,7 @@ namespace ITGlobal.CommandLine.Parsing
                         yield break;
                     }
                     
-                    var result = _parser.Parse(str);
+                    var result = Parser.Parse(str);
                     if (result.IsSuccess)
                     {
                         yield return result.Value;
@@ -276,12 +232,16 @@ namespace ITGlobal.CommandLine.Parsing
                 IsSet = true;
             }
 
-            if (!IsSet && _defaultValueProvider != null)
+            if (!IsSet)
             {
-                if (_defaultValueProvider(out values))
+                foreach (var provider in _defaultValueProviders)
                 {
-                    Values = values;
-                    IsSet = true;
+                    if (provider(out values))
+                    {
+                        Values = values;
+                        IsSet = true;
+                        break;
+                    }
                 }
             }
 
@@ -299,11 +259,12 @@ namespace ITGlobal.CommandLine.Parsing
         void ICliConsumer.BuildUsage(IUsageBuilder builder)
         {
             string defaultValue = null;
-            if (_defaultValueProvider != null)
+            foreach (var provider in _defaultValueProviders)
             {
-                if (_defaultValueProvider(out var values))
+                if (provider(out var values))
                 {
-                    defaultValue = string.Join(", ", from value in values select _parser.Format(value));
+                    defaultValue = string.Join(", ", from value in values select Parser.Format(value));
+                    break;
                 }
             }
 

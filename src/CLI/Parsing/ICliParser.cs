@@ -61,7 +61,7 @@ namespace ITGlobal.CommandLine.Parsing
         ///     Add a command line repeteable switch
         /// </summary>
         [NotNull]
-        MultiCliSwitch MultiSwitch(
+        CliRepeatableSwitch RepeatableSwitch(
             char shortName,
             string longName = null,
             string helpText = null,
@@ -72,7 +72,7 @@ namespace ITGlobal.CommandLine.Parsing
         ///     Add a command line repeteable switch
         /// </summary>
         [NotNull]
-        MultiCliSwitch MultiSwitch(
+        CliRepeatableSwitch RepeatableSwitch(
             [NotNull] string longName,
             string helpText = null,
             bool hidden = false
@@ -94,7 +94,7 @@ namespace ITGlobal.CommandLine.Parsing
         ///     Add a command line repeatable positional argument
         /// </summary>
         [NotNull]
-        MultiCliArgument<T> MultiArgument<T>(
+        CliRepeatableArgument<T> RepeatableArgument<T>(
             [NotNull] string displayName,
             int position,
             string helpText = null,
@@ -125,7 +125,7 @@ namespace ITGlobal.CommandLine.Parsing
         ///     Add a command line repeatable option
         /// </summary>
         [NotNull]
-        MultiCliOption<T> MultiOption<T>(
+        CliRepeatableOption<T> RepeatableOption<T>(
             char shortName,
             string longName = null,
             string helpText = null,
@@ -135,7 +135,7 @@ namespace ITGlobal.CommandLine.Parsing
         ///     Add a command line repeatable option
         /// </summary>
         [NotNull]
-        MultiCliOption<T> MultiOption<T>(
+        CliRepeatableOption<T> RepeatableOption<T>(
             [NotNull] string longName,
             string helpText = null,
             bool hidden = false);

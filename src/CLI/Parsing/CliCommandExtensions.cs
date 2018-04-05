@@ -41,21 +41,21 @@ namespace ITGlobal.CommandLine.Parsing
         ///     Add a command line repeatable named string option
         /// </summary>
         [NotNull]
-        public static MultiCliOption<string> MultiOption(
+        public static CliRepeatableOption<string> RepeatableOption(
             [NotNull] this CliCommand command,
             [NotNull] string longName,
             string helpText = null,
             bool hidden = false
         )
         {
-            return command.MultiOption<string>(longName, helpText, hidden);
+            return command.RepeatableOption<string>(longName, helpText, hidden);
         }
 
         /// <summary>
         ///     Add a command line repeatable named string option
         /// </summary>
         [NotNull]
-        public static MultiCliOption<string> MultiOption(
+        public static CliRepeatableOption<string> RepeatableOption(
             [NotNull] this CliCommand command,
             char shortName,
             string longName = null,
@@ -63,7 +63,7 @@ namespace ITGlobal.CommandLine.Parsing
             bool hidden = false
         )
         {
-            return command.MultiOption<string>(shortName, longName, helpText, hidden);
+            return command.RepeatableOption<string>(shortName, longName, helpText, hidden);
         }
 
         /// <summary>
@@ -85,7 +85,7 @@ namespace ITGlobal.CommandLine.Parsing
         ///     Add a command line repeatable positional string argument
         /// </summary>
         [NotNull]
-        public static MultiCliArgument<string> MultiArgument(
+        public static CliRepeatableArgument<string> RepeatableArgument(
             [NotNull] this CliCommand command,
             [NotNull] string displayName,
             int position,
@@ -93,7 +93,7 @@ namespace ITGlobal.CommandLine.Parsing
             bool hidden = false
         )
         {
-            return command.MultiArgument<string>(displayName, position, helpText, hidden);
+            return command.RepeatableArgument<string>(displayName, position, helpText, hidden);
         }
     }
 }
