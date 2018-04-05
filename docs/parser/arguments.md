@@ -210,12 +210,16 @@ Default values are applied before any validation takes place. So you should be c
 ```csharp
 var argument = argument.Argument<string>("argument", 0);
 argument.DefaultValue("not-empty");
-argument.Required(); // This validator could be omitted without any damage - it would never fire
+// This validator could be omitted without any damage,
+// it would never fire
+argument.Required();
 
 // ...
 
 var argument = argument.Argument<string>("argument", 0);
-argument.DefaultValue("1"); // This default value could be omitted since it would never pass validation
+// This default value could be omitted
+// since it would never pass validation
+argument.DefaultValue("1");
 argument.Validate(Validate_IsGood);
 
 string ValidationFunction(string value, bool isSet)
