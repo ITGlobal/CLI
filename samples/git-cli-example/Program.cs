@@ -1,6 +1,5 @@
 using System;
 using System.Reflection;
-using ITGlobal.CommandLine.Errors;
 using ITGlobal.CommandLine.Parsing;
 
 namespace ITGlobal.CommandLine.Example
@@ -17,7 +16,7 @@ namespace ITGlobal.CommandLine.Example
             {
                 if (versionSwitch.IsSet)
                 {
-                    var version = typeof(CLI).GetTypeInfo().Assembly
+                    var version = typeof(Program).GetTypeInfo().Assembly
                         .GetCustomAttribute<AssemblyFileVersionAttribute>()
                         .Version;
                     Terminal.Stdout.WriteLine($"my-git version {version}");
@@ -135,7 +134,7 @@ namespace ITGlobal.CommandLine.Example
             {
                 if (!(softSwitch.IsSet ^ hardSwitch.IsSet))
                 {
-                    throw new CommandLineValidationException(new[] { "Specify exactly one of switches: --soft, --hard" });
+                    throw new Exception("Specify exactly one of switches: --soft, --hard");
                 }
 
                 Console.WriteLine($"command: reset");

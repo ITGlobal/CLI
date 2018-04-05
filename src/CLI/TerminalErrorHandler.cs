@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 
-namespace ITGlobal.CommandLine.Errors
+namespace ITGlobal.CommandLine
 {
     [PublicAPI]
     public static class TerminalErrorHandler

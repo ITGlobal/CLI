@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using ITGlobal.CommandLine.Errors;
 using ITGlobal.CommandLine.Parsing;
 using ITGlobal.CommandLine.ProgressBars;
 using ITGlobal.CommandLine.Spinners;
