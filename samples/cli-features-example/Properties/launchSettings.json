@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "cli-features-example": {
+      "commandName": "Project",
+      "commandLineArgs": "table -n 10"
+    }
+  }
+}

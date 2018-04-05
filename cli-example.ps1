@@ -1,1 +1,1 @@
-& dotnet run --no-launch-profile --project ./src/cli-example/cli-example.csproj -- $args
+dotnet run --no-launch-profile --project ./src/cli-example/cli-example.csproj -- $args

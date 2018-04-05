@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "ITGlobal.CLI.Example": {
-      "commandName": "Project",
-      "commandLineArgs": "table -n 105 -p"
-    }
-  }
-}

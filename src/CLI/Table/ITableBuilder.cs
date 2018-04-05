@@ -1,11 +1,10 @@
-﻿using System;
+using System;
 using JetBrains.Annotations;
 
-// ReSharper disable once CheckNamespace
-namespace ITGlobal.CommandLine
+namespace ITGlobal.CommandLine.Table
 {
     /// <summary>
-    ///     Console table builder
+    ///     Terminal table builder
     /// </summary>
     /// <typeparam name="T">
     ///     Row item type
@@ -13,38 +12,6 @@ namespace ITGlobal.CommandLine
     [PublicAPI]
     public interface ITableBuilder<out T>
     {
-        /// <summary>
-        ///     Sets a table title
-        /// </summary>
-        [PublicAPI, NotNull]
-        ITableBuilder<T> Title(string title);
-
-        /// <summary>
-        ///     Turn table title on or off
-        /// </summary>
-        [PublicAPI, NotNull]
-        [Obsolete("Use UseStyle() method instead")]
-        ITableBuilder<T> PrintTitle(bool enable = true);
-
-        /// <summary>
-        ///     Turn table column headers on or off
-        /// </summary>
-        [PublicAPI, NotNull]
-        [Obsolete("Use UseStyle() method instead")]
-        ITableBuilder<T> PrintHeader(bool enable = true);
-
-        /// <summary>
-        ///     Turn table paging on or off
-        /// </summary>
-        [PublicAPI, NotNull]
-        ITableBuilder<T> EnablePaging(bool enable = true);
-
-        /// <summary>
-        ///     Set table rendering style
-        /// </summary>
-        [PublicAPI, NotNull]
-        ITableBuilder<T> UseStyle(TableStyle style);
-
         /// <summary>
         ///     Defines a table column
         /// </summary>
@@ -71,5 +38,10 @@ namespace ITGlobal.CommandLine
             Func<T, ConsoleColor?> bg = null,
             int? maxWidth = null
             );
+
+        /// <summary>
+        ///     Draws table to screen
+        /// </summary>
+        void Draw();
     }
 }

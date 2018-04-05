@@ -1,60 +1,94 @@
 using System;
-using static ITGlobal.CommandLine.CLI;
+using ITGlobal.CommandLine.Internals;
 
-// ReSharper disable once CheckNamespace
-namespace ITGlobal.CommandLine
+namespace ITGlobal.CommandLine.Table
 {
-    internal sealed class TableColumn<T>
+    internal sealed class TableColumn<T> : ITableColumnModel<T>
     {
-        private readonly string _title;
         private readonly Func<T, string> _property;
         private readonly Func<T, ConsoleColor?> _fgSelector;
         private readonly Func<T, ConsoleColor?> _bgSelector;
+
+        private readonly string _header;
+
         private readonly int? _trimWidth;
+        private int _effectiveMaxWidth;
         private int _maxWidth;
 
-        public TableColumn(string title, Func<T, string> property, Func<T, ConsoleColor?> fgSelector, Func<T, ConsoleColor?> bgSelector, int? trimWidth)
+        public TableColumn(string header, Func<T, string> property, Func<T, ConsoleColor?> fgSelector, Func<T, ConsoleColor?> bgSelector, int? trimWidth)
         {
-            _title = title;
+            _header = header;
             _property = property;
             _fgSelector = fgSelector;
             _bgSelector = bgSelector;
             _trimWidth = trimWidth;
-            _maxWidth = title.Length;
+            MaxWidth = header.Length;
         }
 
         public void CalculateMaxWidth(T item)
         {
-            var value = GetValueCore(item);
+            var value = GetTextCore(item);
 
             var width = value.Length;
-            if (width > _maxWidth)
+            if (width > MaxWidth)
             {
-                _maxWidth = width;
+                MaxWidth = width;
+            }
+        }
+        
+        public string Header => _header.PadRight(MaxWidth);
+
+        public int MaxWidth
+        {
+            get => _effectiveMaxWidth;
+            set
+            {
+                _maxWidth = value;
+                if (_trimWidth != null && value >= _trimWidth.Value)
+                {
+                    value = _trimWidth.Value;
+                }
+
+                _effectiveMaxWidth = value;
             }
         }
 
-        public string Title => _title.PadRight(_maxWidth);
-
-        public void Print(T item)
+        public string GetText(T item)
         {
-            var value = GetValueCore(item);
-            value = value.PadRight(_maxWidth);
-
-            using (WithColors(_fgSelector(item), _bgSelector(item)))
+            var value = GetTextCore(item);
+            if (MaxWidth >= 0 && value.Length > MaxWidth)
             {
-                Console.Write(value);
+                value = value.Substring(0, MaxWidth - Consts.ELLIPSIS.Length) + Consts.ELLIPSIS;
             }
-        }
 
-        private string GetValueCore(T item)
-        {
-            var value = (_property(item) ?? "");
-            if (_trimWidth != null && value.Length > _trimWidth.Value)
+            if (value.Length < MaxWidth)
             {
-                value = value.Substring(0, _trimWidth.Value - ELLIPSIS.Length) + ELLIPSIS;
+                value = value.PadRight(MaxWidth);
             }
             return value;
+        }
+
+        public ConsoleColor? GetForegroundColor(T item)
+        {
+            var color = _fgSelector(item);
+            return color;
+        }
+
+        public ConsoleColor? GetBackgroundColor(T item)
+        {
+            var color = _bgSelector(item);
+            return color;
+        }
+
+        private string GetTextCore(T item)
+        {
+            var value = _property(item) ?? "";
+            return value;
+        }
+
+        public override string ToString()
+        {
+            return $"Column {_header} MaxWidth: {MaxWidth}";
         }
     }
 }

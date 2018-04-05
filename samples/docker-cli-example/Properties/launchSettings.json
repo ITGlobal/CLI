@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "docker-cli-example": {
+      "commandName": "Project",
+      "commandLineArgs": "image build -x ."
+    }
+  }
+}

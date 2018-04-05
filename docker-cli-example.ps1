@@ -1,0 +1,1 @@
+dotnet run --no-launch-profile --project ./samples/docker-cli-example/docker-cli-example.csproj -- $args

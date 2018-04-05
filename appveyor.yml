@@ -17,6 +17,8 @@ deploy:
   api_key:
     secure: r5vF3QENzP28+dU6gvmD7Sqbdt5Ti43yhuSye3O7TJxKT+6vuponJ7tVwkGkotH7
   skip_symbols: true
+  on:
+    branch: master
 notifications:
 - provider: Slack
   incoming_webhook:
