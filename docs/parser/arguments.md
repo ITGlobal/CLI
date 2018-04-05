@@ -61,7 +61,8 @@ argument.Validate(ValidationFunction);
 
 // This function will be called to validate a result of parsing
 // It will be called even if argument is not set
-// Function should return null if value is valid and an error message otherwise
+// Function should return null if value is valid
+// and an error message otherwise
 string ValidationFunction(OptValue value, bool isSet)
 {
     if (!isSet)
