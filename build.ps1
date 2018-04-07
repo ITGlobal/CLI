@@ -32,7 +32,7 @@ else {
 
 if ($env:APPVEYOR) {
     $BUILD_NUMBER = [int]($env:APPVEYOR_BUILD_NUMBER)
-    if(-not $env:APPVEYOR_REPO_TAG) {
+    if($env:APPVEYOR_REPO_TAG -ne "true") {
         $tag =$(git log -n 1 --pretty=format:%h)
         $VERSION = "$VERSION-$tag+$env:APPVEYOR_BUILD_NUMBER"
     }
