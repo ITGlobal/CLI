@@ -1,7 +1,7 @@
 # ITGlobal CLI
 
 [![Build status](https://ci.appveyor.com/api/projects/status/l3v4nu7dcra3o8nd/branch/master?svg=true)](https://ci.appveyor.com/project/itgloballlc/cli/branch/master)
-[![NuGet](https://img.shields.io/nuget/v/ITGlobal.CLI.svg?maxAge=2592000)](https://www.nuget.org/packages/ITGlobal.CLI/)
+[![NuGet](https://img.shields.io/nuget/v/ITGlobal.CLI.svg)](https://www.nuget.org/packages/ITGlobal.CLI/)
 
 This library is a set of various utilities to build command line application in C#.
 
