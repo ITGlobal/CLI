@@ -32,9 +32,4 @@
   <PropertyGroup Condition=" '$(TargetFramework)' == 'net40' ">
     <DefineConstants>$(DefineConstants);NET40</DefineConstants>
   </PropertyGroup>
-
-  <ItemGroup>
-    <DotNetCliToolReference Include="dotnet-version-cli" Version="0.6.0" />
-  </ItemGroup>
-
 </Project>

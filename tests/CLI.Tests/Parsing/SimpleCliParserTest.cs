@@ -12,7 +12,7 @@ namespace ITGlobal.CommandLine.Parsing
         private ISimpleCliParser CreateParser()
         {
             const CliParserFlags testOptions = CliParserFlags.PosixNotation;
-            var parser = CliParser.NewSimpleParser(flags: testOptions, disableHelpSwitch: true);
+            var parser = CliParser.NewSimpleParser(flags: testOptions, disableHelpSwitch: true, terminal: new FakeTerminal());
             return parser;
         }
 

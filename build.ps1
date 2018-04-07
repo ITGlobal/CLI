@@ -17,24 +17,35 @@ if ($LASTEXITCODE -ne 0) {
     Write-Host "'dotnet clean' failed with $LASTEXITCODE" -f red
     exit $LASTEXITCODE
 }
+write-host "Dropped build output"
 
 # VERSION
 write-host "< version >" -f cyan
-if((git tag | measure).Count -eq 0) {
-    write-host "there are no tags! Will use '0.0.0-dev' as version number" -f red
-    $VERSION = "0.0.0-dev"
-} else {
-    $VERSION = "$(git describe --abbrev=0 --tags)"
+$VERSION = "0.0.0-dev"
 
-    if($env:APPVEYOR) {
-        appveyor UpdateBuild -Version "$VERSION"
+if ((git tag | measure).Count -eq 0) {
+    write-host "there are no tags! Will use '$VERSION' as version number" -f red    
+}
+else {
+    $VERSION = "$(git describe --abbrev=0 --tags)"
+}
+
+if ($env:APPVEYOR) {
+    $BUILD_NUMBER = [int]($env:APPVEYOR_BUILD_NUMBER)
+    if(-not $env:APPVEYOR_REPO_TAG) {
+        $tag =$(git log -n 1 --pretty=format:%h)
+        $VERSION = "$VERSION-$tag+$env:APPVEYOR_BUILD_NUMBER"
     }
 }
-write-host "version number: $VERSION"
-write-host "build number  : $env:APPVEYOR_BUILD_VERSION"
 
-# BUILD
-write-host "< build >" -f cyan
+write-host "version number : $VERSION"
+
+if ($env:APPVEYOR) {
+    appveyor SetVariable -Name VERSION -Value $VERSION
+}
+
+# COMPILE
+write-host "< compile >" -f cyan
 & dotnet build -v q -c $CONFIGURATION /nologo /p:Version=$VERSION 
 if ($LASTEXITCODE -ne 0) {
     Write-Host "'dotnet build' failed with $LASTEXITCODE" -f red
@@ -57,5 +68,7 @@ if ($LASTEXITCODE -ne 0) {
     Write-Host "`"dotnet pack`" failed with $LASTEXITCODE"
     exit $LASTEXITCODE
 }
+Write-Host "Generated packages:"
+gci $ARTIFACTS -file -filter *.nupkg | % { write-host "`t$($_.Name)"}
 
 Write-Host "Completed" -f Green

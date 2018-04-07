@@ -1,6 +1,6 @@
 version: 1.0.{build}
 configuration: Release
-skip_tags: true
+skip_tags: false
 image: Visual Studio 2017
 build:
   verbosity: minimal
@@ -19,6 +19,7 @@ deploy:
   skip_symbols: true
   on:
     branch: master
+    appveyor_repo_tag: true
 notifications:
 - provider: Slack
   incoming_webhook:

@@ -12,7 +12,11 @@ namespace ITGlobal.CommandLine.Parsing
         private ITreeCliParser CreateParser()
         {
             const CliParserFlags testOptions = CliParserFlags.PosixNotation;
-            var parser = CliParser.NewTreeParser(flags: testOptions, disableHelpSwitch: true);
+            var parser = CliParser.NewTreeParser(
+                flags: testOptions, 
+                disableHelpSwitch: true, 
+                disableImplicitHelp: true, 
+                terminal: new FakeTerminal());
             return parser;
         }
 
