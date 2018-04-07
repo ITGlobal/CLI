@@ -42,6 +42,7 @@ write-host "version number : $VERSION"
 
 if ($env:APPVEYOR) {
     appveyor SetVariable -Name VERSION -Value $VERSION
+    appveyor UpdateBuild -Version "$VERSION"
 }
 
 # COMPILE
