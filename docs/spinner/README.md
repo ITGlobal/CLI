@@ -1,3 +1,5 @@
-# Terminal progress bar
+# Terminal spinner
+
+> [home](../README.md) > terminal spinner
 
 TODO

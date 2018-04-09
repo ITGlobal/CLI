@@ -1,4 +1,6 @@
-# Table printer
+# Terminal table
+
+> [home](../README.md) > terminal table
 
 ## Usage
 

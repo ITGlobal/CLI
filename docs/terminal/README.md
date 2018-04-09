@@ -1,6 +1,8 @@
 # Terminal wrapper
 
-CLI provides (and uses internally) a unified wrapper for standart input, output and error streams - `Terminal` class.
+> [home](../README.md) > terminal wrapper
+
+`ITGlobal.CLI` provides (and uses internally) a unified wrapper for standart input, output and error streams - `Terminal` class.
 
 ![](colors.png)
 

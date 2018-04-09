@@ -1,4 +1,6 @@
-# Command line parser - switches
+# Switches
+
+> [home](../README.md) > [command line parser](README.md) > switches
 
 **Switch** is a command line parameter that doesn't have an explicit value, only "set/not set" states.
 
