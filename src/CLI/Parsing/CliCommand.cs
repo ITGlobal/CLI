@@ -10,7 +10,7 @@ namespace ITGlobal.CommandLine.Parsing
     ///     Command line command
     /// </summary>
     [PublicAPI]
-    public sealed class CliCommand : ICliCommand
+    public sealed class CliCommand : ICliCommandRoot, ICliCommand
     {
         #region fields
 

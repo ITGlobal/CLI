@@ -1,4 +1,4 @@
-﻿using JetBrains.Annotations;
+using JetBrains.Annotations;
 
 namespace ITGlobal.CommandLine.Parsing
 {
@@ -6,7 +6,7 @@ namespace ITGlobal.CommandLine.Parsing
     ///     Command line parser that supports subcommands
     /// </summary>
     [PublicAPI]
-    public interface ITreeCliParser : ICliParser
+    public interface ITreeCliParser : ICliCommandRoot, ICliParser
     {
         /// <summary>
         ///     Add a command line command
