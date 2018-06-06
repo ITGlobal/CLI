@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ITGlobal.CommandLine.Parsing.Impl
@@ -26,7 +26,7 @@ namespace ITGlobal.CommandLine.Parsing.Impl
             if (_usage.SupportsHelp)
             {
                 _terminal.Stderr.WriteLine(
-                    (TerminalString)"Type",
+                    (TerminalString)"Type ",
                     $"{_usage.ExecutableName} {_usage.HelpCommand}".WithForeground(ConsoleColor.Cyan),
                     " to get help"
                 );

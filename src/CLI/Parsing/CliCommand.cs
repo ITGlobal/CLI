@@ -534,7 +534,7 @@ namespace ITGlobal.CommandLine.Parsing
             {
                 if (command.MatchesCommandName(name))
                 {
-                    return command;
+                    return command.SelectCommand(raw);
                 }
             }
 
