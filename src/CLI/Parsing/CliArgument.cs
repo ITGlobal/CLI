@@ -151,7 +151,7 @@ namespace ITGlobal.CommandLine.Parsing
             _validators.Add(validator);
             return this;
         }
-
+        
         #endregion
 
         #region operators
