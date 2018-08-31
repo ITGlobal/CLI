@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -352,8 +352,23 @@ namespace ITGlobal.CommandLine.Parsing
             }
         }
 
-        private sealed class EnumValueParser<T> : IValueParser<T>
+        internal sealed class EnumValueParser<T> : IValueParser<T>
         {
+            public EnumValueParser()
+            {
+                KnownValues = Enum.GetNames(typeof(T))
+                    .Select(_ => new
+                    {
+                        Name = _.ToLowerInvariant(),
+                        Value = Convert.ToInt32(Enum.Parse(typeof(T), _, false))
+                    })
+                    .GroupBy(_ => _.Value)
+                    .Select(_ => _.First().Name)
+                    .ToArray();
+            }
+
+            public string[] KnownValues { get; }
+
             public ValueParserResult<T> Parse(string str)
             {
                 try
@@ -366,7 +381,7 @@ namespace ITGlobal.CommandLine.Parsing
                 {
                     var validValues = Enum.GetNames(typeof(T)).Select(_ => _.ToLowerInvariant());
                     return ValueParserResult.Error<T>(
-                        $"Invalid value. Valid values are: {string.Join(", ", validValues)}"
+                        $"Invalid value \"{str}\". Valid values are: {string.Join(", ", validValues)}"
                     );
                 }
             }

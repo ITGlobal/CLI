@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 
 #if NETSTANDARD1_6
 using System.Reflection;
@@ -16,7 +16,8 @@ namespace ITGlobal.CommandLine.Parsing
             if (typeof(T).IsEnum)
 #endif
             {
-                return "enum";
+                var parser = (ValueParser.EnumValueParser<T>)ValueParser.Get<T>();
+                return string.Join(", ", parser.KnownValues);
             }
 
             switch (Type.GetTypeCode(typeof(T)))
