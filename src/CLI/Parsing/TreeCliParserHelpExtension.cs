@@ -1,4 +1,5 @@
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using ITGlobal.CommandLine.Parsing.Impl;
 using ITGlobal.CommandLine.Table;
@@ -196,10 +197,32 @@ namespace ITGlobal.CommandLine.Parsing
                 terminal.Stdout.WriteLine(rootUsage.Logo.WithForeground(ConsoleColor.Cyan));
                 terminal.Stdout.WriteLine();
             }
-            
-            var hasOptions = usage.Arguments.Count(_ => !_.IsHidden) > 0;
-            var hasSwitches = usage.Switches.Count(_ => !_.IsHidden) > 0;
+
+            var options = new List<CliOptionUsage>();
+            var switches = new List<CliSwitchUsage>();
+
+            var u = usage;
+            while (u != null)
+            {
+                foreach (var o in u.Options)
+                {
+                    options.Add(o);
+                }
+
+                foreach (var s in u.Switches)
+                {
+                    switches.Add(s);
+                }
+
+                u = u.Parent;
+            }
+
+            var hasGlobalOptions = usage.Root.Options.Count(_ => !_.IsHidden) > 0;
+            var hasGlobalSwitches = usage.Root.Switches.Count(_ => !_.IsHidden) > 0;
+            var hasOptions = options.Count(_ => !_.IsHidden) > 0;
+            var hasSwitches = switches.Count(_ => !_.IsHidden) > 0;
             var hasArguments = usage.Arguments.Count(_ => !_.IsHidden) > 0;
+
             var hasCommands = usage.Commands.Count(_ => !_.IsHidden) > 0;
 
             if (!string.IsNullOrEmpty(usage.HelpText))
@@ -213,7 +236,7 @@ namespace ITGlobal.CommandLine.Parsing
             terminal.Stdout.Write(rootUsage.ExecutableName.WithForeground(ConsoleColor.Yellow));
             terminal.Stdout.Write($" {string.Join(" ", usage.GetName())}");
 
-            if (hasOptions || hasSwitches)
+            if (hasGlobalOptions || hasGlobalSwitches || hasOptions || hasSwitches)
             {
                 terminal.Stdout.Write(" [OPTIONS]");
             }
@@ -246,18 +269,33 @@ namespace ITGlobal.CommandLine.Parsing
             terminal.Stdout.WriteLine();
             terminal.Stdout.WriteLine();
 
+            if (hasGlobalOptions || hasGlobalSwitches)
+            {
+                terminal.Stdout.WriteLine("GLOBAL OPTIONS".WithForeground(ConsoleColor.White));
+                var table = TerminalTable.Create(
+                    terminal,
+                    usage.Root.Switches
+                        .Where(_ => !_.IsHidden).Select(OptionInfo.Create)
+                        .Concat(usage.Root.Options.Where(_ => !_.IsHidden).Select(OptionInfo.Create))
+                        .OrderBy(_ => _.DisplayOrder)
+                        .ThenBy(_ => _.Key),
+                    renderer: TableRenderer.Plain(drawHeaders: false)
+                );
+                table.Column("", _ => "  ");
+                table.Column("", _ => _.Name);
+                table.Column("", _ => _.Description);
+                table.Draw();
+            }
+
             if (hasOptions || hasSwitches)
             {
-                var options = usage.Switches.Where(_ => !_.IsHidden).Select(OptionInfo.Create)
-                    .Concat(usage.Options.Where(_ => !_.IsHidden).Select(OptionInfo.Create))
-                    .OrderBy(_ => _.DisplayOrder)
-                    .ThenBy(_ => _.Key);
-
-
                 terminal.Stdout.WriteLine("OPTIONS".WithForeground(ConsoleColor.White));
                 var table = TerminalTable.Create(
                     terminal,
-                    options,
+                    switches.Where(_ => !_.IsHidden).Select(OptionInfo.Create)
+                        .Concat(usage.Options.Where(_ => !_.IsHidden).Select(OptionInfo.Create))
+                        .OrderBy(_ => _.DisplayOrder)
+                        .ThenBy(_ => _.Key),
                     renderer: TableRenderer.Plain(drawHeaders: false)
                 );
                 table.Column("", _ => "  ");
@@ -268,15 +306,13 @@ namespace ITGlobal.CommandLine.Parsing
 
             if (hasArguments)
             {
-                var arguments = usage.Arguments.Where(_ => !_.IsHidden)
-                    .Select(ArgumentInfo.Create)
-                    .OrderBy(_ => _.DisplayOrder)
-                    .ThenBy(_ => _.Key);
-
                 terminal.Stdout.WriteLine("ARGUMENTS".WithForeground(ConsoleColor.White));
                 var table = TerminalTable.Create(
                     terminal,
-                    arguments,
+                    usage.Arguments.Where(_ => !_.IsHidden)
+                        .Select(ArgumentInfo.Create)
+                        .OrderBy(_ => _.DisplayOrder)
+                        .ThenBy(_ => _.Key),
                     renderer: TableRenderer.Plain(drawHeaders: false)
                 );
                 table.Column("", _ => "  ");
