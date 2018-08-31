@@ -1,5 +1,5 @@
+﻿using JetBrains.Annotations;
 using System;
-using JetBrains.Annotations;
 
 namespace ITGlobal.CommandLine.Parsing
 {
@@ -51,6 +51,15 @@ namespace ITGlobal.CommandLine.Parsing
             }
 
             return option.DefaultValue(Provider);
+        }
+
+        /// <summary>
+        ///     Converts option's value to nullable
+        /// </summary>
+        public static T? ToNullable<T>(this CliOption<T> option)
+            where T : struct
+        {
+            return option.IsSet ? option.Value : (T?)null;
         }
     }
 }

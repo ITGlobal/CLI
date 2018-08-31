@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -541,12 +541,6 @@ namespace ITGlobal.CommandLine.Parsing.Impl
 
             var tokens = CommandLineTokenizer.Tokenize(Flags, args);
             var raw = new RawCommandLine(tokens);
-
-            // Consume global options and switches
-            foreach (var consumer in _consumers)
-            {
-                consumer.Consume(raw);
-            }
 
             // Select command to execute
             ICliCommand command;

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using ITGlobal.CommandLine.Parsing.Impl;
 using JetBrains.Annotations;
@@ -169,6 +169,8 @@ namespace ITGlobal.CommandLine.Parsing
         #endregion
 
         #region ICliConsumer
+
+        int ICliConsumer.Priority => CliConsumerPriority.Argument;
 
         void ICliConsumer.CheckConfiguration()
         {

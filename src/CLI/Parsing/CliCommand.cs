@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using ITGlobal.CommandLine.Parsing.Impl;
@@ -555,7 +555,7 @@ namespace ITGlobal.CommandLine.Parsing
         {
             _parent.Consume(raw);
 
-            foreach (var option in _consumers)
+            foreach (var option in _consumers.OrderBy(_ => _.Priority))
             {
                 option.Consume(raw);
             }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 
 namespace ITGlobal.CommandLine.Parsing.Impl
@@ -508,7 +509,7 @@ namespace ITGlobal.CommandLine.Parsing.Impl
             var tokens = CommandLineTokenizer.Tokenize(Flags, args);
             var raw = new RawCommandLine(tokens);
 
-            foreach (var consumer in _consumers)
+            foreach (var consumer in _consumers.OrderBy(_=>_.Priority))
             {
                 consumer.Consume(raw);
             }

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using ITGlobal.CommandLine.Parsing.Impl;
 using JetBrains.Annotations;
 
@@ -96,7 +96,9 @@ namespace ITGlobal.CommandLine.Parsing
         #endregion
 
         #region ICliConsumer
-        
+
+        int ICliConsumer.Priority => CliConsumerPriority.Switch;
+
         void ICliConsumer.CheckConfiguration() { }
 
         void ICliConsumer.Consume(RawCommandLine raw)
