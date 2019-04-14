@@ -25,7 +25,8 @@ namespace ITGlobal.CommandLine.Example
             
             // -l, --log-level string   Set the logging level
             //                          ("debug" | "info" | "warn" | "error" | "fatal")
-            var logLevelOption = parser.Option<LogLevel>('l', "log-level", helpText: "Set the logging level");
+            var logLevelOption = parser.Option<LogLevel>('l', "log-level", helpText: "Set the logging level")
+                .AsNullable();
 
             // -v, --version            Print version information and quit
             var versionSwitch = parser.Switch('v', "version", helpText: "Print version information and quit");

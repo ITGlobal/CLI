@@ -101,7 +101,7 @@ namespace ITGlobal.CommandLine.Parsing
             Parser = parser;
             return this;
         }
-        
+
         /// <summary>
         ///     Sets argument default value provider
         /// </summary>
@@ -151,7 +151,7 @@ namespace ITGlobal.CommandLine.Parsing
             _validators.Add(validator);
             return this;
         }
-        
+
         #endregion
 
         #region operators
