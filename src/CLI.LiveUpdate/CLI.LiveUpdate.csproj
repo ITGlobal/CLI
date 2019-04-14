@@ -3,14 +3,15 @@
   <Import Project="../Package.props" />
 
   <PropertyGroup>
-    <PackageId>ITGlobal.CLI</PackageId>
+    <PackageId>ITGlobal.CLI.LiveUpdate</PackageId>
     <RootNamespace>ITGlobal.CommandLine</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CLI.LiveUpdate\CLI.LiveUpdate.csproj" />
-    <ProjectReference Include="..\CLI.Parser\CLI.Parser.csproj" />
-    <ProjectReference Include="..\CLI.Table\CLI.Table.csproj" />
     <ProjectReference Include="..\CLI.Terminal\CLI.Terminal.csproj" />
   </ItemGroup>
+
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net40' ">
+    <DefineConstants>$(DefineConstants);NET40</DefineConstants>
+  </PropertyGroup>
 </Project>

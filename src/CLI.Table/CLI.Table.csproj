@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="../Package.props" />
+
+  <PropertyGroup>
+    <PackageId>ITGlobal.CLI.Table</PackageId>
+    <RootNamespace>ITGlobal.CommandLine.Table</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CLI.Terminal\CLI.Terminal.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net40' ">
+    <DefineConstants>$(DefineConstants);NET40</DefineConstants>
+  </PropertyGroup>
+</Project>

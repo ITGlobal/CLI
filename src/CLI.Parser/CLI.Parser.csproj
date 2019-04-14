@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="../Package.props" />
+
+  <PropertyGroup>
+    <PackageId>ITGlobal.CLI.Parser</PackageId>
+    <RootNamespace>ITGlobal.CommandLine.Parsing</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CLI.Table\CLI.Table.csproj" />
+    <ProjectReference Include="..\CLI.Terminal\CLI.Terminal.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net40' ">
+    <DefineConstants>$(DefineConstants);NET40</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net45' ">
+    <DefineConstants>$(DefineConstants);NET45</DefineConstants>
+  </PropertyGroup>
+</Project>

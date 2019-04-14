@@ -55,16 +55,18 @@ if ($LASTEXITCODE -ne 0) {
 
 # TEST
 write-host "< test >" -f cyan
-& dotnet test -v q ./tests/CLI.Tests/CLI.Tests.csproj
+& dotnet test -v q -c $CONFIGURATION --no-restore --no-build /nologo
 if ($LASTEXITCODE -ne 0) {
-    Write-Host "'dotnet restore' failed with $LASTEXITCODE" -f red
+    Write-Host "'dotnet test' failed with $LASTEXITCODE" -f red
     exit $LASTEXITCODE
 }
 
 # PACK
 write-host "< pack >" -f cyan
+# & dotnet pack /nologo -v q -c $CONFIGURATION /p:Version=$VERSION --include-symbols --include-source `
+#     --no-restore --no-build --output $ARTIFACTS ./src/CLI/CLI.csproj
 & dotnet pack /nologo -v q -c $CONFIGURATION /p:Version=$VERSION --include-symbols --include-source `
-    --no-restore --output $ARTIFACTS ./src/CLI/CLI.csproj
+    --no-restore --no-build --output $ARTIFACTS ./CLI.sln
 if ($LASTEXITCODE -ne 0) {
     Write-Host "`"dotnet pack`" failed with $LASTEXITCODE"
     exit $LASTEXITCODE
