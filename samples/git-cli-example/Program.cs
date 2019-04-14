@@ -54,11 +54,11 @@ namespace ITGlobal.CommandLine.Example
             var command = app.Command("clone");
             command.HelpText("Clone a repository into a new directory");
 
-            var repositoryParameter = command.Argument<string>("repository", 0)
+            var repositoryParameter = command.Argument<string>("repository")
                 .HelpText("The (possibly remote) repository to clone from")
                 .Required();
 
-            var directoryParameter = command.Argument<string>("directory", 1)
+            var directoryParameter = command.Argument<string>("directory")
                 .HelpText("The name of a new directory to clone into");
 
             var branchParameter = command.Option<string>('b', "branch")
@@ -84,7 +84,7 @@ namespace ITGlobal.CommandLine.Example
             var bareSwitch = command.Switch("bare")
                 .HelpText("Create a bare repository");
 
-            var directoryParameter = command.Argument<string>("directory", 0)
+            var directoryParameter = command.Argument<string>("directory")
                 .HelpText("The name of a directory");
 
             command.OnExecute(_ =>
@@ -104,7 +104,7 @@ namespace ITGlobal.CommandLine.Example
             var verboseSwitch = command.Switch('v', "verbose")
                 .HelpText("Only print error and warning messages; all other output will be suppressed.");
 
-            var pathspecParameter = command.Argument<string>("pathspec", 0)
+            var pathspecParameter = command.Argument<string>("pathspec")
                 .Required()
                 .HelpText("Files to add content from");
 
@@ -126,7 +126,7 @@ namespace ITGlobal.CommandLine.Example
             var hardSwitch = command.Switch("hard")
                 .HelpText("Resets the index and working tree");
 
-            var commitParameter = command.Argument<string>("commit", 0)
+            var commitParameter = command.Argument<string>("commit")
                 .Required()
                 .HelpText("Commit to reset to");
 
@@ -151,7 +151,7 @@ namespace ITGlobal.CommandLine.Example
             var verboseSwitch = command.Switch('v', "verbose")
                 .HelpText("Only print error and warning messages; all other output will be suppressed.");
 
-            var repositoryParameter = command.Argument<string>("repository", 0)
+            var repositoryParameter = command.Argument<string>("repository")
                .HelpText("The repository to pull from")
                .DefaultValue("origin");
 
@@ -168,10 +168,10 @@ namespace ITGlobal.CommandLine.Example
             var command = app.Command("push")
                .HelpText("Update remote refs along with associated objects");
 
-            var repositoryParameter = command.Argument<string>("repository", 0)
+            var repositoryParameter = command.Argument<string>("repository")
                .HelpText("The remote repository that is destination of a push operation")
                .DefaultValue("origin");
-            var refspecParameter = command.Argument<string>("refspec", 1)
+            var refspecParameter = command.Argument<string>("refspec")
                .HelpText("Specify what destination ref to update with what source object");
 
             command.OnExecute(_ =>

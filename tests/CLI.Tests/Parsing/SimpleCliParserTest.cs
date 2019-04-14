@@ -291,7 +291,7 @@ namespace ITGlobal.CommandLine.Parsing
         public void Argument_not_set()
         {
             var parser = CreateParser();
-            var arg = parser.Argument("arg", 0);
+            var arg = parser.Argument("arg");
             Assert.Equal(0, parser.Parse().Run());
             Assert.False(arg.IsSet);
         }
@@ -300,7 +300,7 @@ namespace ITGlobal.CommandLine.Parsing
         public void Argument_is_set()
         {
             var parser = CreateParser();
-            var arg = parser.Argument("arg", 0);
+            var arg = parser.Argument("arg");
             Assert.Equal(0, parser.Parse("value").Run());
             Assert.True(arg.IsSet);
             Assert.Equal("value", arg.Value);
@@ -310,7 +310,7 @@ namespace ITGlobal.CommandLine.Parsing
         public void Required_argument_not_set()
         {
             var parser = CreateParser();
-            parser.Argument("arg", 0).Required();
+            parser.Argument("arg").Required();
             Assert.Equal(ExitCodes.InvalidInput, parser.Parse().Run());
         }
 
@@ -322,7 +322,7 @@ namespace ITGlobal.CommandLine.Parsing
         public void Repeatable_argument_not_set()
         {
             var parser = CreateParser();
-            var arg = parser.RepeatableArgument("arg", 0);
+            var arg = parser.RepeatableArgument("arg");
             Assert.Equal(0, parser.Parse().Run());
             Assert.False(arg.IsSet);
         }
@@ -331,7 +331,7 @@ namespace ITGlobal.CommandLine.Parsing
         public void Repeatable_argument_is_set_once()
         {
             var parser = CreateParser();
-            var arg = parser.RepeatableArgument("arg", 0);
+            var arg = parser.RepeatableArgument("arg");
             Assert.Equal(0, parser.Parse("value").Run());
             Assert.True(arg.IsSet);
             Assert.Single(arg.Values);
@@ -342,7 +342,7 @@ namespace ITGlobal.CommandLine.Parsing
         public void Repeatable_argument_is_set_few_times()
         {
             var parser = CreateParser();
-            var arg = parser.RepeatableArgument("arg", 0);
+            var arg = parser.RepeatableArgument("arg");
             Assert.Equal(0, parser.Parse("value1", "value2").Run());
             Assert.True(arg.IsSet);
             Assert.Equal(2, arg.Values.Length);
@@ -354,7 +354,7 @@ namespace ITGlobal.CommandLine.Parsing
         public void Required_repeatable_argument_not_set()
         {
             var parser = CreateParser();
-            parser.RepeatableArgument("arg", 0).Required();
+            parser.RepeatableArgument("arg").Required();
             Assert.Equal(ExitCodes.InvalidInput, parser.Parse().Run());
         }
 

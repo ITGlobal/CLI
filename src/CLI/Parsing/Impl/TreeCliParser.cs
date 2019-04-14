@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -14,6 +14,8 @@ namespace ITGlobal.CommandLine.Parsing.Impl
         private readonly List<CliCommand> _commands = new List<CliCommand>();
         private readonly List<CliAsyncHandler> _beforeExecuteHandlers = new List<CliAsyncHandler>();
         private readonly List<CliAsyncHandler> _executeHandlers = new List<CliAsyncHandler>();
+
+        private int _argumentCount;
 
         #endregion
 
@@ -259,7 +261,6 @@ namespace ITGlobal.CommandLine.Parsing.Impl
         /// </summary>
         public CliArgument<T> Argument<T>(
             string displayName,
-            int position,
             string helpText = null,
             bool hidden = false,
             IValueParser<T> parser = null)
@@ -269,6 +270,8 @@ namespace ITGlobal.CommandLine.Parsing.Impl
                 throw new ArgumentNullException(nameof(displayName));
             }
 
+            var position = _argumentCount;
+            _argumentCount++;
             var arg = new CliArgument<T>(position, displayName);
             _consumers.Add(arg);
 
@@ -295,7 +298,6 @@ namespace ITGlobal.CommandLine.Parsing.Impl
         /// </summary>
         public CliRepeatableArgument<T> RepeatableArgument<T>(
             string displayName,
-            int position,
             string helpText = null,
             bool hidden = false,
             IValueParser<T> parser = null)
@@ -305,6 +307,8 @@ namespace ITGlobal.CommandLine.Parsing.Impl
                 throw new ArgumentNullException(nameof(displayName));
             }
 
+            var position = _argumentCount;
+            _argumentCount++;
             var arg = new CliRepeatableArgument<T>(position, displayName);
             _consumers.Add(arg);
 

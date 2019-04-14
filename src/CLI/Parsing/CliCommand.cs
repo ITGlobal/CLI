@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using ITGlobal.CommandLine.Parsing.Impl;
@@ -26,6 +26,7 @@ namespace ITGlobal.CommandLine.Parsing
         private string _helpText;
         private bool _hidden;
         private int _displayOrder;
+        private int _argumentCount;
 
         #endregion
 
@@ -214,7 +215,6 @@ namespace ITGlobal.CommandLine.Parsing
         /// </summary>
         public CliArgument<T> Argument<T>(
             string displayName,
-            int position,
             string helpText = null,
             bool hidden = false,
             IValueParser<T> parser = null)
@@ -224,6 +224,8 @@ namespace ITGlobal.CommandLine.Parsing
                 throw new ArgumentNullException(nameof(displayName));
             }
 
+            var position = _argumentCount;
+            _argumentCount++;
             var arg = new CliArgument<T>(position, displayName);
             _consumers.Add(arg);
 
@@ -250,7 +252,6 @@ namespace ITGlobal.CommandLine.Parsing
         /// </summary>
         public CliRepeatableArgument<T> RepeatableArgument<T>(
             string displayName,
-            int position,
             string helpText = null,
             bool hidden = false,
             IValueParser<T> parser = null)
@@ -260,6 +261,8 @@ namespace ITGlobal.CommandLine.Parsing
                 throw new ArgumentNullException(nameof(displayName));
             }
 
+            var position = _argumentCount;
+            _argumentCount++;
             var arg = new CliRepeatableArgument<T>(position, displayName);
             _consumers.Add(arg);
 

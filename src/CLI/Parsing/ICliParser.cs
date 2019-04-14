@@ -1,4 +1,4 @@
-﻿using JetBrains.Annotations;
+using JetBrains.Annotations;
 
 namespace ITGlobal.CommandLine.Parsing
 {
@@ -84,7 +84,6 @@ namespace ITGlobal.CommandLine.Parsing
         [NotNull]
         CliArgument<T> Argument<T>(
             [NotNull] string displayName,
-            int position,
             string helpText = null,
             bool hidden = false,
             IValueParser<T> parser = null
@@ -96,7 +95,6 @@ namespace ITGlobal.CommandLine.Parsing
         [NotNull]
         CliRepeatableArgument<T> RepeatableArgument<T>(
             [NotNull] string displayName,
-            int position,
             string helpText = null,
             bool hidden = false,
             IValueParser<T> parser = null

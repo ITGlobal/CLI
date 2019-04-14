@@ -1,4 +1,4 @@
-﻿using JetBrains.Annotations;
+using JetBrains.Annotations;
 
 namespace ITGlobal.CommandLine.Parsing
 {
@@ -73,12 +73,11 @@ namespace ITGlobal.CommandLine.Parsing
         public static CliArgument<string> Argument(
             [NotNull] this ICliParser parser,
             [NotNull] string displayName,
-            int position,
             string helpText = null,
             bool hidden = false
         )
         {
-            return parser.Argument<string>(displayName, position, helpText, hidden);
+            return parser.Argument<string>(displayName, helpText, hidden);
         }
 
         /// <summary>
@@ -88,12 +87,11 @@ namespace ITGlobal.CommandLine.Parsing
         public static CliRepeatableArgument<string> RepeatableArgument(
             [NotNull] this ICliParser parser,
             [NotNull] string displayName,
-            int position,
             string helpText = null,
             bool hidden = false
         )
         {
-            return parser.RepeatableArgument<string>(displayName, position, helpText, hidden);
+            return parser.RepeatableArgument<string>(displayName, helpText, hidden);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using ITGlobal.CommandLine.Parsing.Impl;
 using JetBrains.Annotations;
@@ -182,7 +182,7 @@ namespace ITGlobal.CommandLine.Parsing
 
         void ICliConsumer.Consume(RawCommandLine raw)
         {
-            var str = raw.ConsumeArgument(Position);
+            var str = raw.ConsumeArgument(0);
             if (str != null)
             {
                 var result = Parser.Parse(str);

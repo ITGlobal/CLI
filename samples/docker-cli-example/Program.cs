@@ -69,7 +69,7 @@ namespace ITGlobal.CommandLine.Example
                     var quietSwitch = imageBuildCommand
                         .Switch('q', "quiet", helpText: "Suppress the build output and print image ID on success");
                     var buildContextOption = imageBuildCommand
-                        .Argument<string>("path", position: 0, helpText: "Build context path")
+                        .Argument<string>("path", helpText: "Build context path")
                         .Validate(ValidateDirectoryPath) // This parameter must contains a path to an existing directory
                         .Required(); // NOTE this parameter is required
 
