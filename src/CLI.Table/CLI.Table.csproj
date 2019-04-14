@@ -4,6 +4,7 @@
 
   <PropertyGroup>
     <PackageId>ITGlobal.CLI.Table</PackageId>
+    <LangVersion>latest</LangVersion>
     <RootNamespace>ITGlobal.CommandLine.Table</RootNamespace>
   </PropertyGroup>
 

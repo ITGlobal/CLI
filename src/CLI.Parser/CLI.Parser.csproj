@@ -4,6 +4,7 @@
 
   <PropertyGroup>
     <PackageId>ITGlobal.CLI.Parser</PackageId>
+    <LangVersion>latest</LangVersion>
     <RootNamespace>ITGlobal.CommandLine.Parsing</RootNamespace>
   </PropertyGroup>
 

@@ -4,6 +4,7 @@
 
   <PropertyGroup>
     <PackageId>ITGlobal.CLI</PackageId>
+    <LangVersion>latest</LangVersion>
     <RootNamespace>ITGlobal.CommandLine</RootNamespace>
   </PropertyGroup>
 
