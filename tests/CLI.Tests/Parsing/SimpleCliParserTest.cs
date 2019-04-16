@@ -314,6 +314,20 @@ namespace ITGlobal.CommandLine.Parsing
             Assert.Equal(ExitCodes.InvalidInput, parser.Parse().Run());
         }
 
+        [Fact]
+        public void Two_arguments()
+        {
+            var parser = CreateParser();
+            var arg1 = parser.Argument("arg1");
+            var arg2 = parser.RepeatableArgument("arg2");
+            Assert.Equal(0, parser.Parse("foo", "bar").Run());
+            Assert.True(arg1.IsSet);
+            Assert.Equal("foo", arg1.Value);;
+
+            Assert.True(arg2.IsSet);
+            Assert.Equal("bar", arg2.Values[0]);;
+        }
+
         #endregion
 
         #region Repeatable rgument tests
