@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using ITGlobal.CommandLine.Parsing.Impl;
 using ITGlobal.CommandLine.Table;
@@ -65,12 +64,10 @@ namespace ITGlobal.CommandLine.Parsing
 
         private static void PrintUsage(SimpleCliParserUsage usage)
         {
-            var terminal = usage.Terminal;
-
             if (!string.IsNullOrEmpty(usage.Logo))
             {
-                terminal.Stdout.WriteLine(usage.Logo.WithForeground(ConsoleColor.Cyan));
-                terminal.Stdout.WriteLine();
+                Console.Error.WriteLine(usage.Logo.Cyan());
+                Console.Error.WriteLine();
             }
 
             var hasOptions = usage.Arguments.Count(_ => !_.IsHidden) > 0;
@@ -79,54 +76,50 @@ namespace ITGlobal.CommandLine.Parsing
 
             if (!string.IsNullOrEmpty(usage.HelpText))
             {
-                terminal.Stdout.WriteLine(usage.HelpText);
-                terminal.Stdout.WriteLine();
+                Console.Error.WriteLine(usage.HelpText);
+                Console.Error.WriteLine();
             }
 
-            terminal.Stdout.WriteLine("USAGE".WithForeground(ConsoleColor.White));
-            terminal.Stdout.Write("   ");
-            terminal.Stdout.Write(usage.ExecutableName.WithForeground(ConsoleColor.Yellow));
+            Console.Error.WriteLine("USAGE".White());
+            Console.Error.Write("   ");
+            Console.Error.Write(usage.ExecutableName.Yellow());
             if (hasOptions || hasSwitches)
             {
-                terminal.Stdout.Write(" [OPTIONS]");
+                Console.Error.Write(" [OPTIONS]");
             }
 
             foreach (var argument in usage.Arguments.Where(_ => !_.IsHidden).OrderBy(_ => _.Position))
             {
-                terminal.Stdout.Write(" ");
+                Console.Error.Write(" ");
                 if (!argument.IsRequired)
                 {
-                    terminal.Stdout.Write("[");
+                    Console.Error.Write("[");
                 }
 
-                terminal.Stdout.Write(argument.Name.ToUpperInvariant());
+                Console.Error.Write(argument.Name.ToUpperInvariant());
 
                 if (argument.IsRepeatable)
                 {
-                    terminal.Stdout.Write("...");
+                    Console.Error.Write("...");
                 }
 
                 if (!argument.IsRequired)
                 {
-                    terminal.Stdout.Write("]");
+                    Console.Error.Write("]");
                 }
             }
-            terminal.Stdout.WriteLine();
-            terminal.Stdout.WriteLine();
+            Console.Error.WriteLine();
+            Console.Error.WriteLine();
 
             if (hasOptions || hasSwitches)
             {
-                var options = usage.Switches.Where(_=>!_.IsHidden).Select(OptionInfo.Create)
+                var options = usage.Switches.Where(_ => !_.IsHidden).Select(OptionInfo.Create)
                     .Concat(usage.Options.Where(_ => !_.IsHidden).Select(OptionInfo.Create))
                     .OrderBy(_ => _.DisplayOrder)
                     .ThenBy(_ => _.Key);
 
-                terminal.Stdout.WriteLine("OPTIONS".WithForeground(ConsoleColor.White));
-                var table = TerminalTable.Create(
-                    terminal,
-                    options,
-                    renderer: TableRenderer.Plain(drawHeaders: false)
-                );
+                Console.Error.WriteLine("OPTIONS".White());
+                var table = TerminalTable.Create(options, renderer: TableRenderer.Plain(drawHeaders: false));
                 table.Column("", _ => "  ");
                 table.Column("", _ => _.Name);
                 table.Column("", _ => _.Description);
@@ -140,12 +133,8 @@ namespace ITGlobal.CommandLine.Parsing
                     .OrderBy(_ => _.DisplayOrder)
                     .ThenBy(_ => _.Key);
 
-                terminal.Stdout.WriteLine("ARGUMENTS".WithForeground(ConsoleColor.White));
-                var table = TerminalTable.Create(
-                    terminal,
-                    arguments,
-                    renderer: TableRenderer.Plain(drawHeaders: false)
-                );
+                Console.Error.WriteLine("ARGUMENTS".White());
+                var table = TerminalTable.Create(arguments, renderer: TableRenderer.Plain(drawHeaders: false));
                 table.Column("", _ => "  ");
                 table.Column("", _ => _.Name);
                 table.Column("", _ => _.Description);

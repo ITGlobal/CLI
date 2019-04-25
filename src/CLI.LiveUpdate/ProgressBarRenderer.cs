@@ -1,4 +1,5 @@
 ﻿using System;
+using ITGlobal.CommandLine.Impl;
 using JetBrains.Annotations;
 
 namespace ITGlobal.CommandLine
@@ -101,6 +102,6 @@ namespace ITGlobal.CommandLine
         /// <summary>
         ///     Render a terminal progress bar
         /// </summary>
-        public abstract void Render([NotNull] ITerminalOutput output, [CanBeNull] string text, int progress);
+        public abstract void Render([NotNull] ITerminalWriter output, [CanBeNull] string text, int progress);
     }
 }

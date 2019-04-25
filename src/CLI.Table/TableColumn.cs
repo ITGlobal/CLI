@@ -1,4 +1,5 @@
 using System;
+using ITGlobal.CommandLine.Table.Impl;
 
 namespace ITGlobal.CommandLine.Table
 {

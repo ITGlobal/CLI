@@ -1,8 +1,24 @@
 {
   "profiles": {
-    "cli-features-example": {
+    "table": {
       "commandName": "Project",
       "commandLineArgs": "table -n 10"
+    },
+    "progress": {
+      "commandName": "Project",
+      "commandLineArgs": "progress"
+    },
+    "spinner": {
+      "commandName": "Project",
+      "commandLineArgs": "spinner"
+    },
+    "liveoutput": {
+      "commandName": "Project",
+      "commandLineArgs": "liveoutput"
+    },
+    "colors": {
+      "commandName": "Project",
+      "commandLineArgs": "colors"
     }
   }
 }

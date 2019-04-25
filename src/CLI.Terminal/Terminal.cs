@@ -1,62 +1,96 @@
 using System;
+using System.Runtime.InteropServices;
 using ITGlobal.CommandLine.Impl;
 using JetBrains.Annotations;
 
 namespace ITGlobal.CommandLine
 {
     /// <summary>
-    ///     Terminal wrapper
+    ///     Terminal output wrapper
     /// </summary>
     [PublicAPI]
     public static class Terminal
     {
-        private static ITerminal _current;
-
-        static Terminal()
-        {
-            _current = Default;
-        }
+        private static readonly object SyncRoot = new object();
+        private static ITerminalImplementation _implementation;
 
         /// <summary>
-        ///     Current terminal wrapper
+        ///     Initializes terminal output
         /// </summary>
-        [NotNull]
-        public static ITerminal Current
+        public static void Initialize()
         {
-            get => _current;
-            set
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                if (value == null)
-                {
-                    throw new ArgumentNullException(nameof(value));
-                }
-
-                _current = value;
+                Console.SetError(new AnsiTextWriter(Console.Error));
+                Console.SetOut(new AnsiTextWriter(Console.Out));
             }
+
+            UseImplementation(new SystemTerminalImplementation());
         }
-
-        /// <summary>
-        ///     Default terminal wrapper
-        /// </summary>
-        [NotNull]
-        public static ITerminal Default { get; } = new SystemTerminal();
-
-        /// <summary>
-        ///     Current terminal standard input wrapper
-        /// </summary>
-        [NotNull]
-        public static ITerminalInput Stdin => Current.Stdin;
 
         /// <summary>
         ///     Terminal standard output wrapper
         /// </summary>
         [NotNull]
-        public static ITerminalOutput Stdout => Current.Stdout;
+        public static ITerminalWriter Stdout => GetImplementation().Stdout;
 
         /// <summary>
         ///     Terminal standard error wrapper
         /// </summary>
         [NotNull]
-        public static ITerminalOutput Stderr => Current.Stderr;
+        public static ITerminalWriter Stderr => GetImplementation().Stderr;
+
+        /// <summary>
+        ///     Clears current line
+        /// </summary>
+        public static void ClearLine() => GetImplementation().ClearLine();
+
+        /// <summary>
+        ///     Locks terminal output
+        /// </summary>
+        [NotNull]
+        public static ITerminalLock Lock([NotNull] ITerminalLockOwner owner)
+        {
+            lock (SyncRoot)
+            {
+                var impl = GetImplementation();
+                if (impl is LockedTerminalImplementation)
+                {
+                    throw new InvalidOperationException("Nested terminal locks are not supported yet");
+                }
+
+                var lockedTerminal = new LockedTerminalImplementation(impl, owner);
+                UseImplementation(lockedTerminal);
+
+                return lockedTerminal;
+            }
+        }
+
+        /// <summary>
+        ///     Attach a handler for Ctrl-C/SIGINT
+        /// </summary>
+        [NotNull]
+        public static ICtrlCInterceptor OnCtrlC() => new CtrlCInterceptorImpl();
+        
+        private static ITerminalImplementation GetImplementation()
+        {
+            lock (SyncRoot)
+            {
+                if (_implementation == null)
+                {
+                    Initialize();
+                }
+
+                return _implementation;
+            }
+        }
+
+        internal static void UseImplementation(ITerminalImplementation implementation)
+        {
+            lock (SyncRoot)
+            {
+                _implementation = implementation;
+            }
+        }
     }
 }

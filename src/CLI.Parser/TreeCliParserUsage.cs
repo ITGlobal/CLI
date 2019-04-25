@@ -1,6 +1,5 @@
-﻿using System;
+using System;
 using System.Linq;
-using ITGlobal.CommandLine.Parsing.Impl;
 using JetBrains.Annotations;
 
 namespace ITGlobal.CommandLine.Parsing
@@ -12,7 +11,6 @@ namespace ITGlobal.CommandLine.Parsing
     public sealed class TreeCliParserUsage : IHelpUsage
     {
         internal TreeCliParserUsage(
-            ITerminal terminal,
             string executableName,
             string logo,
             string helpText,
@@ -23,7 +21,6 @@ namespace ITGlobal.CommandLine.Parsing
             string[] helpSwitches
         )
         {
-            Terminal = terminal;
             ExecutableName = executableName;
             Logo = logo;
             HelpText = helpText;
@@ -33,9 +30,6 @@ namespace ITGlobal.CommandLine.Parsing
             Commands = commands;
             HelpSwitches = helpSwitches;
         }
-
-        [NotNull]
-        internal ITerminal Terminal { get; }
 
         /// <summary>
         ///     Executable name

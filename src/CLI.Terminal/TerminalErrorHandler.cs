@@ -152,32 +152,22 @@ namespace ITGlobal.CommandLine
             {
                 if (e != exception)
                 {
-                    using (Terminal.Stdout.WithForeground(ConsoleColor.DarkRed))
-                    {
-                        Terminal.Stdout.WriteLine(InnerExceptionText);
-                    }
+                    Console.Error.WriteLine(InnerExceptionText.Fg(ConsoleColor.DarkRed));
                 }
 
                 switch (e)
                 {
                     case CommandLineException ex:
-                        using (Terminal.Stdout.WithColors(ConsoleColor.White, ConsoleColor.DarkRed))
                         {
-                            Terminal.Stdout.WriteLine(ex.Message);
+                            Console.Error.WriteLine(ex.Message.WhiteOnDarkRed());
                         }
 
                         break;
 
                     default:
-                        using (Terminal.Stdout.WithColors(ConsoleColor.White, ConsoleColor.DarkRed))
-                        {
-                            Terminal.Stdout.WriteLine($"[{e.GetType().FullName}] {e.Message}");
-                        }
+                        Console.Error.WriteLine($"[{e.GetType().FullName}] {e.Message}".WhiteOnDarkRed());
 
-                        using (Terminal.Stdout.WithForeground(ConsoleColor.Red))
-                        {
-                            Terminal.Stdout.WriteLine(e.StackTrace);
-                        }
+                        Console.Error.WriteLine(e.StackTrace.Red());
 
                         break;
                 }
@@ -188,28 +178,16 @@ namespace ITGlobal.CommandLine
 
         private static void PrintExceptionImpl(CommandLineException e)
         {
-            using (Terminal.Stdout.WithForeground(ConsoleColor.Red))
-            {
-                Terminal.Stdout.WriteLine(e.Message);
-            }
+            Console.Error.WriteLine(e.Message.Red());
         }
 
         private static void PrintExceptionImpl(Exception e)
         {
-            using (Terminal.Stdout.WithColors(ConsoleColor.White, ConsoleColor.DarkRed))
-            {
-                Terminal.Stdout.WriteLine($"{ErrorText} [{e.GetType().FullName}]");
-            }
+            Console.Error.WriteLine($"{ErrorText} [{e.GetType().FullName}]".WhiteOnDarkRed());
 
-            using (Terminal.Stdout.WithColors(ConsoleColor.White, ConsoleColor.DarkRed))
-            {
-                Terminal.Stdout.WriteLine(e.Message);
-            }
+            Console.Error.WriteLine(e.Message.WhiteOnDarkRed());
 
-            using (Terminal.Stdout.WithForeground(ConsoleColor.Red))
-            {
-                Terminal.Stdout.WriteLine(e.StackTrace);
-            }
+            Console.Error.WriteLine(e.StackTrace.Red());
         }
     }
 }

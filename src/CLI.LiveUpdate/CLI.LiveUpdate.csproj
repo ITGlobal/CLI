@@ -11,8 +11,4 @@
   <ItemGroup>
     <ProjectReference Include="..\CLI.Terminal\CLI.Terminal.csproj" />
   </ItemGroup>
-
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'net40' ">
-    <DefineConstants>$(DefineConstants);NET40</DefineConstants>
-  </PropertyGroup>
 </Project>

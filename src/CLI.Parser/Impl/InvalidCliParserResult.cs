@@ -5,13 +5,11 @@ namespace ITGlobal.CommandLine.Parsing.Impl
 {
     internal sealed class InvalidCliParserResult : ICliParserResult
     {
-        private readonly ITerminal _terminal;
         private readonly IList<string> _errors;
         private readonly IHelpUsage _usage;
 
-        public InvalidCliParserResult(ITerminal terminal, IList<string> errors, IHelpUsage usage)
+        public InvalidCliParserResult(IList<string> errors, IHelpUsage usage)
         {
-            _terminal = terminal;
             _errors = errors;
             _usage = usage;
         }
@@ -20,16 +18,13 @@ namespace ITGlobal.CommandLine.Parsing.Impl
         {
             foreach (var error in _errors)
             {
-                _terminal.Stderr.WriteLine(error.WithForeground(ConsoleColor.Red));
+                Console.Error.WriteLine(error.Red());
             }
 
-            if (_usage.SupportsHelp)
+            if (_usage != null && _usage.SupportsHelp)
             {
-                _terminal.Stderr.WriteLine(
-                    (TerminalString)"Type ",
-                    $"{_usage.ExecutableName} {_usage.HelpCommand}".WithForeground(ConsoleColor.Cyan),
-                    " to get help"
-                );
+                var cmd = $"{_usage.ExecutableName} {_usage.HelpCommand}".Cyan();
+                Console.Error.WriteLine($"Type {cmd} to get help");
             }
 
             return ExitCodes.InvalidInput;

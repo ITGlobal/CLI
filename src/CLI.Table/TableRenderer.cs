@@ -1,4 +1,6 @@
-﻿using System;
+using System;
+using System.IO;
+using ITGlobal.CommandLine.Table.Impl;
 using JetBrains.Annotations;
 
 namespace ITGlobal.CommandLine.Table
@@ -12,7 +14,7 @@ namespace ITGlobal.CommandLine.Table
         /// <summary>
         ///     Render a table
         /// </summary>
-        public abstract void Render<T>([NotNull] ITableModel<T> model, [NotNull] ITerminal terminal);
+        public abstract void Render<T>([NotNull] ITableModel<T> model, [NotNull] TextWriter output);
 
         /// <summary>
         ///     Default table renderer
@@ -44,12 +46,12 @@ namespace ITGlobal.CommandLine.Table
                 DrawHeaders = drawHeaders,
                 UppercaseHeaders = uppercaseHeaders,
                 UnderlineHeaders = underlineHeaders,
-                HeaderForegroundColor = headerForegroundColor,
-                HeaderBackgroundColor = headerBackgroundColor,
+                HeaderForegroundColor = headerForegroundColor ?? ConsoleColor.White,
+                HeaderBackgroundColor = headerBackgroundColor ?? ConsoleColor.Black,
                 HeaderUnderlineForegroundColor = headerUnderlineForegroundColor,
                 HeaderUnderlineBackgroundColor = headerUnderlineBackgroundColor,
-                DefaultForegroundColor = defaultForegroundColor,
-                DefaultBackgroundColor = defaultBackgroundColor
+                DefaultForegroundColor = defaultForegroundColor ?? ConsoleColor.Gray,
+                DefaultBackgroundColor = defaultBackgroundColor ?? ConsoleColor.Black
             };
 
             return renderer;
@@ -74,11 +76,18 @@ namespace ITGlobal.CommandLine.Table
             ConsoleColor? defaultBackgroundColor = null,
 
             ConsoleColor? navbarForegroundColor = ConsoleColor.Black,
-            ConsoleColor? navbarBackgroundColor = ConsoleColor.Cyan
+            ConsoleColor? navbarBackgroundColor = ConsoleColor.Cyan,
+
+            string footerRowsText = null,
+            string footerTotalText = null,
+            string footerPageNumberText = null
         )
         {
             var renderer = new PagedTableRenderer
             {
+                FooterRowsText = footerRowsText ?? "Rows: {0}..{1}",
+                FooterTotalText = footerTotalText ?? "Total {0} rows",
+                FooterPageNumberText = footerPageNumberText ?? "Page {0} of {1}",
                 DrawHeaders = drawHeaders,
                 UppercaseHeaders = uppercaseHeaders,
                 UnderlineHeaders = underlineHeaders,

@@ -1,4 +1,5 @@
 using System;
+using ITGlobal.CommandLine.Impl;
 using JetBrains.Annotations;
 
 namespace ITGlobal.CommandLine

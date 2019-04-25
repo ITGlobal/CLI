@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <Import Project="../Package.props" />
 
@@ -12,7 +12,40 @@
     <PackageReference Include="JetBrains.Annotations" Version="2019.1.1" />
   </ItemGroup>
 
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'net40' ">
-    <DefineConstants>$(DefineConstants);NET40</DefineConstants>
-  </PropertyGroup>
+  <ItemGroup>
+    <None Update="ColoredString.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ColoredString.Generated.cs</LastGenOutput>
+    </None>
+    <Compile Update="ColoredString.Generated.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ColoredString.tt</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+
+    <None Update="ColoredStringFactory.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ColoredStringFactory.Generated.cs</LastGenOutput>
+    </None>
+    <Compile Update="ColoredStringFactory.Generated.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ColoredStringFactory.tt</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Impl\Ansi.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Ansi.Generated.cs</LastGenOutput>
+    </None>
+    <Compile Update="Impl\Ansi.Generated.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Ansi.tt</DependentUpon>
+    </Compile>
+  </ItemGroup>
 </Project>

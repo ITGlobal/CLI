@@ -9,11 +9,6 @@ namespace ITGlobal.CommandLine.Parsing
     public interface ICliParser
     {
         /// <summary>
-        ///     Set a terminal for parser output
-        /// </summary>
-        void UseTerminal([NotNull] ITerminal terminal);
-
-        /// <summary>
         ///     Set an executable name (process name is used by default)
         /// </summary>
         void ExecutableName([NotNull] string name);
@@ -37,6 +32,11 @@ namespace ITGlobal.CommandLine.Parsing
         ///     Set parser flags
         /// </summary>
         void Flags(CliParserFlags flags);
+
+        /// <summary>
+        ///     Set parser result factory
+        /// </summary>
+        void UseResultFactory(ICliParserResultFactory factory);
 
         /// <summary>
         ///     Add a command line switch

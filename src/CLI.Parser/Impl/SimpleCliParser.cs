@@ -19,12 +19,7 @@ namespace ITGlobal.CommandLine.Parsing.Impl
         #endregion
 
         #region properties
-
-        /// <summary>
-        ///     Terminal instance associated with parser
-        /// </summary>
-        public ITerminal Terminal { get; private set; } = CommandLine.Terminal.Current;
-
+        
         /// <summary>
         ///     Executable name
         /// </summary>
@@ -51,6 +46,11 @@ namespace ITGlobal.CommandLine.Parsing.Impl
         /// </summary>
         public CliParserFlags Flags { get; private set; } = CliParserFlags.Default;
 
+        /// <summary>
+        ///     Parser result factory
+        /// </summary>
+        public ICliParserResultFactory ResultFactory { get; private set; } = new DefaultCliParserResultFactory();
+
         #endregion
 
         #region ISimpleCliParser
@@ -67,20 +67,7 @@ namespace ITGlobal.CommandLine.Parsing.Impl
 
             ExecutableName = name;
         }
-
-        /// <summary>
-        ///     Set a terminal for parser output
-        /// </summary>
-        void ICliParser.UseTerminal(ITerminal terminal)
-        {
-            if (terminal == null)
-            {
-                throw new ArgumentNullException(nameof(terminal));
-            }
-
-            Terminal = terminal;
-        }
-
+        
         /// <summary>
         ///     Set application logo
         /// </summary>
@@ -125,6 +112,19 @@ namespace ITGlobal.CommandLine.Parsing.Impl
             }
 
             Flags = flags;
+        }
+
+        /// <summary>
+        ///     Set parser result factory
+        /// </summary>
+        void ICliParser.UseResultFactory(ICliParserResultFactory factory)
+        {
+            if (factory == null)
+            {
+                throw new ArgumentNullException(nameof(factory));
+            }
+
+            ResultFactory = factory;
         }
 
         /// <summary>
@@ -532,25 +532,25 @@ namespace ITGlobal.CommandLine.Parsing.Impl
 
             if (raw.Errors.Count > 0)
             {
-                return new InvalidCliParserResult(Terminal, raw.Errors, GetUsage());
+                return ResultFactory.ValidationErrors(this, raw.Errors, GetUsage());
             }
 
             var unknownOptions = raw.GetUnconsumedOptions();
             if (unknownOptions.Length > 0 && !Flags.HasFlag(CliParserFlags.IgnoreUnknownOptions))
             {
-                return new UnknownOptionsCliParserResult(Terminal, unknownOptions, GetUsage());
+                return ResultFactory.UnknownOptions(this, unknownOptions, GetUsage());
             }
            
             if (unknownArguments.Length > 0 && !Flags.HasFlag(CliParserFlags.AllowFreeArguments))
             {
-                return new UnknownArgumentsCliParserResult(Terminal, unknownArguments, GetUsage());
+                return ResultFactory.UnknownArguments(this, unknownArguments, GetUsage());
             }
 
             return new SuccessfulCliParserResult(
-                _executeHandlers,
-                Terminal,
-                ctx.IsLogoSuppressed ? Logo : null,
-                ctx);
+                handlers: _executeHandlers,
+                logo: ctx.IsLogoSuppressed ? Logo : null,
+                ctx: ctx
+            );
         }
 
         /// <summary>

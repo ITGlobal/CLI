@@ -22,7 +22,7 @@ namespace ITGlobal.CommandLine.Example
             var hostsOption = parser.RepeatableOption<string>('H', "host", helpText: "Daemon socket(s) to connect to")
                 .FromEnvironmentVariable("DOCKER_HOST")
                 .DefaultValue("unix://var/run/docker.sock");
-            
+
             // -l, --log-level string   Set the logging level
             //                          ("debug" | "info" | "warn" | "error" | "fatal")
             var logLevelOption = parser.Option<LogLevel>('l', "log-level", helpText: "Set the logging level")
@@ -34,7 +34,7 @@ namespace ITGlobal.CommandLine.Example
             {
                 if (versionSwitch)
                 {
-                    Terminal.Stdout.WriteLine("Version: 1.0.0");
+                    Console.WriteLine("Version: 1.0.0");
                     ctx.Break(0);
                 }
             });
@@ -45,11 +45,11 @@ namespace ITGlobal.CommandLine.Example
                 var infoCommand = parser.Command("info", helpText: "Display system-wide information");
                 infoCommand.OnExecute(_ =>
                 {
-                    Terminal.Stdout.WriteLine("\"info\" command has been triggered");
-                    Terminal.Stdout.WriteLine($"Global options:");
-                    Terminal.Stdout.WriteLine($"  debugSwitch:    {debugSwitch.IsSet}");
-                    Terminal.Stdout.WriteLine($"  hostsOption:    {string.Join(", ", hostsOption.Values)}");
-                    Terminal.Stdout.WriteLine($"  logLevelOption: {logLevelOption.Value}");
+                    Console.WriteLine("\"info\" command has been triggered");
+                    Console.WriteLine($"Global options:");
+                    Console.WriteLine($"  debugSwitch:    {debugSwitch.IsSet}");
+                    Console.WriteLine($"  hostsOption:    {string.Join(", ", hostsOption.Values)}");
+                    Console.WriteLine($"  logLevelOption: {logLevelOption.Value}");
                 });
             }
 
@@ -76,17 +76,17 @@ namespace ITGlobal.CommandLine.Example
 
                     imageBuildCommand.OnExecute(_ =>
                     {
-                        Terminal.Stdout.WriteLine("\"image build\" command has been triggered");
-                        Terminal.Stdout.WriteLine($"Global options:");
-                        Terminal.Stdout.WriteLine($"  debugSwitch:        {debugSwitch.IsSet}");
-                        Terminal.Stdout.WriteLine($"  hostsOption:        {string.Join(", ", hostsOption.Values)}");
-                        Terminal.Stdout.WriteLine($"  logLevelOption:     {logLevelOption.Value}");
-                        Terminal.Stdout.WriteLine($"Command options:");
-                        Terminal.Stdout.WriteLine($"  fileOption:         {fileOption.Value}");
-                        Terminal.Stdout.WriteLine($"  tagsOption:         {string.Join(", ", tagsOption.Values)}");
-                        Terminal.Stdout.WriteLine($"  labelsOption:       {string.Join(", ", labelsOption.Values)}");
-                        Terminal.Stdout.WriteLine($"  quietSwitch:        {quietSwitch.IsSet}");
-                        Terminal.Stdout.WriteLine($"  buildContextOption: {buildContextOption.Value}");
+                        Console.WriteLine("\"image build\" command has been triggered");
+                        Console.WriteLine($"Global options:");
+                        Console.WriteLine($"  debugSwitch:        {debugSwitch.IsSet}");
+                        Console.WriteLine($"  hostsOption:        {string.Join(", ", hostsOption.Values)}");
+                        Console.WriteLine($"  logLevelOption:     {logLevelOption.Value}");
+                        Console.WriteLine($"Command options:");
+                        Console.WriteLine($"  fileOption:         {fileOption.Value}");
+                        Console.WriteLine($"  tagsOption:         {string.Join(", ", tagsOption.Values)}");
+                        Console.WriteLine($"  labelsOption:       {string.Join(", ", labelsOption.Values)}");
+                        Console.WriteLine($"  quietSwitch:        {quietSwitch.IsSet}");
+                        Console.WriteLine($"  buildContextOption: {buildContextOption.Value}");
                     });
                 }
 
@@ -95,7 +95,7 @@ namespace ITGlobal.CommandLine.Example
                     var imageLsCommand = imageCommands.Command("ls", helpText: "List images");
                     imageLsCommand.OnExecute(_ =>
                     {
-                        Terminal.Stdout.WriteLine("\"image ls\" command has been triggered");
+                        Console.WriteLine("\"image ls\" command has been triggered");
                     });
                 }
             }

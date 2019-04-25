@@ -4,7 +4,7 @@
     <Copyright>2019 IT Global LLC</Copyright>
     <AssemblyTitle>ITGlobal CLI library</AssemblyTitle>
     <Authors>IT Global LLC</Authors>
-    <TargetFrameworks>net40;net45;netstandard1.6</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <PackageTags>command line;command line parser;cli</PackageTags>
     <PackageProjectUrl>https://github.com/ITGlobal/CLI</PackageProjectUrl>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
@@ -13,6 +13,15 @@
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net40' ">
+    <DefineConstants>$(DefineConstants);NET40</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net45' ">
+    <DefineConstants>$(DefineConstants);NET45</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
+    <DefineConstants>$(DefineConstants);NETSTANDARD_2_0</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <None Include="../../LICENSE" Pack="true" PackagePath=""/>

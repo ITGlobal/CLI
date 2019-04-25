@@ -22,11 +22,6 @@ namespace ITGlobal.CommandLine.Parsing.Impl
         #region properties
 
         /// <summary>
-        ///     Terminal instance associated with parser
-        /// </summary>
-        public ITerminal Terminal { get; private set; } = CommandLine.Terminal.Current;
-
-        /// <summary>
         ///     Executable name
         /// </summary>
         public string ExecutableName { get; private set; }
@@ -54,6 +49,11 @@ namespace ITGlobal.CommandLine.Parsing.Impl
 
         public bool EnableImplicitHelp { get; set; }
 
+        /// <summary>
+        ///     Parser result factory
+        /// </summary>
+        public ICliParserResultFactory ResultFactory { get; private set; } = new DefaultCliParserResultFactory();
+
         #endregion
 
         #region ITreeCliParser
@@ -69,19 +69,6 @@ namespace ITGlobal.CommandLine.Parsing.Impl
             }
 
             ExecutableName = name;
-        }
-
-        /// <summary>
-        ///     Set a terminal for parser output
-        /// </summary>
-        void ICliParser.UseTerminal(ITerminal terminal)
-        {
-            if (terminal == null)
-            {
-                throw new ArgumentNullException(nameof(terminal));
-            }
-
-            Terminal = terminal;
         }
 
         /// <summary>
@@ -128,6 +115,19 @@ namespace ITGlobal.CommandLine.Parsing.Impl
             }
 
             Flags = flags;
+        }
+
+        /// <summary>
+        ///     Set parser result factory
+        /// </summary>
+        void ICliParser.UseResultFactory(ICliParserResultFactory factory)
+        {
+            if (factory == null)
+            {
+                throw new ArgumentNullException(nameof(factory));
+            }
+
+            ResultFactory = factory;
         }
 
         /// <summary>
@@ -554,12 +554,9 @@ namespace ITGlobal.CommandLine.Parsing.Impl
             }
             catch (UnknownCommandException e)
             {
-                return new UnknownCommandCliParserResult(
-                    Terminal, 
-                    e.CommandName,
-                    e.Usage);
+                return ResultFactory.UnknownCommand(this, e.CommandName, e.Usage);
             }
-            
+
             // Consume command line options and arguments
             command.Consume(raw);
 
@@ -579,41 +576,39 @@ namespace ITGlobal.CommandLine.Parsing.Impl
             // Validate input
             if (raw.Errors.Count > 0)
             {
-                return new InvalidCliParserResult(Terminal, raw.Errors, command.GetUsage());
+                return ResultFactory.ValidationErrors(this, raw.Errors, GetUsage());
             }
 
             var unknownOptions = raw.GetUnconsumedOptions();
             if (unknownOptions.Length > 0 && !Flags.HasFlag(CliParserFlags.IgnoreUnknownOptions))
             {
-                return new UnknownOptionsCliParserResult(Terminal, unknownOptions, command.GetUsage());
+                return ResultFactory.UnknownOptions(this, unknownOptions, command.GetUsage());
             }
-            
+
             if (unknownArguments.Length > 0 && !Flags.HasFlag(CliParserFlags.AllowFreeArguments))
             {
-                return new UnknownArgumentsCliParserResult(Terminal, unknownArguments, command.GetUsage());
+                return ResultFactory.UnknownArguments(this, unknownArguments, command.GetUsage());
             }
-            
+
             var handlers = command.EnumerateHandlers().ToArray();
             if (handlers.Length == 0 && EnableImplicitHelp)
             {
                 return new SuccessfulCliParserResult(
-                    new[]
+                    handlers: new[]
                     {
                         CliHandlerHelper.ToAsyncHandler(
                             context => TreeCliParserHelpExtension.PrintUsage(this, context)
                         )
                     },
-                    Terminal,
-                    null,
-                    ctx
+                    logo: null,
+                    ctx: ctx
                 );
             }
 
             return new SuccessfulCliParserResult(
-                handlers,
-                Terminal,
-                !ctx.IsLogoSuppressed ? Logo : null,
-                ctx
+                handlers: handlers,
+                logo: !ctx.IsLogoSuppressed ? Logo : null,
+                ctx: ctx
             );
 
             ICliCommand SelectCommand(RawCommandLine r)

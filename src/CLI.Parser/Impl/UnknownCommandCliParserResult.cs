@@ -4,31 +4,23 @@ namespace ITGlobal.CommandLine.Parsing.Impl
 {
     internal sealed class UnknownCommandCliParserResult : ICliParserResult
     {
-        private readonly ITerminal _terminal;
         private readonly string _commandName;
         private readonly IHelpUsage _usage;
 
-        public UnknownCommandCliParserResult(
-            ITerminal terminal,
-            string commandName,
-            IHelpUsage usage)
+        public UnknownCommandCliParserResult(string commandName, IHelpUsage usage)
         {
-            _terminal = terminal;
             _commandName = commandName;
             _usage = usage;
         }
 
         public int Run()
         {
-            _terminal.Stderr.WriteLine($"Unknown command: {_commandName}".WithForeground(ConsoleColor.Red));
+            Console.Error.WriteLine($"Unknown command: {_commandName}".Red());
 
             if (_usage.SupportsHelp)
             {
-                _terminal.Stderr.WriteLine(
-                    (TerminalString)"Type ",
-                    $"{_usage.ExecutableName} {_usage.HelpCommand}".WithForeground(ConsoleColor.Cyan),
-                    " to get help"
-                );
+                var cmd = $"{_usage.ExecutableName} {_usage.HelpCommand}".Cyan();
+                Console.Error.WriteLine($"Type {cmd} to get help");
             }
 
             return ExitCodes.UnknownArguments;

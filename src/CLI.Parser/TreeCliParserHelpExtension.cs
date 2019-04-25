@@ -77,12 +77,10 @@ namespace ITGlobal.CommandLine.Parsing
 
         private static void PrintUsage(TreeCliParserUsage usage)
         {
-            var terminal = usage.Terminal;
-
             if (!string.IsNullOrEmpty(usage.Logo))
             {
-                terminal.Stdout.WriteLine(usage.Logo.WithForeground(ConsoleColor.Cyan));
-                terminal.Stdout.WriteLine();
+                Console.Error.WriteLine(usage.Logo.Cyan());
+                Console.Error.WriteLine();
             }
 
             var hasOptions = usage.Arguments.Count(_ => !_.IsHidden) > 0;
@@ -92,45 +90,45 @@ namespace ITGlobal.CommandLine.Parsing
 
             if (!string.IsNullOrEmpty(usage.HelpText))
             {
-                terminal.Stdout.WriteLine(usage.HelpText);
-                terminal.Stdout.WriteLine();
+                Console.Error.WriteLine(usage.HelpText);
+                Console.Error.WriteLine();
             }
 
-            terminal.Stdout.WriteLine("USAGE".WithForeground(ConsoleColor.White));
-            terminal.Stdout.Write("   ");
-            terminal.Stdout.Write(usage.ExecutableName.WithForeground(ConsoleColor.Yellow));
+            Console.Error.WriteLine("USAGE".White());
+            Console.Error.Write("   ");
+            Console.Error.Write(usage.ExecutableName.Yellow());
             if (hasOptions || hasSwitches)
             {
-                terminal.Stdout.Write(" [OPTIONS]");
+                Console.Error.Write(" [OPTIONS]");
             }
 
             if (hasCommands)
             {
-                terminal.Stdout.Write(" COMMAND");
+                Console.Error.Write(" COMMAND");
             }
 
             foreach (var argument in usage.Arguments.Where(_ => !_.IsHidden).OrderBy(_ => _.Position))
             {
-                terminal.Stdout.Write(" ");
+                Console.Error.Write(" ");
                 if (!argument.IsRequired)
                 {
-                    terminal.Stdout.Write("[");
+                    Console.Error.Write("[");
                 }
 
-                terminal.Stdout.Write(argument.Name.ToUpperInvariant());
+                Console.Error.Write(argument.Name.ToUpperInvariant());
 
                 if (argument.IsRepeatable)
                 {
-                    terminal.Stdout.Write("...");
+                    Console.Error.Write("...");
                 }
 
                 if (!argument.IsRequired)
                 {
-                    terminal.Stdout.Write("]");
+                    Console.Error.Write("]");
                 }
             }
-            terminal.Stdout.WriteLine();
-            terminal.Stdout.WriteLine();
+            Console.Error.WriteLine();
+            Console.Error.WriteLine();
 
             if (hasOptions || hasSwitches)
             {
@@ -139,12 +137,8 @@ namespace ITGlobal.CommandLine.Parsing
                     .OrderBy(_ => _.DisplayOrder)
                     .ThenBy(_ => _.Key);
 
-                terminal.Stdout.WriteLine("OPTIONS".WithForeground(ConsoleColor.White));
-                var table = TerminalTable.Create(
-                    terminal,
-                    options,
-                    renderer: TableRenderer.Plain(drawHeaders: false)
-                );
+                Console.Error.WriteLine("OPTIONS".White());
+                var table = TerminalTable.Create(options, renderer: TableRenderer.Plain(drawHeaders: false));
                 table.Column("", _ => "  ");
                 table.Column("", _ => _.Name);
                 table.Column("", _ => _.Description);
@@ -158,12 +152,8 @@ namespace ITGlobal.CommandLine.Parsing
                     .OrderBy(_ => _.DisplayOrder)
                     .ThenBy(_ => _.Key);
 
-                terminal.Stdout.WriteLine("ARGUMENTS".WithForeground(ConsoleColor.White));
-                var table = TerminalTable.Create(
-                    terminal,
-                    arguments,
-                    renderer: TableRenderer.Plain(drawHeaders: false)
-                );
+                Console.Error.WriteLine("ARGUMENTS".White());
+                var table = TerminalTable.Create(arguments, renderer: TableRenderer.Plain(drawHeaders: false));
                 table.Column("", _ => "  ");
                 table.Column("", _ => _.Name);
                 table.Column("", _ => _.Description);
@@ -172,9 +162,8 @@ namespace ITGlobal.CommandLine.Parsing
 
             if (hasCommands)
             {
-                terminal.Stdout.WriteLine("COMMANDS".WithForeground(ConsoleColor.White));
+                Console.Error.WriteLine("COMMANDS".White());
                 var table = TerminalTable.Create(
-                    terminal,
                     CommandInfo.Enumerate(usage.Commands)
                         .OrderBy(_ => _.DisplayOrder)
                         .ThenBy(_ => _.Key),
@@ -190,12 +179,11 @@ namespace ITGlobal.CommandLine.Parsing
         private static void PrintUsage(CliCommandUsage usage)
         {
             var rootUsage = usage.Root;
-            var terminal = rootUsage.Terminal;
 
             if (!string.IsNullOrEmpty(rootUsage.Logo))
             {
-                terminal.Stdout.WriteLine(rootUsage.Logo.WithForeground(ConsoleColor.Cyan));
-                terminal.Stdout.WriteLine();
+                Console.Error.WriteLine(rootUsage.Logo.Cyan());
+                Console.Error.WriteLine();
             }
 
             var options = new List<CliOptionUsage>();
@@ -227,53 +215,52 @@ namespace ITGlobal.CommandLine.Parsing
 
             if (!string.IsNullOrEmpty(usage.HelpText))
             {
-                terminal.Stdout.WriteLine(usage.HelpText);
-                terminal.Stdout.WriteLine();
+                Console.Error.WriteLine(usage.HelpText);
+                Console.Error.WriteLine();
             }
 
-            terminal.Stdout.WriteLine("USAGE".WithForeground(ConsoleColor.White));
-            terminal.Stdout.Write("   ");
-            terminal.Stdout.Write(rootUsage.ExecutableName.WithForeground(ConsoleColor.Yellow));
-            terminal.Stdout.Write($" {string.Join(" ", usage.GetName())}");
+            Console.Error.WriteLine("USAGE".White());
+            Console.Error.Write("   ");
+            Console.Error.Write(rootUsage.ExecutableName.Yellow());
+            Console.Error.Write($" {string.Join(" ", usage.GetName())}");
 
             if (hasGlobalOptions || hasGlobalSwitches || hasOptions || hasSwitches)
             {
-                terminal.Stdout.Write(" [OPTIONS]");
+                Console.Error.Write(" [OPTIONS]");
             }
 
             if (hasCommands)
             {
-                terminal.Stdout.Write(" COMMAND");
+                Console.Error.Write(" COMMAND");
             }
 
             foreach (var argument in usage.Arguments.Where(_ => !_.IsHidden).OrderBy(_ => _.Position))
             {
-                terminal.Stdout.Write(" ");
+                Console.Error.Write(" ");
                 if (!argument.IsRequired)
                 {
-                    terminal.Stdout.Write("[");
+                    Console.Error.Write("[");
                 }
 
-                terminal.Stdout.Write(argument.Name.ToUpperInvariant());
+                Console.Error.Write(argument.Name.ToUpperInvariant());
 
                 if (argument.IsRepeatable)
                 {
-                    terminal.Stdout.Write("...");
+                    Console.Error.Write("...");
                 }
 
                 if (!argument.IsRequired)
                 {
-                    terminal.Stdout.Write("]");
+                    Console.Error.Write("]");
                 }
             }
-            terminal.Stdout.WriteLine();
-            terminal.Stdout.WriteLine();
+            Console.Error.WriteLine();
+            Console.Error.WriteLine();
 
             if (hasGlobalOptions || hasGlobalSwitches)
             {
-                terminal.Stdout.WriteLine("GLOBAL OPTIONS".WithForeground(ConsoleColor.White));
+                Console.Error.WriteLine("GLOBAL OPTIONS".White());
                 var table = TerminalTable.Create(
-                    terminal,
                     usage.Root.Switches
                         .Where(_ => !_.IsHidden).Select(OptionInfo.Create)
                         .Concat(usage.Root.Options.Where(_ => !_.IsHidden).Select(OptionInfo.Create))
@@ -289,9 +276,8 @@ namespace ITGlobal.CommandLine.Parsing
 
             if (hasOptions || hasSwitches)
             {
-                terminal.Stdout.WriteLine("OPTIONS".WithForeground(ConsoleColor.White));
+                Console.Error.WriteLine("OPTIONS".White());
                 var table = TerminalTable.Create(
-                    terminal,
                     switches.Where(_ => !_.IsHidden).Select(OptionInfo.Create)
                         .Concat(usage.Options.Where(_ => !_.IsHidden).Select(OptionInfo.Create))
                         .OrderBy(_ => _.DisplayOrder)
@@ -306,9 +292,8 @@ namespace ITGlobal.CommandLine.Parsing
 
             if (hasArguments)
             {
-                terminal.Stdout.WriteLine("ARGUMENTS".WithForeground(ConsoleColor.White));
+                Console.Error.WriteLine("ARGUMENTS".White());
                 var table = TerminalTable.Create(
-                    terminal,
                     usage.Arguments.Where(_ => !_.IsHidden)
                         .Select(ArgumentInfo.Create)
                         .OrderBy(_ => _.DisplayOrder)
@@ -323,9 +308,8 @@ namespace ITGlobal.CommandLine.Parsing
 
             if (hasCommands)
             {
-                terminal.Stdout.WriteLine("COMMANDS".WithForeground(ConsoleColor.White));
+                Console.Error.WriteLine("COMMANDS".White());
                 var table = TerminalTable.Create(
-                    terminal,
                     CommandInfo.Enumerate(usage.Commands)
                         .OrderBy(_ => _.DisplayOrder)
                         .ThenBy(_ => _.Key),

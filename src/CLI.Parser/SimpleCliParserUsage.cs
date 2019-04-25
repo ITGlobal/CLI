@@ -1,4 +1,4 @@
-﻿using ITGlobal.CommandLine.Parsing.Impl;
+using ITGlobal.CommandLine.Parsing.Impl;
 using JetBrains.Annotations;
 
 namespace ITGlobal.CommandLine.Parsing
@@ -10,7 +10,6 @@ namespace ITGlobal.CommandLine.Parsing
     public sealed class SimpleCliParserUsage : IHelpUsage
     {
         internal SimpleCliParserUsage(
-            ITerminal terminal,
             string executableName,
             string logo,
             string helpText,
@@ -20,7 +19,6 @@ namespace ITGlobal.CommandLine.Parsing
             string[] helpSwitches
             )
         {
-            Terminal = terminal;
             ExecutableName = executableName;
             Logo = logo;
             HelpText = helpText;
@@ -29,10 +27,7 @@ namespace ITGlobal.CommandLine.Parsing
             Arguments = arguments;
             HelpSwitches = helpSwitches;
         }
-
-        [NotNull]
-        internal ITerminal Terminal { get; }
-
+        
         /// <summary>
         ///     Executable name
         /// </summary>

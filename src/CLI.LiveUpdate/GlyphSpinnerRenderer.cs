@@ -1,12 +1,13 @@
-﻿using System;
+using System;
+using ITGlobal.CommandLine.Impl;
 
 namespace ITGlobal.CommandLine
 {
     internal sealed class GlyphSpinnerRenderer : SpinnerRenderer
     {
-        private readonly char[] _glyphs;
+        private readonly string[] _glyphs;
 
-        public GlyphSpinnerRenderer(params char[] glyphs)
+        public GlyphSpinnerRenderer(params string[] glyphs)
         {
             _glyphs = glyphs;
         }
@@ -19,14 +20,11 @@ namespace ITGlobal.CommandLine
 
         public override TimeSpan AnimationStep { get; } = TimeSpan.FromMilliseconds(Consts.SPINNER_SLEEP_TIME);
 
-        public override void Render(ITerminalOutput output, string title, int time)
+        public override void Render(ITerminalWriter output, string title, int time)
         {
             var index = time % _glyphs.Length;
 
-            using (output.WithColors(SpinnerForegroundColor, SpinnerBackgroundColor))
-            {
-                output.Write(_glyphs[index]);
-            }
+            output.Write(new ColoredString(_glyphs[index], SpinnerForegroundColor, SpinnerBackgroundColor));
 
             if (string.IsNullOrEmpty(title))
             {
@@ -34,22 +32,7 @@ namespace ITGlobal.CommandLine
             }
 
             output.Write(' ');
-
-            var maxLabelWidth = output.WindowWidth - 3;
-            var labelWidth = Math.Min(title.Length, maxLabelWidth);
-
-            using (output.WithColors(TitleForegroundColor, TitleBackgroundColor))
-            {
-                var i = 0;
-                for (; i < labelWidth; i++)
-                {
-                    output.Write(title[i]);
-                }
-                for (; i < maxLabelWidth; i++)
-                {
-                    output.Write(' ');
-                }
-            }
+            output.Write(new ColoredString(title, SpinnerForegroundColor, SpinnerBackgroundColor));
         }
     }
 }

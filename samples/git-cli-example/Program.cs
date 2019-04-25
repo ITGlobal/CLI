@@ -19,7 +19,7 @@ namespace ITGlobal.CommandLine.Example
                     var version = typeof(Program).GetTypeInfo().Assembly
                         .GetCustomAttribute<AssemblyFileVersionAttribute>()
                         .Version;
-                    Terminal.Stdout.WriteLine($"my-git version {version}");
+                    Console.WriteLine($"my-git version {version}");
                     ctx.Break();
                 }
             });

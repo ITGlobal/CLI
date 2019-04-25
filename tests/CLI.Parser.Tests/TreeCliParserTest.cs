@@ -13,10 +13,9 @@ namespace ITGlobal.CommandLine.Parsing
         {
             const CliParserFlags testOptions = CliParserFlags.PosixNotation;
             var parser = CliParser.NewTreeParser(
-                flags: testOptions, 
-                disableHelpSwitch: true, 
-                disableImplicitHelp: true, 
-                terminal: new FakeTerminal());
+                flags: testOptions,
+                disableHelpSwitch: true,
+                disableImplicitHelp: true);
             return parser;
         }
 

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace ITGlobal.CommandLine.Parsing.Impl
@@ -46,24 +46,21 @@ namespace ITGlobal.CommandLine.Parsing.Impl
         {
             var helpSwitches = _switches.Where(_ => _.IsHelpSwitch).SelectMany(_ => _.Names).ToArray();
             var usage = new TreeCliParserUsage(
-                _parser.Terminal,
-                _parser.ExecutableName,
-                _parser.Logo,
-                _parser.HelpText,
-                _switches.ToArray(),
-                _options.ToArray(),
-                _arguments.ToArray(),
-                _commands.Select(_ => _.Build()).ToArray(),
-                helpSwitches.Length > 0 ? helpSwitches : null
+                executableName: _parser.ExecutableName,
+                logo: _parser.Logo,
+                helpText: _parser.HelpText,
+                switches: _switches.ToArray(),
+                options: _options.ToArray(),
+                arguments: _arguments.ToArray(),
+                commands: _commands.Select(_ => _.Build()).ToArray(),
+                helpSwitches: helpSwitches.Length > 0 ? helpSwitches : null
             );
 
             LinkCommands(usage.Commands, null);
 
             return usage;
 
-            void LinkCommands(
-                IEnumerable<CliCommandUsage> commands,
-                CliCommandUsage parentCommand)
+            void LinkCommands(IEnumerable<CliCommandUsage> commands, CliCommandUsage parentCommand)
             {
                 foreach (var command in commands)
                 {

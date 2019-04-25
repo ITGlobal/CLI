@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-
 #if !NET40
 using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
@@ -11,18 +10,15 @@ namespace ITGlobal.CommandLine.Parsing.Impl
     internal sealed class SuccessfulCliParserResult : ICliParserResult
     {
         private readonly IEnumerable<CliAsyncHandler> _handlers;
-        private readonly ITerminal _terminal;
         private readonly string _logo;
         private readonly CliContext _ctx;
 
         public SuccessfulCliParserResult(
             IEnumerable<CliAsyncHandler> handlers,
-            ITerminal terminal,
             string logo,
             CliContext ctx)
         {
             _handlers = handlers;
-            _terminal = terminal;
             _logo = logo;
             _ctx = ctx;
         }
@@ -56,8 +52,8 @@ namespace ITGlobal.CommandLine.Parsing.Impl
         {
             if (!string.IsNullOrEmpty(_logo))
             {
-                _terminal.Stdout.WriteLine(_logo.WithForeground(ConsoleColor.Cyan));
-                _terminal.Stdout.WriteLine();
+                Console.Error.WriteLine(_logo.Cyan());
+                Console.Error.WriteLine();
             }
 
             foreach (var handler in _handlers)
@@ -76,8 +72,8 @@ namespace ITGlobal.CommandLine.Parsing.Impl
         {
             if (!string.IsNullOrEmpty(_logo))
             {
-                _terminal.Stdout.WriteLine(_logo.WithForeground(ConsoleColor.Cyan));
-                _terminal.Stdout.WriteLine();
+                Console.Error.WriteLine(_logo.Cyan());
+                Console.Error.WriteLine();
             }
 
             foreach (var handler in _handlers)

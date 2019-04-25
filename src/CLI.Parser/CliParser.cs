@@ -1,4 +1,4 @@
-﻿using ITGlobal.CommandLine.Parsing.Impl;
+using ITGlobal.CommandLine.Parsing.Impl;
 using JetBrains.Annotations;
 
 namespace ITGlobal.CommandLine.Parsing
@@ -14,7 +14,6 @@ namespace ITGlobal.CommandLine.Parsing
         /// </summary>
         [NotNull]
         public static ISimpleCliParser NewSimpleParser(
-            ITerminal terminal = null,
             string executableName = null,
             string logo = null,
             string helpText = null,
@@ -24,12 +23,7 @@ namespace ITGlobal.CommandLine.Parsing
         )
         {
             ISimpleCliParser parser = new SimpleCliParser();
-
-            if (terminal != null)
-            {
-                parser.UseTerminal(terminal);
-            }
-
+            
             if (executableName != null)
             {
                 parser.ExecutableName(executableName);
@@ -65,7 +59,6 @@ namespace ITGlobal.CommandLine.Parsing
         /// </summary>
         [NotNull]
         public static ITreeCliParser NewTreeParser(
-            ITerminal terminal = null,
             string executableName = null,
             string logo = null,
             string helpText = null,
@@ -75,11 +68,6 @@ namespace ITGlobal.CommandLine.Parsing
             bool disableImplicitHelp = false)
         {
             ITreeCliParser parser = new TreeCliParser();
-
-            if (terminal != null)
-            {
-                parser.UseTerminal(terminal);
-            }
 
             if (executableName != null)
             {

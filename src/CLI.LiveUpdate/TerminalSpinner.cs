@@ -1,3 +1,4 @@
+using ITGlobal.CommandLine.Impl;
 using JetBrains.Annotations;
 
 namespace ITGlobal.CommandLine
@@ -13,13 +14,6 @@ namespace ITGlobal.CommandLine
         /// </summary>
         [NotNull]
         public static ISpinner Create(string title = null, SpinnerRenderer renderer = null) 
-            => Create(Terminal.Current, title, renderer);
-
-        /// <summary>
-        ///     Creates a terminal spinner
-        /// </summary>
-        [NotNull]
-        public static ISpinner Create([NotNull] ITerminal terminal, string title = null, SpinnerRenderer renderer = null) 
-            => new SpinnerImpl(terminal, title, renderer ?? SpinnerRenderer.Default);
+            => new SpinnerImpl(title, renderer ?? SpinnerRenderer.Default);
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using ITGlobal.CommandLine.Impl;
 using JetBrains.Annotations;
 
 namespace ITGlobal.CommandLine
@@ -17,7 +18,7 @@ namespace ITGlobal.CommandLine
         /// <summary>
         ///     Render a terminal spinner
         /// </summary>
-        public abstract void Render([NotNull] ITerminalOutput output, [CanBeNull] string title, int time);
+        public abstract void Render([NotNull] ITerminalWriter output, [CanBeNull] string title, int time);
 
         /// <summary>
         ///     Default spinner renderer
