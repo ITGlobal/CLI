@@ -1,42 +1,89 @@
-﻿using System;
+using System;
 using System.IO;
-using System.Text;
+using System.Linq;
+using ITGlobal.CommandLine.Table.Rendering;
 
 namespace ITGlobal.CommandLine.Table.Impl
 {
     internal sealed class PlainTableRenderer : TableRenderer
     {
-        public bool DrawHeaders { get; set; }
-        public bool UppercaseHeaders { get; set; }
-        public bool UnderlineHeaders { get; set; }
+        private readonly IPlainTableStyle _style;
 
-        public ConsoleColor? HeaderForegroundColor { get; set; }
-        public ConsoleColor? HeaderBackgroundColor { get; set; }
-
-        public ConsoleColor? HeaderUnderlineForegroundColor { get; set; }
-        public ConsoleColor? HeaderUnderlineBackgroundColor { get; set; }
-
-        public ConsoleColor? DefaultForegroundColor { get; set; }
-        public ConsoleColor? DefaultBackgroundColor { get; set; }
-
-        public override void Render<T>(ITableModel<T> model, TextWriter output)
+        public PlainTableRenderer(IPlainTableStyle style)
         {
-            PrintHeader(model, output);
+            _style = style;
+        }
+        
+        protected override int CalcTotalTableWidth(int[] columnWidths)
+        {
+            var totalContentWidth = columnWidths.Sum();
+            var totalTableWidth = totalContentWidth + columnWidths.Length;
+            return totalTableWidth;
+        }
 
-            for (var index = 0; index < model.Rows.Count; index++)
+        protected override int CalcSpannedColumnWidth(int[] columnWidths)
+        {
+            var width = columnWidths.Sum() + columnWidths.Length - 1;
+            return width;
+        }
+
+        protected override void Render(TableLayout model, TextWriter output)
+        {
+            foreach (var row in model.Rows)
             {
-                var row = model.Rows[index];
-                for (var i = 0; i < model.Columns.Count; i++)
+                switch (row.Type)
                 {
-                    var column = model.Columns[i];
-                    var text = column.GetText(row);
+                    case TableRowType.Title:
+                        DrawTitle(row, output);
+                        break;
+                    case TableRowType.Header:
+                        DrawHeaders(row, output);
+                        break;
+                    case TableRowType.Body:
+                        DrawBody(row, output);
+                        break;
+                    case TableRowType.Separator:
+                        break;
+                    case TableRowType.Footer:
+                        DrawFooter(row, output);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+            output.WriteLine();
+        }
 
-                    var foregroundColor = column.GetForegroundColor(row) ?? DefaultForegroundColor;
-                    var backgroundColor = column.GetBackgroundColor(row) ?? DefaultBackgroundColor;
+        private void DrawTitle(TableRowLayout row, TextWriter output)
+        {
+            foreach (var str in row.Cells[0].Content)
+            {
+                var s = str;
+                if (_style.UppercaseHeaders)
+                {
+                    s = new ColoredString(s.Text.ToUpperInvariant(), s.ForegroundColor, s.BackgroundColor);
+                }
 
-                    output.Write(text.Colored(foregroundColor, backgroundColor));
+                output.WriteLine(_style.TitleColors.Apply(s));
+            }
+            output.WriteLine();
+        }
 
-                    if (i != model.Columns.Count - 1)
+        private void DrawHeaders(TableRowLayout row, TextWriter output)
+        {
+            if (!_style.DrawHeaders)
+            {
+                return;
+            }
+
+            var maxRowNum = row.Cells.Max(_ => _.Content.Length);
+
+            for (var rowNum = 0; rowNum < maxRowNum; rowNum++)
+            {
+                for (var i = 0; i < row.Cells.Length; i++)
+                {
+                    DrawCell(row.Cells[i], rowNum);
+                    if (i != row.Cells.Length - 1)
                     {
                         output.Write(' ');
                     }
@@ -45,59 +92,88 @@ namespace ITGlobal.CommandLine.Table.Impl
                 output.WriteLine();
             }
 
-            output.WriteLine();
+            if (_style.UnderlineHeaders)
+            {
+                for (var i = 0; i < row.Cells.Length; i++)
+                {
+                    for (var j = 0; j < row.Cells[i].Width; j++)
+                    {
+                        output.Write('-');
+                    }
+
+                    if (i != row.Cells.Length - 1)
+                    {
+                        output.Write('-');
+                    }
+                }
+
+                output.WriteLine();
+            }
+
+
+            void DrawCell(TableCellLayout cell, int rowNum)
+            {
+                var n = 0;
+                if (cell.Content.Length > rowNum)
+                {
+                    var s = cell.Content[rowNum];
+                    if (_style.UppercaseHeaders)
+                    {
+                        s = new ColoredString(s.Text.ToUpperInvariant(), s.ForegroundColor, s.BackgroundColor);
+                    }
+
+                    output.Write(_style.HeaderColors.Apply(s));
+                    n = s.Length;
+                }
+
+                for (var i = n; i < cell.Width; i++)
+                {
+                    output.Write(' ');
+                }
+            }
         }
 
-        private void PrintHeader<T>(ITableModel<T> model, TextWriter output)
+        private void DrawBody(TableRowLayout row, TextWriter output)
         {
-            if (!DrawHeaders)
-            {
-                return;
-            }
+            var maxRowNum = row.Cells.Max(_ => _.Content.Length);
 
+            for (var rowNum = 0; rowNum < maxRowNum; rowNum++)
             {
-                var sb = new StringBuilder();
-
-                for (var i = 0; i < model.Columns.Count; i++)
+                for (var i = 0; i < row.Cells.Length; i++)
                 {
-                    var column = model.Columns[i];
-                    var title = column.Header;
-                    if (UppercaseHeaders)
+                    DrawCell(row.Cells[i], rowNum);
+                    if (i != row.Cells.Length - 1)
                     {
-                        title = title.ToUpperInvariant();
-                    }
-
-                    sb.Append(title);
-
-                    if (i != model.Columns.Count - 1)
-                    {
-                        sb.Append(' ');
+                        output.Write(' ');
                     }
                 }
 
-                output.WriteLine(sb.ToString().Colored(HeaderForegroundColor, HeaderBackgroundColor));
+                output.WriteLine();
             }
 
-
-            if (UnderlineHeaders)
+            void DrawCell(TableCellLayout cell, int rowNum)
             {
-                var sb = new StringBuilder();
-
-                for (var i = 0; i < model.Columns.Count; i++)
+                var n = 0;
+                if (cell.Content.Length > rowNum)
                 {
-                    var column = model.Columns[i];
-                    for (var j = 0; j < column.Header.Length; j++)
-                    {
-                        sb.Append('-');
-                    }
-
-                    if (i != model.Columns.Count - 1)
-                    {
-                        sb.Append(' ');
-                    }
+                    var s = cell.Content[rowNum];
+                    output.Write(_style.BodyColors.Apply(s));
+                    n = s.Length;
                 }
 
-                output.WriteLine(sb.ToString().Colored(HeaderUnderlineForegroundColor, HeaderUnderlineBackgroundColor));
+                for (var i = n; i < cell.Width; i++)
+                {
+                    output.Write(' ');
+                }
+            }
+        }
+
+        private void DrawFooter(TableRowLayout row, TextWriter output)
+        {
+            output.WriteLine();
+            foreach (var str in row.Cells[0].Content)
+            {
+                output.WriteLine(_style.FooterColors.Apply(str));
             }
         }
     }

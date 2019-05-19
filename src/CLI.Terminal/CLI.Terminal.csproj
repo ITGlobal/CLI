@@ -9,6 +9,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="ColoredStringStyle.Generated.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ColoredStringStyle.tt</DependentUpon>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="JetBrains.Annotations" Version="2019.1.1" />
   </ItemGroup>
 
@@ -21,6 +29,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>ColoredString.tt</DependentUpon>
+    </Compile>
+    <Compile Update="ColoredStringStyle.Generated.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ColoredStringStyle.tt</DependentUpon>
     </Compile>
   </ItemGroup>
 
@@ -38,6 +51,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="ColoredStringStyle.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ColoredStringStyle.Generated.cs</LastGenOutput>
+    </None>
     <None Update="Impl\Ansi.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Ansi.Generated.cs</LastGenOutput>
@@ -47,5 +64,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Ansi.tt</DependentUpon>
     </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
   </ItemGroup>
 </Project>

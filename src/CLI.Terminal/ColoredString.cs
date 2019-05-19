@@ -22,6 +22,16 @@ namespace ITGlobal.CommandLine
         public readonly ConsoleColor? ForegroundColor;
         public readonly ConsoleColor? BackgroundColor;
 
+        public int Length => Text.Length;
+
+        [Pure]
+        public ColoredString Substring(int startIndex) =>
+            new ColoredString(Text.Substring(startIndex), ForegroundColor, BackgroundColor);
+
+        [Pure]
+        public ColoredString Substring(int startIndex, int length) =>
+            new ColoredString(Text.Substring(startIndex, length), ForegroundColor, BackgroundColor);
+
         [Pure]
         public static explicit operator ColoredString(string value) => new ColoredString(value);
         [Pure]

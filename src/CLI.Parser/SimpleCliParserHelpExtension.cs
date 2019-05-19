@@ -111,6 +111,8 @@ namespace ITGlobal.CommandLine.Parsing
             Console.Error.WriteLine();
             Console.Error.WriteLine();
 
+            var tableRenderer = TableRenderer.Plain(PlainTableStyle.Create(drawHeaders: false));
+
             if (hasOptions || hasSwitches)
             {
                 var options = usage.Switches.Where(_ => !_.IsHidden).Select(OptionInfo.Create)
@@ -119,7 +121,7 @@ namespace ITGlobal.CommandLine.Parsing
                     .ThenBy(_ => _.Key);
 
                 Console.Error.WriteLine("OPTIONS".White());
-                var table = TerminalTable.Create(options, renderer: TableRenderer.Plain(drawHeaders: false));
+                var table = TerminalTable.CreateGenerated(options, renderer: tableRenderer);
                 table.Column("", _ => "  ");
                 table.Column("", _ => _.Name);
                 table.Column("", _ => _.Description);
@@ -134,7 +136,7 @@ namespace ITGlobal.CommandLine.Parsing
                     .ThenBy(_ => _.Key);
 
                 Console.Error.WriteLine("ARGUMENTS".White());
-                var table = TerminalTable.Create(arguments, renderer: TableRenderer.Plain(drawHeaders: false));
+                var table = TerminalTable.CreateGenerated(arguments, renderer: tableRenderer);
                 table.Column("", _ => "  ");
                 table.Column("", _ => _.Name);
                 table.Column("", _ => _.Description);

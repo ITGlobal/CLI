@@ -130,6 +130,8 @@ namespace ITGlobal.CommandLine.Parsing
             Console.Error.WriteLine();
             Console.Error.WriteLine();
 
+            var tableRenderer = TableRenderer.Plain(PlainTableStyle.Create(drawHeaders: false));
+
             if (hasOptions || hasSwitches)
             {
                 var options = usage.Switches.Where(_ => !_.IsHidden).Select(OptionInfo.Create)
@@ -138,7 +140,7 @@ namespace ITGlobal.CommandLine.Parsing
                     .ThenBy(_ => _.Key);
 
                 Console.Error.WriteLine("OPTIONS".White());
-                var table = TerminalTable.Create(options, renderer: TableRenderer.Plain(drawHeaders: false));
+                var table = TerminalTable.CreateGenerated(options, renderer: tableRenderer);
                 table.Column("", _ => "  ");
                 table.Column("", _ => _.Name);
                 table.Column("", _ => _.Description);
@@ -153,7 +155,7 @@ namespace ITGlobal.CommandLine.Parsing
                     .ThenBy(_ => _.Key);
 
                 Console.Error.WriteLine("ARGUMENTS".White());
-                var table = TerminalTable.Create(arguments, renderer: TableRenderer.Plain(drawHeaders: false));
+                var table = TerminalTable.CreateGenerated(arguments, renderer: tableRenderer);
                 table.Column("", _ => "  ");
                 table.Column("", _ => _.Name);
                 table.Column("", _ => _.Description);
@@ -163,11 +165,11 @@ namespace ITGlobal.CommandLine.Parsing
             if (hasCommands)
             {
                 Console.Error.WriteLine("COMMANDS".White());
-                var table = TerminalTable.Create(
+                var table = TerminalTable.CreateGenerated(
                     CommandInfo.Enumerate(usage.Commands)
                         .OrderBy(_ => _.DisplayOrder)
                         .ThenBy(_ => _.Key),
-                    renderer: TableRenderer.Plain(drawHeaders: false)
+                    renderer: tableRenderer
                 );
                 table.Column("", _ => "  ");
                 table.Column("", _ => _.Name);
@@ -257,16 +259,18 @@ namespace ITGlobal.CommandLine.Parsing
             Console.Error.WriteLine();
             Console.Error.WriteLine();
 
+            var tableRenderer = TableRenderer.Plain(PlainTableStyle.Create(drawHeaders: false));
+
             if (hasGlobalOptions || hasGlobalSwitches)
             {
                 Console.Error.WriteLine("GLOBAL OPTIONS".White());
-                var table = TerminalTable.Create(
+                var table = TerminalTable.CreateGenerated(
                     usage.Root.Switches
                         .Where(_ => !_.IsHidden).Select(OptionInfo.Create)
                         .Concat(usage.Root.Options.Where(_ => !_.IsHidden).Select(OptionInfo.Create))
                         .OrderBy(_ => _.DisplayOrder)
                         .ThenBy(_ => _.Key),
-                    renderer: TableRenderer.Plain(drawHeaders: false)
+                    renderer: tableRenderer
                 );
                 table.Column("", _ => "  ");
                 table.Column("", _ => _.Name);
@@ -277,12 +281,12 @@ namespace ITGlobal.CommandLine.Parsing
             if (hasOptions || hasSwitches)
             {
                 Console.Error.WriteLine("OPTIONS".White());
-                var table = TerminalTable.Create(
+                var table = TerminalTable.CreateGenerated(
                     switches.Where(_ => !_.IsHidden).Select(OptionInfo.Create)
                         .Concat(usage.Options.Where(_ => !_.IsHidden).Select(OptionInfo.Create))
                         .OrderBy(_ => _.DisplayOrder)
                         .ThenBy(_ => _.Key),
-                    renderer: TableRenderer.Plain(drawHeaders: false)
+                    renderer: tableRenderer
                 );
                 table.Column("", _ => "  ");
                 table.Column("", _ => _.Name);
@@ -293,12 +297,12 @@ namespace ITGlobal.CommandLine.Parsing
             if (hasArguments)
             {
                 Console.Error.WriteLine("ARGUMENTS".White());
-                var table = TerminalTable.Create(
+                var table = TerminalTable.CreateGenerated(
                     usage.Arguments.Where(_ => !_.IsHidden)
                         .Select(ArgumentInfo.Create)
                         .OrderBy(_ => _.DisplayOrder)
                         .ThenBy(_ => _.Key),
-                    renderer: TableRenderer.Plain(drawHeaders: false)
+                    renderer: tableRenderer
                 );
                 table.Column("", _ => "  ");
                 table.Column("", _ => _.Name);
@@ -309,11 +313,11 @@ namespace ITGlobal.CommandLine.Parsing
             if (hasCommands)
             {
                 Console.Error.WriteLine("COMMANDS".White());
-                var table = TerminalTable.Create(
+                var table = TerminalTable.CreateGenerated(
                     CommandInfo.Enumerate(usage.Commands)
                         .OrderBy(_ => _.DisplayOrder)
                         .ThenBy(_ => _.Key),
-                    renderer: TableRenderer.Plain(drawHeaders: false)
+                    renderer: tableRenderer
                 );
                 table.Column("", _ => "  ");
                 table.Column("", _ => _.Name);

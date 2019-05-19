@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using ITGlobal.CommandLine.Impl;
 using Xunit;
 using Xunit.Abstractions;
@@ -26,6 +27,16 @@ namespace ITGlobal.CommandLine
                     AnsiCommand.Write('t')
                 }
             );
+        }
+
+        [Theory]
+        [InlineData("first\nsecond")]
+        [InlineData("first\r\nsecond")]
+        public void Plain_multiline_text(string text)
+        {
+            var handler = Run(text);
+
+            handler.Verify(text.Select(AnsiCommand.Write).ToArray());
         }
 
         [Fact]

@@ -1,7 +1,6 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using ITGlobal.CommandLine.Table.Impl;
+using ITGlobal.CommandLine.Table.Rendering;
 using JetBrains.Annotations;
 
 namespace ITGlobal.CommandLine.Table
@@ -13,25 +12,21 @@ namespace ITGlobal.CommandLine.Table
     public static class TerminalTable
     {
         /// <summary>
-        ///     Creates new table builder
+        ///     Creates new fluent table builder
         /// </summary>
         [NotNull]
-        public static ITableBuilder<T> Create<T>([NotNull] T[] rows, TableRenderer renderer = null)
+        public static IFluentTableBuilder CreateFluent(ITableRenderer renderer = null)
         {
-            if (rows == null)
-            {
-                throw new ArgumentNullException(nameof(rows));
-            }
-
-            var builder = new TableBuilderImpl<T>(rows, renderer ?? TableRenderer.Default);
-            return builder;
+            return new FluentTableBuilderImpl(renderer ?? TableRenderer.Grid());
         }
 
         /// <summary>
-        ///     Creates new table builder
+        ///     Creates new fluent table builder
         /// </summary>
         [NotNull]
-        public static ITableBuilder<T> Create<T>([NotNull] IEnumerable<T> rows, TableRenderer renderer = null)
-            => Create(rows.ToArray(), renderer);
+        public static IGeneratedTableBuilder<T> CreateGenerated<T>([NotNull] IEnumerable<T> rows, ITableRenderer renderer = null)
+        {
+            return new GeneratedTableBuilderImpl<T>(rows, renderer ?? TableRenderer.Grid());
+        }
     }
 }

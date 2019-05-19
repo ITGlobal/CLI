@@ -39,7 +39,18 @@ namespace ITGlobal.CommandLine.Impl
 
         void IAnsiCommandHandler.Write(char c)
         {
-            _writer.Write(c);
+            switch (c)
+            {
+                case '\r':
+                    break;
+                case '\n':
+                    _writer.WriteLine();
+                    break;
+                default:
+                    _writer.Write(c);
+                    break;
+            }
+
         }
     }
 }

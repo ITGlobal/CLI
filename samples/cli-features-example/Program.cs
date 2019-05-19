@@ -1,4 +1,5 @@
 using ITGlobal.CommandLine.Parsing;
+using ITGlobal.CommandLine.Table;
 
 namespace ITGlobal.CommandLine.Example
 {
@@ -9,7 +10,7 @@ namespace ITGlobal.CommandLine.Example
             return TerminalErrorHandler.Handle(() =>
             {
                 Terminal.Initialize();
-                
+
                 var app = CliParser.NewTreeParser(executableName: "cli-features-example");
                 app.HelpText("Demo application for IT Global CLI");
 
@@ -18,14 +19,21 @@ namespace ITGlobal.CommandLine.Example
                     cmd.HelpText("Run a 'colors' demo");
                     cmd.OnExecute(_ => { ConsoleColorsDemo.Run(); });
                 }
-
+                
                 {
-                    var cmd = app.Command("table");
-                    cmd.HelpText("Run a 'table' demo");
-                    var n = cmd.Option<int>('n', helpText: "Row count").DefaultValue(2);
-                    var paged = cmd.Switch('p', helpText: "Enable paging");
-                    cmd.HelpText("Run a 'table' demo");
-                    cmd.OnExecute(_ => { TableDemo.Run(paged, n); });
+                    var tableCmd = app.Command("table")
+                        .HelpText("Run a 'table' demo");
+
+                    {
+                        var cmd = tableCmd.Command("fluent", helpText: "Run a 'fluent table' demo");
+                        cmd.OnExecute(_ => { FluentTableDemo.Run(); });
+                    }
+
+                    {
+                        var cmd = tableCmd.Command("generated", helpText: "Run a 'generated table' demo");
+                        var n = cmd.Option<int>('n', helpText: "Row count").DefaultValue(10);
+                        cmd.OnExecute(_ => { GeneratedTableDemo.Run(n); });
+                    }
                 }
 
                 {

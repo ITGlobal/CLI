@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using ITGlobal.CommandLine.Table;
 
 namespace ITGlobal.CommandLine.Example
 {
-    public static class TableDemo
+    public static class GeneratedTableDemo
     {
         class TableRow
         {
@@ -24,7 +23,7 @@ namespace ITGlobal.CommandLine.Example
             public bool IsRunning { get; }
         }
 
-        public static void Run(bool paged, int n)
+        public static void Run(int n)
         {
             var data = new List<TableRow>();
             for (var x = 0; x <= n; x++)
@@ -38,12 +37,13 @@ namespace ITGlobal.CommandLine.Example
                 ));
             }
 
-            var table = TerminalTable.Create(data, paged ? TableRenderer.Paged() : null);
+            var renderer = TableRenderer.Grid(GridTableStyle.Pretty());
+            var table = TerminalTable.CreateGenerated(data, renderer);
 
             table.Column("ID", _ => _.Id);
             table.Column("Image", _ => _.Image);
             table.Column("Created", _ => _.Created);
-            table.Column("Status", _ => _.Status, fg: _ => _.IsRunning ? ConsoleColor.Red : (ConsoleColor?)null);
+            table.Column("Status", _ => _.Status, style: _ => _.IsRunning ? ColoredStringStyle.Red : null);
             table.Draw();
         }
     }

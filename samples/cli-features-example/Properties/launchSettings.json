@@ -1,8 +1,16 @@
 {
   "profiles": {
-    "table": {
+    "table fluent": {
       "commandName": "Project",
-      "commandLineArgs": "table -n 10"
+      "commandLineArgs": "table fluent"
+    },
+    "table generated": {
+      "commandName": "Project",
+      "commandLineArgs": "table generated -n 10"
+    },
+    "table _old": {
+      "commandName": "Project",
+      "commandLineArgs": "table _old -n 10"
     },
     "progress": {
       "commandName": "Project",
@@ -19,6 +27,10 @@
     "colors": {
       "commandName": "Project",
       "commandLineArgs": "colors"
+    },
+    "help": {
+      "commandName": "Project",
+      "commandLineArgs": "--help"
     }
   }
 }
