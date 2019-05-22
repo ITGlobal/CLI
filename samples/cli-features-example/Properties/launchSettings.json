@@ -8,21 +8,17 @@
       "commandName": "Project",
       "commandLineArgs": "table generated -n 10"
     },
-    "table _old": {
+    "live progress": {
       "commandName": "Project",
-      "commandLineArgs": "table _old -n 10"
+      "commandLineArgs": "live progress"
     },
-    "progress": {
+    "live spinner": {
       "commandName": "Project",
-      "commandLineArgs": "progress"
+      "commandLineArgs": "live spinner"
     },
-    "spinner": {
+    "live print": {
       "commandName": "Project",
-      "commandLineArgs": "spinner"
-    },
-    "liveoutput": {
-      "commandName": "Project",
-      "commandLineArgs": "liveoutput"
+      "commandLineArgs": "live print"
     },
     "colors": {
       "commandName": "Project",
@@ -31,6 +27,10 @@
     "help": {
       "commandName": "Project",
       "commandLineArgs": "--help"
+    },
+    "did-you-mean-demo": {
+      "commandName": "Project",
+      "commandLineArgs": "live printer"
     }
   }
 }

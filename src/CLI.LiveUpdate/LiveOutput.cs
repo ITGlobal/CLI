@@ -1,21 +1,8 @@
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading;
 
 namespace ITGlobal.CommandLine
 {
-
-    public interface ILiveOutput : IDisposable
-    {
-        void Write(params ColoredString[] strs);
-        void WriteLine(params ColoredString[] strs);
-        void Clear();
-    }
-
-
     public sealed class LiveOutput : ILiveOutput, ITerminalLockOwner
     {
         private readonly ITerminalLock _terminal;

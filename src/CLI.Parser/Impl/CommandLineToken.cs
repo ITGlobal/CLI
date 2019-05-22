@@ -1,6 +1,6 @@
-﻿namespace ITGlobal.CommandLine.Parsing.Impl
+namespace ITGlobal.CommandLine.Parsing.Impl
 {
-    internal struct CommandLineToken
+    internal readonly struct CommandLineToken
     {
         private CommandLineToken(CommandLineTokenType type, string value)
         {

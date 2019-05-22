@@ -34,6 +34,7 @@ namespace ITGlobal.CommandLine.Parsing
         ICliParserResult UnknownCommand(
             [NotNull] ICliParser parser,
             [NotNull] string command,
+            [NotNull] string[] commandNameCandidates,
             [NotNull] IHelpUsage helpUsage
         );
     }

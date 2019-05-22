@@ -513,6 +513,8 @@ namespace ITGlobal.CommandLine.Parsing
 
         #region Internal methods
 
+        internal IEnumerable<string> EnumerateCommandNames() => _names;
+
         internal bool MatchesCommandName(string name)
         {
             return _names.Any(_ => _.Equals(name, StringComparison.OrdinalIgnoreCase));
@@ -532,16 +534,33 @@ namespace ITGlobal.CommandLine.Parsing
             {
                 return this;
             }
+            
 
-            foreach (var command in _commands)
+            var (cmd, commandCandidates) = SelectCommandHelper.SelectCommand(raw, _commands, name);
+            if (cmd != null)
             {
-                if (command.MatchesCommandName(name))
-                {
-                    return command.SelectCommand(raw);
-                }
+                return cmd;
             }
 
-            throw new UnknownCommandException(name, _parent.GetUsage());
+            var prefix = ((ICliCommand) this).GetFullCommandName();
+
+            if (!string.IsNullOrEmpty(prefix))
+            {
+                commandCandidates = commandCandidates.Select(n => $"{prefix} {n}").ToArray();
+            }
+
+            throw new UnknownCommandException(name, commandCandidates, GetUsage());
+        }
+
+        string ICliCommand.GetFullCommandName()
+        {
+            var parentName = _parent.GetFullCommandName();
+            if (!string.IsNullOrEmpty(parentName))
+            {
+                return $"{parentName} {_names[0]}";
+            }
+
+            return _names[0];
         }
 
         IEnumerable<string> ICliCommand.GetCommandName()

@@ -554,7 +554,7 @@ namespace ITGlobal.CommandLine.Parsing.Impl
             }
             catch (UnknownCommandException e)
             {
-                return ResultFactory.UnknownCommand(this, e.CommandName, e.Usage);
+                return ResultFactory.UnknownCommand(this, e.CommandName, e.CommandNameCandidates, e.Usage);
             }
 
             // Consume command line options and arguments
@@ -623,16 +623,14 @@ namespace ITGlobal.CommandLine.Parsing.Impl
                 {
                     return this;
                 }
-
-                foreach (var c in _commands)
+                
+                var (cmd, commandCandidates) = SelectCommandHelper.SelectCommand(r, _commands, name);
+                if (cmd != null)
                 {
-                    if (c.MatchesCommandName(name))
-                    {
-                        return c.SelectCommand(r);
-                    }
+                    return cmd;
                 }
 
-                throw new UnknownCommandException(name, GetUsage());
+                throw new UnknownCommandException(name, commandCandidates, GetUsage());
             }
         }
 
@@ -660,6 +658,8 @@ namespace ITGlobal.CommandLine.Parsing.Impl
         #endregion
 
         #region ICliCommand
+
+        string ICliCommand.GetFullCommandName() => string.Empty;
 
         IHelpUsage ICliCommand.GetUsage() => GetUsage();
 

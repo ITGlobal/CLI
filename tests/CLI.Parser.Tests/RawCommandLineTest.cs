@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Security.Cryptography;
 using ITGlobal.CommandLine.Parsing.Impl;
 using Xunit;
 

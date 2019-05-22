@@ -19,9 +19,9 @@ namespace ITGlobal.CommandLine.Parsing.Impl
             return new UnknownArgumentsCliParserResult(unknownArguments, helpUsage);
         }
 
-        public ICliParserResult UnknownCommand(ICliParser parser, string command, IHelpUsage helpUsage)
+        public ICliParserResult UnknownCommand(ICliParser parser, string command, string[] commandNameCandidates, IHelpUsage helpUsage)
         {
-            return new UnknownCommandCliParserResult(command, helpUsage);
+            return new UnknownCommandCliParserResult(command, commandNameCandidates, helpUsage);
         }
     }
 }

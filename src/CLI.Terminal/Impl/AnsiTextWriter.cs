@@ -41,8 +41,6 @@ namespace ITGlobal.CommandLine.Impl
         {
             switch (c)
             {
-                case '\r':
-                    break;
                 case '\n':
                     _writer.WriteLine();
                     break;

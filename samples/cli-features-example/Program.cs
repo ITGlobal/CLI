@@ -1,5 +1,4 @@
 using ITGlobal.CommandLine.Parsing;
-using ITGlobal.CommandLine.Table;
 
 namespace ITGlobal.CommandLine.Example
 {
@@ -14,12 +13,14 @@ namespace ITGlobal.CommandLine.Example
                 var app = CliParser.NewTreeParser(executableName: "cli-features-example");
                 app.HelpText("Demo application for IT Global CLI");
 
+                // colors
                 {
                     var cmd = app.Command("colors");
                     cmd.HelpText("Run a 'colors' demo");
                     cmd.OnExecute(_ => { ConsoleColorsDemo.Run(); });
                 }
-                
+
+                // table *
                 {
                     var tableCmd = app.Command("table")
                         .HelpText("Run a 'table' demo");
@@ -36,23 +37,28 @@ namespace ITGlobal.CommandLine.Example
                     }
                 }
 
+                // live *
                 {
-                    var cmd = app.Command("progress");
-                    cmd.HelpText("Run a 'progressbar' demo");
-                    cmd.OnExecute(_ => { ProgressBarDemo.Run(); });
-                }
+                    var liveCmd = app.Command("live")
+                        .HelpText("Run a 'live' demo");
+                    
+                    {
+                        var cmd = liveCmd.Command("progress");
+                        cmd.HelpText("Run a 'progress' demo");
+                        cmd.OnExecute(_ => { ProgressBarDemo.Run(); });
+                    }
 
-                {
-                    var cmd = app.Command("spinner");
-                    cmd.HelpText("Run a 'spinner' demo");
-                    cmd.OnExecute(_ => { SpinnerDemo.Run(); });
-                }
-
-
-                {
-                    var cmd = app.Command("liveoutput");
-                    cmd.HelpText("Run a 'liveoutput' demo");
-                    cmd.OnExecute(_ => { LiveOutputDemo.Run(); });
+                    {
+                        var cmd = liveCmd.Command("spinner");
+                        cmd.HelpText("Run a 'spinner' demo");
+                        cmd.OnExecute(_ => { SpinnerDemo.Run(); });
+                    }
+                    
+                    {
+                        var cmd = liveCmd.Command("print");
+                        cmd.HelpText("Run a 'live print' demo");
+                        cmd.OnExecute(_ => { LiveOutputDemo.Run(); });
+                    }
                 }
 
                 return app.Parse(args).Run();
