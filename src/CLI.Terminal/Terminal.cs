@@ -1,5 +1,7 @@
 using System;
+#if !NET45
 using System.Runtime.InteropServices;
+#endif
 using ITGlobal.CommandLine.Impl;
 using JetBrains.Annotations;
 
@@ -19,7 +21,7 @@ namespace ITGlobal.CommandLine
         /// </summary>
         public static void Initialize()
         {
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            if (IsRunningOnWindows)
             {
                 Console.SetError(new AnsiTextWriter(Console.Error));
                 Console.SetOut(new AnsiTextWriter(Console.Out));
@@ -27,6 +29,12 @@ namespace ITGlobal.CommandLine
 
             UseImplementation(new SystemTerminalImplementation());
         }
+
+#if !NET45
+        private static bool IsRunningOnWindows => RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+#else
+        private static bool IsRunningOnWindows => true;
+#endif
 
         /// <summary>
         ///     Terminal standard output wrapper

@@ -1,5 +1,3 @@
-using System;
-
 namespace ITGlobal.CommandLine.Impl
 {
     internal sealed class TerminalLiveSpinnerImpl : ITerminalLiveSpinner, ILiveOutputItem
@@ -8,7 +6,11 @@ namespace ITGlobal.CommandLine.Impl
         private readonly ISpinnerRenderer _renderer;
 
         private readonly object _textLock = new object();
-        private ColoredString[] _text = Array.Empty<ColoredString>();
+#if !NET45
+        private ColoredString[] _text = System.Array.Empty<ColoredString>();
+#else
+        private ColoredString[] _text = new ColoredString[0];
+#endif
         private bool _needsRedraw = true;
         private bool _isCompleted;
 

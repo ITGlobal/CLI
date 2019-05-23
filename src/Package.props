@@ -4,7 +4,7 @@
     <Copyright>2019 IT Global LLC</Copyright>
     <AssemblyTitle>ITGlobal CLI library</AssemblyTitle>
     <Authors>IT Global LLC</Authors>
-    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net45;netstandard2.0</TargetFrameworks>
     <PackageTags>command line;command line parser;cli</PackageTags>
     <PackageProjectUrl>https://github.com/ITGlobal/CLI</PackageProjectUrl>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>

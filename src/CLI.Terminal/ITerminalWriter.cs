@@ -1,4 +1,3 @@
-using System;
 using JetBrains.Annotations;
 
 namespace ITGlobal.CommandLine
@@ -14,20 +13,24 @@ namespace ITGlobal.CommandLine
         /// </summary>
         void Write(ColoredString str);
 
+#if !NET45
         /// <summary>
         ///     Writes a colored string
         /// </summary>
-        void Write(FormattableString str);
+        void Write(System.FormattableString str);
+#endif
 
         /// <summary>
         ///     Writes a list of colored strings
         /// </summary>
         void Write(params ColoredString[] strs);
 
+#if !NET45
         /// <summary>
         ///     Writes a colored string with a newline
         /// </summary>
-        void WriteLine(FormattableString str);
+        void WriteLine(System.FormattableString str);
+#endif
 
         /// <summary>
         ///     Writes a colored string with a newline

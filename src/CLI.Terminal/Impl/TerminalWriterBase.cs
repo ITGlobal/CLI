@@ -1,5 +1,7 @@
+#if !NET45
 using System;
 using System.Globalization;
+#endif
 
 namespace ITGlobal.CommandLine.Impl
 {
@@ -30,6 +32,7 @@ namespace ITGlobal.CommandLine.Impl
             }
         }
 
+#if !NET45
         public void Write(FormattableString str)
         {
             var tokens = StringFormatParser.Tokenize(str.Format, str.GetArguments());
@@ -58,6 +61,7 @@ namespace ITGlobal.CommandLine.Impl
                 }
             }
         }
+#endif
 
         public void Write(params ColoredString[] strs)
         {
@@ -67,11 +71,13 @@ namespace ITGlobal.CommandLine.Impl
             }
         }
 
+#if !NET45
         public void WriteLine(FormattableString str)
         {
             Write(str);
             WriteLine();
         }
+#endif
 
         public void WriteLine(ColoredString str)
         {

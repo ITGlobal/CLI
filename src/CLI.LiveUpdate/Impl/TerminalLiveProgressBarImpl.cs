@@ -1,5 +1,3 @@
-using System;
-
 namespace ITGlobal.CommandLine.Impl
 {
     internal sealed class TerminalLiveProgressBarImpl : ITerminalLiveProgressBar, ILiveOutputItem
@@ -8,7 +6,11 @@ namespace ITGlobal.CommandLine.Impl
         private readonly IProgressBarRenderer _renderer;
 
         private readonly object _textLock = new object();
-        private ColoredString[] _text = Array.Empty<ColoredString>();
+#if !NET45
+        private ColoredString[] _text = System.Array.Empty<ColoredString>();
+#else
+        private ColoredString[] _text = new ColoredString[0];
+#endif
         private int _value;
         private bool _needsRedraw = true;
         private bool _isCompleted;
