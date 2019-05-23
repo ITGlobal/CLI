@@ -15,8 +15,7 @@ namespace ITGlobal.CommandLine.Example
             Legacy,
             Shades,
         }
-
-
+        
         public static void Run(Type type)
         {
             IProgressBarRenderer progressBarRenderer;
@@ -59,25 +58,25 @@ namespace ITGlobal.CommandLine.Example
         private static Task CreatePullOperation(string hash, int size, ILiveOutputManager liveOutput)
         {
             const int textWidth = 40;
-            var bar = liveOutput.CreateProgressBar($"[{hash}] waiting".PadRight(textWidth).Colored());
+            var bar = liveOutput.CreateProgressBar($"[{hash}] waiting".PadRight(textWidth));
 
             return Task.Run(() =>
             {
                 for (var i = 0; i < size; i += 40 * 1024)
                 {
                     var p = (int)(i * 100f / size);
-                    bar.Write(p, $"[{hash}] downloading".PadRight(textWidth).Colored());
+                    bar.Write(p, $"[{hash}] downloading".PadRight(textWidth));
                     Thread.Sleep(100);
                 }
 
                 for (var i = 0; i < size; i += 80 * 1024)
                 {
                     var p = (int)(i * 100f / size);
-                    bar.Write(p, $"[{hash}] extracting".PadRight(textWidth).Colored());
+                    bar.Write(p, $"[{hash}] extracting".PadRight(textWidth));
                     Thread.Sleep(100);
                 }
 
-                bar.Complete($"[{hash}] download completed".PadRight(textWidth).Colored());
+                bar.Complete($"[{hash}] download completed".PadRight(textWidth));
             });
         }
     }

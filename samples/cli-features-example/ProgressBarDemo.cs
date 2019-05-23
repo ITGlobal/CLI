@@ -39,7 +39,7 @@ namespace ITGlobal.CommandLine.Example
 
             using (var liveOutput = LiveOutputManager.Create(progressBarRenderer: progressBarRenderer))
             {
-                var bar = liveOutput.CreateProgressBar("Downloading...".Colored());
+                var bar = liveOutput.CreateProgressBar("Downloading...");
 
                 for (var i = 0; i < 100; i += 5)
                 {

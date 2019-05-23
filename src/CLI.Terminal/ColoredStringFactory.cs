@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using JetBrains.Annotations;
 
 namespace ITGlobal.CommandLine
@@ -28,5 +29,7 @@ namespace ITGlobal.CommandLine
 
             return new ColoredString(text, foregroundColor, backgroundColor);
         }
+
+        internal static ColoredString[] Colored(this string[] strs) => strs.Select(_ => _.Colored()).ToArray();
     }
 }

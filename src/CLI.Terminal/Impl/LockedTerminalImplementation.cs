@@ -92,7 +92,7 @@ namespace ITGlobal.CommandLine.Impl
         public void MoveToLine(int offset) => _terminal.MoveToLine(offset);
 
         void ITerminalLock.ClearLine() => _terminal.ClearLine();
-        
+
         ITerminalWriter ITerminalImplementation.Stdout => _stdoutWriter;
 
         ITerminalWriter ITerminalImplementation.Stderr => _stderrWriter;
@@ -111,7 +111,6 @@ namespace ITGlobal.CommandLine.Impl
             {
                 if (c == '\r')
                 {
-                    //todo clear current line
                     return;
                 }
 
