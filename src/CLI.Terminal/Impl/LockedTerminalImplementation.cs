@@ -89,9 +89,10 @@ namespace ITGlobal.CommandLine.Impl
 
         ITerminalWriter ITerminalLock.Stderr => _terminal.Stderr;
 
+        public void MoveToLine(int offset) => _terminal.MoveToLine(offset);
+
         void ITerminalLock.ClearLine() => _terminal.ClearLine();
-
-
+        
         ITerminalWriter ITerminalImplementation.Stdout => _stdoutWriter;
 
         ITerminalWriter ITerminalImplementation.Stderr => _stderrWriter;

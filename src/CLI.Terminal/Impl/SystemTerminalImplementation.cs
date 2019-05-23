@@ -14,30 +14,41 @@ namespace ITGlobal.CommandLine.Impl
 
             Stdout = new SystemTerminalWriter(Console.Out);
             Stderr = new SystemTerminalWriter(Console.Error);
-
         }
 
         public ITerminalWriter Stdout { get; }
 
         public ITerminalWriter Stderr { get; }
 
+        public void MoveToLine(int offset)
+        {
+            var cursorTop = Console.CursorTop;
+            cursorTop -= offset;
+            Console.CursorTop = cursorTop > 0 ? cursorTop : 0;
+        }
+
         public void ClearLine()
         {
+            int width;
             if (Console.CursorLeft > 0)
             {
-                var left = Console.CursorLeft;
-
-                Console.ResetColor();
-
-                _stderr.Write('\r');
-                for (var i = 0; i < left; i++)
-                {
-                    _stderr.Write(' ');
-                }
-
-                _stderr.Write('\r');
-                _stderr.Flush();
+                width = Console.CursorLeft;
             }
+            else
+            {
+                width = Console.WindowWidth - 1;
+            }
+
+            Console.ResetColor();
+
+            _stderr.Write('\r');
+            for (var i = 0; i < width; i++)
+            {
+                _stderr.Write(' ');
+            }
+
+            _stderr.Write('\r');
+            _stderr.Flush();
         }
     }
 }

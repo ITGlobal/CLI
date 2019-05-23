@@ -4,46 +4,83 @@ using JetBrains.Annotations;
 
 namespace ITGlobal.CommandLine
 {
-    /// <summary>
-    ///     Renders terminal spinners
-    /// </summary>
-    [PublicAPI]
-    public abstract class SpinnerRenderer
+    public static class SpinnerRenderer
     {
-        /// <summary>
-        ///     Animation step time
-        /// </summary>
-        public abstract TimeSpan AnimationStep { get; }
-        
-        /// <summary>
-        ///     Render a terminal spinner
-        /// </summary>
-        public abstract void Render([NotNull] ITerminalWriter output, [CanBeNull] string title, int time);
-
-        /// <summary>
-        ///     Default spinner renderer
-        /// </summary>
         [NotNull]
-        public static SpinnerRenderer Default { get; } = Linear(spinnerForegroundColor: ConsoleColor.Cyan, titleForegroundColor: ConsoleColor.Yellow);
+        public static ISpinnerRenderer Default { get; set; } = RotatingBar();
 
-        /// <summary>
-        ///     Create a linear style spinner renderer
-        /// </summary>
         [NotNull]
-        public static SpinnerRenderer Linear(
-            ConsoleColor? spinnerForegroundColor = null,
-            ConsoleColor? spinnerBackgroundColor = null,
-            ConsoleColor? titleForegroundColor = null,
-            ConsoleColor? titleBackgroundColor = null
-        )
+        public static ISpinnerRenderer RotatingBar(
+            IColoredStringStyle colors = null, 
+            SpinnerLocation? location = null,
+            bool addSpaceSeparator = true)
         {
-            return new GlyphSpinnerRenderer(Consts.SPINNER_CHARS)
+            return new RotatingBarSpinnerRenderer(
+                colors: colors ?? ColoredStringStyle.Null,
+                location: location ?? SpinnerLocation.Trailing,
+                addSpaceSeparator: addSpaceSeparator
+            );
+        }
+
+        [NotNull]
+        public static ISpinnerRenderer RotatingAngle(
+            IColoredStringStyle colors = null,
+            SpinnerLocation? location = null,
+            bool addSpaceSeparator = true)
+        {
+            return new RotatingAngleSpinnerRenderer(
+                colors: colors ?? ColoredStringStyle.Null,
+                location: location ?? SpinnerLocation.Trailing,
+                addSpaceSeparator: addSpaceSeparator
+            );
+        }
+
+        [NotNull]
+        public static ISpinnerRenderer Arrow(
+            IColoredStringStyle colors = null,
+            SpinnerLocation? location = null,
+            bool addSpaceSeparator = true,
+            SpinnerArrowDirection? direction = null)
+        {
+            switch (direction?? SpinnerArrowDirection.Both)
             {
-                SpinnerForegroundColor = spinnerForegroundColor,
-                SpinnerBackgroundColor = spinnerBackgroundColor,
-                TitleForegroundColor = titleForegroundColor,
-                TitleBackgroundColor = titleBackgroundColor
-            };
+                case SpinnerArrowDirection.LeftToRight:
+                    return new LeftToRightArrowSpinnerRenderer(
+                        colors: colors ?? ColoredStringStyle.Null,
+                        location: location ?? SpinnerLocation.Trailing,
+                        addSpaceSeparator: addSpaceSeparator
+                    );
+
+                case SpinnerArrowDirection.RightToLeft:
+                    return new RightToLeftArrowSpinnerRenderer(
+                        colors: colors ?? ColoredStringStyle.Null,
+                        location: location ?? SpinnerLocation.Trailing,
+                        addSpaceSeparator: addSpaceSeparator
+                    );
+
+                case SpinnerArrowDirection.Both:
+                    return new BothDirectionArrowSpinnerRenderer(
+                        colors: colors ?? ColoredStringStyle.Null,
+                        location: location ?? SpinnerLocation.Trailing,
+                        addSpaceSeparator: addSpaceSeparator
+                    );
+
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        [NotNull]
+        public static ISpinnerRenderer BouncingBall(
+            IColoredStringStyle colors = null,
+            SpinnerLocation? location = null,
+            bool addSpaceSeparator = true)
+        {
+            return new BouncingBallSpinnerRenderer(
+                colors: colors ?? ColoredStringStyle.Null,
+                location: location ?? SpinnerLocation.Trailing,
+                addSpaceSeparator: addSpaceSeparator
+            );
         }
     }
 }

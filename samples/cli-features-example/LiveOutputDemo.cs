@@ -7,30 +7,26 @@ namespace ITGlobal.CommandLine.Example
     {
         public static void Run()
         {
-            Console.WriteLine("BEFORE");
+            Console.WriteLine("--- BEFORE DEMO ---");
 
-            using (ILiveOutput w = new LiveOutput())
+            using (var liveOutput = LiveOutputManager.Create())
             {
-                w.Write("Running...".Colored());
+                var w = liveOutput.CreateText("Downloading...".Yellow());
+                w.Write("Running...".Yellow());
                 Thread.Sleep(250);
 
                 for (var i = 0; i < 10; i++)
                 {
-                    w.Write($"Running ({i})...".Colored());
+                    w.Write($"Running ({i})...".Yellow());
 
-                    Console.Error.WriteLine("DURING (WL)");
-                    Thread.Sleep(250);
-
-                    Console.Error.Write("DURING...");
-                    Thread.Sleep(250);
-                    Console.Error.WriteLine("..OK");
+                    Console.WriteLine($"[{DateTime.UtcNow:s}] DEBUG #{i + 1} log event (see log file for details)");
                     Thread.Sleep(250);
                 }
 
-                w.WriteLine("Completed".Colored());
+                w.Complete("Completed".Green());
             }
 
-            Console.WriteLine("AFTER");
+            Console.WriteLine("--- AFTER DEMO ---");
         }
     }
 }

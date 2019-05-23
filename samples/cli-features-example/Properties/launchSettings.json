@@ -12,13 +12,21 @@
       "commandName": "Project",
       "commandLineArgs": "live progress"
     },
+    "live progress-complex": {
+      "commandName": "Project",
+      "commandLineArgs": "live progress-complex"
+    },
     "live spinner": {
       "commandName": "Project",
-      "commandLineArgs": "live spinner"
+      "commandLineArgs": "live spinner -t BouncingBall"
     },
     "live print": {
       "commandName": "Project",
       "commandLineArgs": "live print"
+    },
+    "live print-complex": {
+      "commandName": "Project",
+      "commandLineArgs": "live print-complex"
     },
     "colors": {
       "commandName": "Project",

@@ -1,109 +1,69 @@
 using System;
-using System.Text;
 
 namespace ITGlobal.CommandLine.Impl
 {
-    internal sealed class ProgressBarRendererImpl : ProgressBarRenderer
+    internal abstract class ProgressBarRendererImpl : IProgressBarRenderer
     {
-        public int LabelWidth { get; set; }
+        private readonly ProgressBarLocation _location;
+        private readonly int _width;
 
-        public ConsoleColor? LabelFgColor { get; set; } = ConsoleColor.Yellow;
-        public ConsoleColor? LabelBgColor { get; set; }
-
-        public ConsoleColor? FrameFgColor { get; set; }
-        public ConsoleColor? FrameBgColor { get; set; }
-
-        public ConsoleColor? FillFgColor { get; set; } = ConsoleColor.Cyan;
-        public ConsoleColor? FillBgColor { get; set; }
-
-        public ConsoleColor? FillEndFgColor { get; set; } = ConsoleColor.Cyan;
-        public ConsoleColor? FillEndBgColor { get; set; }
-
-        public ConsoleColor? EmptyFgColor { get; set; }
-        public ConsoleColor? EmptyBgColor { get; set; }
-
-        public ConsoleColor? ProgressFgColor { get; set; } = ConsoleColor.Yellow;
-        public ConsoleColor? ProgressBgColor { get; set; }
-
-        public char? FrameStart { get; set; }
-        public char Fill { get; set; }
-        public char FillEnd { get; set; }
-        public char Empty { get; set; }
-        public char? FrameEnd { get; set; }
-
-        public bool EnableLabel { get; set; }
-        public bool EnableProgress { get; set; }
-        
-        public override void Render(ITerminalWriter output, string text, int progress)
+        protected ProgressBarRendererImpl(ProgressBarLocation location, int width)
         {
-            if (EnableLabel && !string.IsNullOrEmpty(text))
-            {
-                var labelWidth = Math.Min(text.Length, LabelWidth);
-                var label = text.Length <= labelWidth ? text : text.Substring(0, labelWidth);
-                label = label.PadRight(labelWidth);
+            _location = location;
+            _width = width;
+        }
 
-                output.Write(label.Colored(LabelFgColor, LabelBgColor));
-                output.Write(' ');
-            }
-
-            if (FrameStart != null)
+        public void Render(ITerminalLock terminal, ColoredString[] text, int value, int time)
+        {
+            if (_location == ProgressBarLocation.Leading)
             {
-                output.Write($"{FrameStart.Value}".Colored(FrameFgColor, FrameBgColor));
+                RenderProgressBar(terminal, value);
+                terminal.Stderr.Write(' ');
             }
 
-            var progressBarWidth = Console.WindowWidth - 1;
-            if (FrameStart != null)
+            foreach (var s in text)
             {
-                progressBarWidth--;
-            }
-            if (FrameEnd != null)
-            {
-                progressBarWidth--;
-            }
-            if (EnableLabel)
-            {
-                progressBarWidth -= LabelWidth;
-                progressBarWidth -= 1;
+                terminal.Stderr.Write(s);
             }
 
-            if (EnableProgress)
+            if (_location == ProgressBarLocation.Trailing)
             {
-                progressBarWidth -= 5;
-            }
-
-            var fillWidth = (int)Math.Ceiling(progressBarWidth * progress / 100f);
-            var j = 0;
-           
-            {
-                var sb = new StringBuilder();
-                for (; j < fillWidth-1; j++)
-                {
-                    sb.Append(Fill);
-                }
-                output.Write(sb.ToString().Colored(FillFgColor, FillBgColor));
-                output.Write($"{FillEnd}".Colored(FillEndFgColor, FillEndBgColor));
-                j++;
-            }
-
-            {
-                var sb = new StringBuilder();
-                for (; j < progressBarWidth; j++)
-                {
-                    sb.Append(Empty);
-                }
-                output.Write(sb.ToString().Colored(EmptyFgColor, EmptyBgColor));
-            }
-
-            if (FrameEnd != null)
-            {
-                output.Write($"{FrameEnd.Value}".Colored(FrameFgColor, FrameBgColor));
-            }
-
-            if (EnableProgress)
-            {
-                output.Write(' ');
-                output.Write($"{progress,3:D}%".Colored(ProgressFgColor, ProgressBgColor));
+                terminal.Stderr.Write(' ');
+                RenderProgressBar(terminal, value);
             }
         }
+
+        private void RenderProgressBar(ITerminalLock terminal, int value)
+        {
+            RenderFrameStart(terminal);
+
+            var fillWidth = (int)Math.Ceiling(value * _width * 1f / 100f);
+            var i = 0;
+
+            for (; i < fillWidth; i++)
+            {
+                if (i == fillWidth - 1)
+                {
+                    RenderFillTip(terminal);
+                }
+                else
+                {
+                    RenderFill(terminal);
+                }
+            }
+
+            for (; i < _width; i++)
+            {
+                RenderEmpty(terminal);
+            }
+
+            RenderEnd(terminal);
+        }
+
+        protected abstract void RenderFrameStart(ITerminalLock terminal);
+        protected abstract void RenderFill(ITerminalLock terminal);
+        protected abstract void RenderFillTip(ITerminalLock terminal);
+        protected abstract void RenderEmpty(ITerminalLock terminal);
+        protected abstract void RenderEnd(ITerminalLock terminal);
     }
 }

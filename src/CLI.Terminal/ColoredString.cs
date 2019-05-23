@@ -9,7 +9,7 @@ namespace ITGlobal.CommandLine
     ///     A colored string chunk
     /// </summary>
     [PublicAPI]
-    public readonly partial struct ColoredString
+    public readonly partial struct ColoredString : IEquatable<ColoredString>
     {
         public ColoredString([NotNull] string text, ConsoleColor? foregroundColor = null, ConsoleColor? backgroundColor = null)
         {
@@ -18,6 +18,7 @@ namespace ITGlobal.CommandLine
             BackgroundColor = backgroundColor;
         }
 
+        [NotNull]
         public readonly string Text;
         public readonly ConsoleColor? ForegroundColor;
         public readonly ConsoleColor? BackgroundColor;
@@ -87,6 +88,38 @@ namespace ITGlobal.CommandLine
             }
 
             return Text;
+        }
+
+        public bool Equals(ColoredString other)
+        {
+            return string.Equals(Text, other.Text) && ForegroundColor == other.ForegroundColor && BackgroundColor == other.BackgroundColor;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            return obj is ColoredString other && Equals(other);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = Text.GetHashCode();
+                hashCode = (hashCode * 397) ^ ForegroundColor.GetHashCode();
+                hashCode = (hashCode * 397) ^ BackgroundColor.GetHashCode();
+                return hashCode;
+            }
+        }
+
+        public static bool operator ==(ColoredString left, ColoredString right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(ColoredString left, ColoredString right)
+        {
+            return !left.Equals(right);
         }
     }
 }

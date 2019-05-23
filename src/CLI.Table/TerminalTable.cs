@@ -17,7 +17,7 @@ namespace ITGlobal.CommandLine.Table
         [NotNull]
         public static IFluentTableBuilder CreateFluent(ITableRenderer renderer = null)
         {
-            return new FluentTableBuilderImpl(renderer ?? TableRenderer.Grid());
+            return new FluentTableBuilderImpl(renderer ?? TableRenderer.Default);
         }
 
         /// <summary>
@@ -26,7 +26,7 @@ namespace ITGlobal.CommandLine.Table
         [NotNull]
         public static IGeneratedTableBuilder<T> CreateGenerated<T>([NotNull] IEnumerable<T> rows, ITableRenderer renderer = null)
         {
-            return new GeneratedTableBuilderImpl<T>(rows, renderer ?? TableRenderer.Grid());
+            return new GeneratedTableBuilderImpl<T>(rows, renderer ?? TableRenderer.Default);
         }
     }
 }

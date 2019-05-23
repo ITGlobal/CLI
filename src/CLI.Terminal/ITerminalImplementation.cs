@@ -1,4 +1,4 @@
-﻿using JetBrains.Annotations;
+using JetBrains.Annotations;
 
 namespace ITGlobal.CommandLine
 {
@@ -10,6 +10,7 @@ namespace ITGlobal.CommandLine
         [NotNull]
         ITerminalWriter Stderr { get; }
 
+        void MoveToLine(int offset);
         void ClearLine();
     }
 }

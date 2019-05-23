@@ -45,19 +45,41 @@ namespace ITGlobal.CommandLine.Example
                     {
                         var cmd = liveCmd.Command("progress");
                         cmd.HelpText("Run a 'progress' demo");
-                        cmd.OnExecute(_ => { ProgressBarDemo.Run(); });
+                        var type = cmd.Option<ProgressBarDemo.Type>('t', "type")
+                            .HelpText("Progress bar type")
+                            .DefaultValue(ProgressBarDemo.Type.Arrow);
+                        cmd.OnExecute(_ => { ProgressBarDemo.Run(type); });
+                    }
+
+                    
+                    {
+                        var cmd = liveCmd.Command("progress-complex");
+                        cmd.HelpText("Run a 'progress-complex' demo");
+                        var type = cmd.Option<ComplexProgressBarDemo.Type>('t', "type")
+                            .HelpText("Progress bar type")
+                            .DefaultValue(ComplexProgressBarDemo.Type.Arrow);
+                        cmd.OnExecute(_ => { ComplexProgressBarDemo.Run(type); });
                     }
 
                     {
                         var cmd = liveCmd.Command("spinner");
                         cmd.HelpText("Run a 'spinner' demo");
-                        cmd.OnExecute(_ => { SpinnerDemo.Run(); });
+                        var type = cmd.Option<SpinnerDemo.Type>('t', "type")
+                            .HelpText("Spinner type")
+                            .DefaultValue(SpinnerDemo.Type.RotatingBar);
+                        cmd.OnExecute(_ => { SpinnerDemo.Run(type); });
                     }
                     
                     {
                         var cmd = liveCmd.Command("print");
                         cmd.HelpText("Run a 'live print' demo");
                         cmd.OnExecute(_ => { LiveOutputDemo.Run(); });
+                    }
+                    
+                    {
+                        var cmd = liveCmd.Command("print-complex");
+                        cmd.HelpText("Run a 'live print-complex' demo");
+                        cmd.OnExecute(_ => { ComplexLiveOutputDemo.Run(); });
                     }
                 }
 

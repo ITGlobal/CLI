@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using ITGlobal.CommandLine.Table;
 using ITGlobal.CommandLine.Table.Rendering;
@@ -12,6 +12,7 @@ namespace ITGlobal.CommandLine.Example
             Run("Table demo: grid table with \"pretty\" style", TableRenderer.Grid(GridTableStyle.Pretty()));
             Run("Table demo: grid table with \"sketch\" style", TableRenderer.Grid(GridTableStyle.Sketch()));
             Run("Table demo: grid table with \"plain\" style", TableRenderer.Plain());
+            Run("Table demo: grid table with \"pipe\" style", TableRenderer.Pipe());
         }
 
         private static void Run(string title, ITableRenderer renderer)
