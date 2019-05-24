@@ -1,10 +1,15 @@
-﻿$SOLUTION_DIR = Resolve-Path "."
-$ARTIFACTS = Join-Path $SOLUTION_DIR "artifacts"
-$CONFIGURATION = $env:CONFIGURATION
+﻿#!/usr/bin/env pwsh
+param (
+    [Parameter]
+    [string] $Configuration = "Release",
+    
+    [Parameter]
+    [string] $Version = ""
+)
 
-if (!$CONFIGURATION) {
-    $CONFIGURATION = "Release"
-}
+$SOLUTION_DIR = Resolve-Path "."
+$ARTIFACTS = Join-Path $SOLUTION_DIR "artifacts"
+$CONFIGURATION = $Configuration
 
 # CLEAN
 write-host "< clean >" -f cyan
@@ -21,19 +26,22 @@ write-host "Dropped build output"
 
 # VERSION
 write-host "< version >" -f cyan
-$VERSION = "0.0.0-dev"
+$VERSION = $Version
 
-if ((git tag | measure).Count -eq 0) {
-    write-host "there are no tags! Will use '$VERSION' as version number" -f red    
-}
-else {
-    $VERSION = "$(git describe --abbrev=0 --tags)"
+if ([string]::IsNullOrEmpty($Version)) {
+    if ((git tag | measure).Count -eq 0) {
+        $VERSION = "0.0.0-dev"
+        write-host "there are no tags! Will use '$VERSION' as version number" -f red    
+    }
+    else {
+        $VERSION = "$(git describe --abbrev=0 --tags)"
+    }
 }
 
 if ($env:APPVEYOR) {
     $BUILD_NUMBER = [int]($env:APPVEYOR_BUILD_NUMBER)
-    if($env:APPVEYOR_REPO_TAG -ne "true") {
-        $tag =$(git log -n 1 --pretty=format:%h)
+    if ($env:APPVEYOR_REPO_TAG -ne "true") {
+        $tag = $(git log -n 1 --pretty=format:%h)
         $VERSION = "$VERSION-$tag+$env:APPVEYOR_BUILD_NUMBER"
     }
 }
@@ -63,8 +71,6 @@ if ($LASTEXITCODE -ne 0) {
 
 # PACK
 write-host "< pack >" -f cyan
-# & dotnet pack /nologo -v q -c $CONFIGURATION /p:Version=$VERSION --include-symbols --include-source `
-#     --no-restore --no-build --output $ARTIFACTS ./src/CLI/CLI.csproj
 & dotnet pack /nologo -v q -c $CONFIGURATION /p:Version=$VERSION --include-symbols --include-source `
     --no-restore --no-build --output $ARTIFACTS ./CLI.sln
 if ($LASTEXITCODE -ne 0) {
@@ -72,6 +78,6 @@ if ($LASTEXITCODE -ne 0) {
     exit $LASTEXITCODE
 }
 Write-Host "Generated packages:"
-gci $ARTIFACTS -file -filter *.nupkg | % { write-host "`t$($_.Name)"}
+gci $ARTIFACTS -file -filter *.nupkg | % { write-host "`t$($_.Name)" }
 
 Write-Host "Completed" -f Green

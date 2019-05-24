@@ -1,0 +1,13 @@
+<Project>
+  <PropertyGroup>
+    <RestoreAdditionalProjectSources>$(RestoreAdditionalProjectSources);https://dotnet.myget.org/F/dotnet-core/api/v3/index.json</RestoreAdditionalProjectSources>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net45' ">
+     <FrameworkPathOverride>$(PkgMicrosoft_TargetingPack_NETFramework_v4_5)\lib\net45\</FrameworkPathOverride>
+  </PropertyGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
+    <PackageReference Include="Microsoft.TargetingPack.NETFramework.v4.5" Version="1.0.1" ExcludeAssets="All" PrivateAssets="All"  GeneratePathProperty="true" />
+  </ItemGroup>
+</Project>

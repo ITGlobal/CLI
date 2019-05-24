@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <Import Project="../Package.props" />
+  <Import Project="../Targeting.props" />
 
   <PropertyGroup>
     <PackageId>ITGlobal.CLI.Parser</PackageId>

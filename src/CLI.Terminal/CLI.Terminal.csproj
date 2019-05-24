@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <Import Project="../Package.props" />
+  <Import Project="../Targeting.props" />
 
   <PropertyGroup>
     <PackageId>ITGlobal.CLI.Terminal</PackageId>
@@ -19,7 +20,7 @@
   <ItemGroup>
     <PackageReference Include="JetBrains.Annotations" Version="2019.1.1" />
   </ItemGroup>
-
+   
   <ItemGroup>
     <None Update="ColoredString.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
