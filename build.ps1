@@ -1,9 +1,6 @@
 ﻿#!/usr/bin/env pwsh
 param (
-    [Parameter]
     [string] $Configuration = "Release",
-    
-    [Parameter]
     [string] $Version = ""
 )
 
