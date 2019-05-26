@@ -39,6 +39,10 @@
     "did-you-mean-demo": {
       "commandName": "Project",
       "commandLineArgs": "live printer"
+    },
+    "unknown-option": {
+      "commandName": "Project",
+      "commandLineArgs": "live print --test"
     }
   }
 }

@@ -23,11 +23,12 @@ namespace ITGlobal.CommandLine
         {
             if (IsRunningOnWindows)
             {
-                Console.SetError(new AnsiTextWriter(Console.Error));
-                Console.SetOut(new AnsiTextWriter(Console.Out));
+                UseImplementation(new SystemTerminalImplementation());
             }
-
-            UseImplementation(new SystemTerminalImplementation());
+            else
+            {
+                UseImplementation(new AnsiTerminalImplementation());
+            }
         }
 
 #if !NET45

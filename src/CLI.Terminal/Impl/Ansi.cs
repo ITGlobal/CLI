@@ -71,5 +71,11 @@ namespace ITGlobal.CommandLine.Impl
         }
 
         public static readonly string SGR_DEFAULT = SGR(AnsiAttributes.ATTR_DEFAULT);
+
+        public const string EL = "\x1b[2K";
+
+        public static string CUU(int i) => $"\x1b[{i}A";
+
+        public static string CUD(int i) => $"\x1b[{i}B";
     }
 }

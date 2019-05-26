@@ -8,11 +8,9 @@ namespace ITGlobal.CommandLine.Impl
     internal sealed class LiveOutputManagerImpl : ILiveOutputManager, ILiveOutputItemOwner, ITerminalLockOwner
     {
         [SuppressMessage("ReSharper", "InconsistentNaming")]
-        private const int ANIMATION_STEP_MS = 250;
-
+        private const int ANIMATION_STEP_MS = 100;
+        
         private readonly ITerminalLock _terminal;
-        private readonly object _outputLock = new object();
-
         private readonly object _syncRoot = new object();
 
         private readonly List<ILiveOutputItem> _items = new List<ILiveOutputItem>();
@@ -38,50 +36,48 @@ namespace ITGlobal.CommandLine.Impl
 
         public ITerminalLiveText CreateText(params ColoredString[] str)
         {
-            TerminalLiveTextImpl item;
-
-            lock (_syncRoot)
+            return Create(() =>
             {
-                item = new TerminalLiveTextImpl(this);
-                _items.Add(item);
-            }
-
-            item.Write(str);
-
-            Redraw();
-            return item;
+                var item = new TerminalLiveTextImpl(this);
+                item.Write(str);
+                return item;
+            });
         }
 
         public ITerminalLiveSpinner CreateSpinner(params ColoredString[] str)
         {
-            TerminalLiveSpinnerImpl item;
-
-            lock (_syncRoot)
+            return Create(() =>
             {
-                item = new TerminalLiveSpinnerImpl(this, _spinnerRenderer);
-                _items.Add(item);
-            }
-
-            item.Write(str);
-
-            Redraw();
-            return item;
+                var item = new TerminalLiveSpinnerImpl(this, _spinnerRenderer);
+                item.Write(str);
+                return item;
+            });
         }
 
         public ITerminalLiveProgressBar CreateProgressBar(int value, ColoredString[] str)
         {
-            TerminalLiveProgressBarImpl item;
+            return Create(() =>
+            {
+                var item = new TerminalLiveProgressBarImpl(this, _progressBarRenderer);
+                item.Write(value, str);
+                return item;
+            });
+        }
 
+        private T Create<T>(Func<T> create)
+            where T : ILiveOutputItem
+        {
             lock (_syncRoot)
             {
-                item = new TerminalLiveProgressBarImpl(this, _progressBarRenderer);
+                Clear();
+
+                var item = create();
                 _items.Add(item);
+
+                Draw();
+
+                return item;
             }
-
-            item.Write(value, str);
-
-            Redraw();
-            return item;
         }
 
         public void Dispose()
@@ -110,7 +106,6 @@ namespace ITGlobal.CommandLine.Impl
         void ITerminalLockOwner.Begin()
         {
             Monitor.Enter(_syncRoot);
-            Monitor.Enter(_outputLock);
             Clear();
         }
 
@@ -129,7 +124,6 @@ namespace ITGlobal.CommandLine.Impl
         void ITerminalLockOwner.End()
         {
             Draw();
-            Monitor.Exit(_outputLock);
             Monitor.Exit(_syncRoot);
         }
 
@@ -141,34 +135,20 @@ namespace ITGlobal.CommandLine.Impl
             }
         }
 
-        private void Redraw()
-        {
-            lock (_syncRoot)
-            {
-                lock (_outputLock)
-                {
-                    Clear();
-                    Draw();
-
-                    _needsRedraw = false;
-                }
-            }
-        }
-
         private void Clear()
         {
             lock (_syncRoot)
             {
-                lock (_outputLock)
+                for (var i = _items.Count - 1; i >= 0; i--)
                 {
-                    for (var i = _items.Count - 1; i >= 0; i--)
+                    var item = _items[i];
+                    
+                    if (i != _items.Count - 1)
                     {
-                        var item = _items[i];
-
-                        var offset = _items.Count - i - 1;
-                        _terminal.MoveToLine(offset);
-                        item.Clear(_terminal);
+                        _terminal.MoveToLine(-1);
                     }
+
+                    item.Clear(_terminal);
                 }
             }
         }
@@ -177,18 +157,15 @@ namespace ITGlobal.CommandLine.Impl
         {
             lock (_syncRoot)
             {
-                lock (_outputLock)
-                {
-                    var time = _time;
+                var time = _time;
 
-                    for (var i = 0; i < _items.Count; i++)
+                for (var i = 0; i < _items.Count; i++)
+                {
+                    var item = _items[i];
+                    item.Draw(_terminal, time);
+                    if (i != _items.Count - 1)
                     {
-                        var item = _items[i];
-                        item.Draw(_terminal, time);
-                        if (i != _items.Count - 1)
-                        {
-                            _terminal.Stderr.WriteLine();
-                        }
+                        _terminal.Stderr.WriteLine();
                     }
                 }
             }
@@ -212,9 +189,6 @@ namespace ITGlobal.CommandLine.Impl
                     return;
                 }
 
-
-                var currentLine = _items.Count;
-
                 for (var i = _items.Count - 1; i >= 0; i--)
                 {
                     var item = _items[i];
@@ -222,23 +196,16 @@ namespace ITGlobal.CommandLine.Impl
                     if (item.NeedsRedraw)
                     {
                         var offset = _items.Count - i - 1;
-                        
-                        _terminal.MoveToLine(offset);
+
+                        _terminal.MoveToLine(-offset);
 
                         item.Clear(_terminal);
                         item.Draw(_terminal, time);
 
-                        _terminal.MoveToLine(-offset);
+                        _terminal.MoveToLine(offset);
                     }
                 }
-
-                if (currentLine != _items.Count)
-                {
-                    _terminal.MoveToLine(_items.Count - currentLine);
-                }
             }
-
-            Redraw();
         }
     }
 }

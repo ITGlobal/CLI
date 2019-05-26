@@ -9,8 +9,10 @@ namespace ITGlobal.CommandLine.Impl
 
         public SystemTerminalImplementation()
         {
-            _stderr = Console.Error;
+            Console.SetError(new AnsiTextWriter(Console.Error));
+            Console.SetOut(new AnsiTextWriter(Console.Out));
 
+            _stderr = Console.Error;
 
             Stdout = new SystemTerminalWriter(Console.Out);
             Stderr = new SystemTerminalWriter(Console.Error);
@@ -23,7 +25,7 @@ namespace ITGlobal.CommandLine.Impl
         public void MoveToLine(int offset)
         {
             var cursorTop = Console.CursorTop;
-            cursorTop -= offset;
+            cursorTop += offset;
             Console.CursorTop = cursorTop > 0 ? cursorTop : 0;
         }
 

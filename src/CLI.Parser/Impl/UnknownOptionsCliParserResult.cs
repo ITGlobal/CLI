@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ITGlobal.CommandLine.Parsing.Impl
 {
@@ -18,12 +19,12 @@ namespace ITGlobal.CommandLine.Parsing.Impl
         {
             if (_options.Count == 1)
             {
-                Console.Error.WriteLine($"Unknown flag: {_options[0]}".Red());
-                Console.Error.WriteLine($"Unknown flag: {_options[0].Red()}");
+                Console.Error.WriteLine($"Unknown flag: \"{_options[0].Red()}\"");
             }
             else
             {
-                Console.Error.WriteLine($"Unknown flags: {string.Join(", ", _options)}".Red());
+                var flags = from f in _options select $"\"{f.Red()}\"";
+                Console.Error.WriteLine($"Unknown flags: {string.Join(", ", flags)}".Red());
             }
 
             if (_usage != null && _usage.SupportsHelp)

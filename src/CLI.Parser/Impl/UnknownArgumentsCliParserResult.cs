@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ITGlobal.CommandLine.Parsing.Impl
 {
@@ -18,11 +19,12 @@ namespace ITGlobal.CommandLine.Parsing.Impl
         {
             if (_arguments.Count == 1)
             {
-                Console.Error.WriteLine($"Unknown argument: {_arguments[0]}".Red());
+                Console.Error.WriteLine($"Unknown argument: {_arguments[0].Red()}");
             }
             else
             {
-                Console.Error.WriteLine($"Unknown arguments: {string.Join(", ", _arguments)}".Red());
+                var arguments = from f in _arguments select $"\"{f.Red()}\"";
+                Console.Error.WriteLine($"Unknown arguments: {string.Join(", ", arguments)}".Red());
             }
 
             if (_usage.SupportsHelp)

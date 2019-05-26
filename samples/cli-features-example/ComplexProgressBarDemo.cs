@@ -48,11 +48,11 @@ namespace ITGlobal.CommandLine.Example
 
         private static IEnumerable<Task> CreatePullOperations(ILiveOutputManager liveOutput)
         {
-            yield return CreatePullOperation("9ff7e2e5", 4376987, liveOutput);
-            yield return CreatePullOperation("815c6aed", 0001984, liveOutput);
-            yield return CreatePullOperation("8566b259", 2945616, liveOutput);
-            yield return CreatePullOperation("01c9fe45", 1151233, liveOutput);
-            yield return CreatePullOperation("7cedccbc", 5472391, liveOutput);
+            yield return CreatePullOperation("1_9ff7e2e5", 4376987, liveOutput);
+            yield return CreatePullOperation("2_815c6aed", 0001984, liveOutput);
+            yield return CreatePullOperation("3_8566b259", 2945616, liveOutput);
+            yield return CreatePullOperation("4_01c9fe45", 1151233, liveOutput);
+            yield return CreatePullOperation("5_7cedccbc", 5472391, liveOutput);
         }
 
         private static Task CreatePullOperation(string hash, int size, ILiveOutputManager liveOutput)
@@ -62,14 +62,14 @@ namespace ITGlobal.CommandLine.Example
 
             return Task.Run(() =>
             {
-                for (var i = 0; i < size; i += 40 * 1024)
+                for (var i = 0; i < size; i += 128 * 1024)
                 {
                     var p = (int)(i * 100f / size);
                     bar.Write(p, $"[{hash}] downloading".PadRight(textWidth));
                     Thread.Sleep(100);
                 }
 
-                for (var i = 0; i < size; i += 80 * 1024)
+                for (var i = 0; i < size; i += 128 * 1024)
                 {
                     var p = (int)(i * 100f / size);
                     bar.Write(p, $"[{hash}] extracting".PadRight(textWidth));
