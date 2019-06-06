@@ -63,7 +63,7 @@ Parser supports:
 
 > [**Read more**](parser)
 
-### Easy color management
+### [Easy color management](colors)
 
 ```csharp
 // First, initialize terminal services
@@ -121,7 +121,7 @@ await TerminalErrorHandler.HandleAsync(async () =>
 });
 ```
 
-### Live output
+### [Live output](live-output)
 
 `ITGlobal CLI` contains a "live output" feature, which allows you to create:
 

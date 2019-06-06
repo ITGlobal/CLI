@@ -1,9 +1,9 @@
-# ITGlobal CLI
+# CLI - Command Line Interface library
 
 [![Build status](https://ci.appveyor.com/api/projects/status/l3v4nu7dcra3o8nd/branch/master?svg=true)](https://ci.appveyor.com/project/itgloballlc/cli/branch/master)
 [![NuGet](https://img.shields.io/nuget/v/ITGlobal.CLI.svg)](https://www.nuget.org/packages/ITGlobal.CLI/)
 
-This library is a set of various utilities to build command line application in C#.
+`ITGlobal.CLI` is a powerful library to build used-friendly command-line applications.
 
 ## Features
 
@@ -12,136 +12,94 @@ This library is a set of various utilities to build command line application in 
 `ITGlobal CLI` supports:
 
 * .NET 4.0
-* .NET 4.5
-* .NET Core (`netstandard1.6`)
+* .NET Core (`netstandard2.0`)
 
-It has no external dependencies and may run on Windows, Linux or MacOS.
+It runs on Windows, Linux or MacOS.
 
-### [Command line parser](https://itglobal.github.io/CLI/parser)
+### [Command line parser](docs/parser)
 
 Unlike most command line parsers for .NET, `ITGlobal CLI Parser` uses fluent interface to define command line parameters and commands.
 An example below shows a fast implementation of `git pull` and `git push` commands:
 
 ```csharp
-var git = CliParser.NewTreeParser()
-    .ExecutableName("my-git")
-    .HelpText("git wannabe");
+// Define a command line parser
+var dotnet = CliParser.NewTreeParser().ExecutableName("dotnet").HelpText("git wannabe");
 
-// Global '-v' switch
-var verboseSwitch = git.Switch('v')
-    .HelpText("Verbose output");
+// Define a global '-v|--version' switch
+var versionSwitch = dotnet.Switch('v', "version").HelpText("Print version and exit");
 
-// 'push' command
-var pushCommand = git.Command("push")
-    .HelpText("Push changes to remote repo");
+// Define a 'restore' command
+var restoreCommand = dotnet.Command("restore").HelpText("Restore project dependencies");
 
-// Positional 'remote' argument specific to 'push' command (defaults to 'origin')
-var pushRemoteParameter = pushCommand.Argument<string>(0, "remote")
-    .DefaultValue("origin");
+// Define an argument specific to 'restore' command
+var projectParameter = restoreCommand.Argument<string>("PROJECT");
 
-// Positional 'refspec' argument specific to 'push' command (defaults to null)
-var pushRefParameter = pushCommand.Argument<string>(1, "refspec");
+// Define a switch specific for 'restore' command
+var forceSwitch = restoreCommand.Switch('f', "force").HelpText("Restore dependencies forcibly");
 
-// Push-force switch for 'push' command
-var pushForceSwitch = git.Switch('f', "force")
-    .HelpText("Push force");
-
-pushCommand.OnExecute(_ =>
+restoreCommand.OnExecute(context =>
 {
-    var verbose = verboseSwitch.IsSet ? "-v" : "";
-    var force = pushForceSwitch.IsSet ? "--force" : "";
-    var remote = pushRemoteParameter.Value;
-    var @ref = pushRefParameter.Value;
-    Console.WriteLine($"git push {verbose} {force} {remote} {@ref}");
-});
-
-
-// 'pull' command
-var pullCommand = git.Command("pull")
-    .HelpText("Pul changes from remote repo");
-
-// Positional 'remote' argument specific to 'pull' command (defaults to 'origin')
-var pullRemoteParameter = pullCommand.Argument<string>(0, "remote")
-    .DefaultValue("origin");
-
-// Positional 'refspec' argument specific to 'pull' command (defaults to null)
-var pullRefParameter = pullCommand.Argument<string>(1, "refspec");
-
-// Named '--no-commit' switch specific to 'pull' command
-var pullNoCommitSwitch = pullCommand.Switch("no-commit");
-pullCommand.OnExecute(_ =>
-{
-    var verbose = verboseSwitch.IsSet ? "-v" : "";
-    var remote = pullRemoteParameter.Value;
-    var @ref = pullRefParameter.Value;
-    Console.WriteLine($"git pull {verbose} {remote} {@ref}");
+    // This code will be called when a 'restore' command is invoked
 });
 
 // Parse command line and execute command
-git.Parse(args).Run();
+dotnet.Parse(args).Run();
 ```
 
 Parser supports:
 
-* switches (valueless parameters),
-* named parameters,
-* positional paramters,
-* custom parameter value parsers,
-* parameter aliases,
-* both global and command-scoped parameters,
-* required parameter validation,
-* default parameter values.
+* switches
+* named options
+* positional arguments
+* commands, including nested commands
+* custom value parsers for options/arguments
+* aliases for switches, options, arguments an commands
+* both global and command-scoped switches and options
+* value validation
+* default values
 
-### [Easy color management](https://itglobal.github.io/CLI/terminal)
+> [**Read more**](docs/parser)
+
+### [Easy color management](docs/colors)
 
 ```csharp
-Terminal.Stdout.WriteLine(
-    "This text will be written in RED font on default background"
-        .WithForeground(ConsoleColor.Red)
-);
+// First, initialize terminal services
+Terminal.Initialize();
 
-Terminal.Stdout.WriteLine(
-    "This text will be written in WHITE font on RED background"
-        .WithForeground(ConsoleColor.White)
-        .WithBackground(ConsoleColor.Red)
-);
+// Then use extension methods to colorize output:
+Console.WriteLine("This text will be written in RED font on default background".Red());
+Console.WriteLine($"This text will be written in {"WHITE".WhiteOnRed()} font on RED background");
 
-Terminal.Stdout.WriteLine(
-    "And this text will be written in WHITE font on default background"
-        .WithForeground(ConsoleColor.White)
-);
+ConsoleColor color = ConsoleColor.Green;
+Console.WriteLine("This text will be colorized with an external parameter".Fg(color));
 
-using(Terminal.Stdout.WithForeground(ConsoleColor.Red))
-{
-    Terminal.Stdout.WriteLine("This text will be written in RED font on default background");
-
-    using(Terminal.Stdout.WithForeground(ConsoleColor.White))
-    {
-        using(Terminal.Stdout.WithBackground(ConsoleColor.Red))
-        {
-            Terminal.Stdout.WriteLine("This text will be written in WHITE font on RED background");
-        }
-
-        Terminal.Stdout.WriteLine("And this text will be written in WHITE font on default background");
-    }
-}
+// Or alternatively a ColoredString might be created manually
+ColoredString str = new ColoredString("Text", ConsoleColor.Green, ConsoleColor.Red);
+Console.WriteLine($"Output: {str}");
 ```
 
-### Graceful Ctrl+C handlers
+> [**Read more**](docs/colors)
+
+### Graceful Ctrl+C/SIGINT handlers
+
+You can easily intercept a `Ctrl-C`/`SIGINT` event and convert it into a `CancellationToken`:
 
 ```csharp
-using(var ctrlC = Terminal.Current.AttachCtrlCInterceptor())
+using(var ctrlC = Terminal.OnCtrlC())
 {
-    var token = ctrlC.CancellationToken;
+    CancellationToken token = ctrlC.CancellationToken;
+
     token.Register(() => Console.WriteLine("This is a callback on a CancellationToken"));
 
-    Console.WriteLine("Press Ctrl+C to break the loop...");
+    Console.WriteLine("Press Ctrl+C to exit...");
     token.WaitHandle.WaitOne();
     Console.WriteLine("Cancelled!");
 }
 ```
 
 ### Unified error handling
+
+`ITGlobal CLI` offers an easy way to pretty-print exceptions in a command line application:
 
 ```csharp
 TerminalErrorHandler.Handle(() =>
@@ -160,36 +118,47 @@ await TerminalErrorHandler.HandleAsync(async () =>
 });
 ```
 
-### [Progress Bars](https://itglobal.github.io/CLI/progress-bar)
+### [Live output](docs/live-output)
 
-You can draw progress bars using the following methods:
+`ITGlobal CLI` contains a "live output" feature, which allows you to create:
+
+* spinners,
+* lines of text,
+* progress bars
+
+and to update them in-place.
+
+See example below:
 
 ```csharp
-using (var progressBar = TerminalProgressBar.Create())
+// Progress bar
+using (var liveOutput = LiveOutputManager.Create())
 {
-    // Update progress bar label only
-    progressBar.SetState(text: "Label1");
-
-    // Update progress bar progress only
-    progressBar.SetState(75);
-
-    // Update both progress bar progress and label
-    progressBar.SetState(75, "Label2");
-
-    // Print various text into console and progress bar will handle this properly
-    Console.WriteLine("A line of text");
+    var progressBar = liveOutput.CreateProgressBar("1/3...");
+    Thread.Sleep(1000);
+    progressBar.Write(33, "2/3...");
+    Thread.Sleep(1000);
+    progressBar.Write(66, "3/3...");
+    Thread.Sleep(1000);
+    progressBar.Complete("3/3 done");
 }
-```
 
-### [Spinners](https://itglobal.github.io/CLI/spinner)
-
-You can draw spinners using the following methods:
-
-```csharp
-using (var spinner = TerminalSpinner.Create("preparing"))
+// Line of text
+using (var liveOutput = LiveOutputManager.Create())
 {
+    var text = liveOutput.CreateText("1/3...");
+    Thread.Sleep(1000);
+    text.Write("2/3...");
+    Thread.Sleep(1000);
+    text.Complete("3/3 done");
+}
+
+// Spinner
+using (var liveOutput = LiveOutputManager.Create())
+{
+    var spinner = liveOutput.CreateSpinner("Downloading...");
     // Update a spinner label
-    spinner.SetTitle("starting long operation");
+    spinner.Write("Starting long operation");
 
     // Run a BLOCKING operation
     // Spinner animation will not freeze during this call
@@ -200,13 +169,22 @@ using (var spinner = TerminalSpinner.Create("preparing"))
 }
 ```
 
-### [Formatted tables](https://itglobal.github.io/CLI/table)
+`LiveOutputManager` proprely handles console output, e.g. you can write log messages to console
+and this won't mess with your progress bars and spinners.
 
-Print a strongly-typed table into console:
+> [**Read more**](docs/live-output)
+
+### [Formatted tables](docs/tables)
+
+![](docs/tables/data-driven.png)
+
+`ITGlobal CLI` provides a way to print pretty formatted tables into console:
+
+#### [Strongly-typed data-driven tables](docs/tables/data-driven)
 
 ```csharp
+// Create a table builder (attached to source data)
 var data = GetMyDataArray();
-
 var table = TerminalTable.Create(data);
 
 // Define table columns
@@ -222,30 +200,42 @@ table.Column("Header 3", _ => _.Property1, maxWidth: 24);
 
 // Draw table
 table.Draw();
-
 ```
 
-`ITGlobal.CLI` tables suppport:
+#### [Free-format tables](docs/tables/fluent)
+
+```csharp
+// Create a table builder
+var table = TerminalTable.CreateFluent(renderer);
+
+// Add a "table title" row
+table.Title(title);
+
+// Add a "table column headers" row
+table.Headers("This is", "a header", "row");
+
+// Add few "table body" rows
+table.Add("This", "is a", "data row");
+table.Add("This", "is a", "colored data row".Cyan());
+table.Add("This", "is an", "aligned data row".Cyan());
+
+// Add a separator
+table.Separator();
+
+// Add few more "table body" rows
+table.Add(_ => _.AddLeftAlign("See").AddLeftAlign("!").Add("This is a left aligned row"));
+table.Add(_ => _.AddMiddleAlign("See").AddMiddleAlign("!").Add("This is a middle aligned row"));
+table.Add(_ => _.AddRightAlign("See").AddRightAlign("!").Add("This is a right aligned row"));
+
+// Add a "table footer" row
+table.Footer("This is a footer row (colored!)".Green());
+
+// Draw table
+table.Draw();
+```
+
+`ITGlobal CLI` tables suppport:
 
 * Configurable table headers
 * Per-cell colorization
-* A pagination support (useful to view large tables in a console).
-  Set `renderer` parameter of `TerminalTable.Create()` method to `TableRenderer.Paged()` to enable it.
-
-## How to build
-
-You'll need PowerShell (or Bash) and .NET Core SDK. Once you've got all the tools, run
-
-```shell
-# for Powershell
-./build.ps1 [-Configuration Release] [-Version 3.0.0]
-
-# for Bash
-./build.sh [--configuration Release] [--version 3.0.0]
-```
-
-This will build the library and put the resulting NuGet packages into the `/artifacts` directory.
-
-## License
-
-[MIT](http://opensource.org/licenses/MIT)
+* Few rendering styles: `pretty`, `sketch`, `pipe` and `simple`.
