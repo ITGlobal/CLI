@@ -1,6 +1,9 @@
+---
+layout: default
+---
 # Value parser
 
-> [home](../README.md) > [command line parser](README.md) > value parser
+> [home](..) > [command line parser](README) > value parser
 
 Since raw command line is a string, a parsing is needed to populate options and arguments with non-string values.
 

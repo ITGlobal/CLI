@@ -140,7 +140,7 @@ namespace ITGlobal.CommandLine.Parsing
                     .ThenBy(_ => _.Key);
 
                 Console.Error.WriteLine("OPTIONS".White());
-                var table = TerminalTable.CreateGenerated(options, renderer: tableRenderer);
+                var table = TerminalTable.Create(options, renderer: tableRenderer);
                 table.Column("", _ => "  ");
                 table.Column("", _ => _.Name);
                 table.Column("", _ => _.Description);
@@ -155,7 +155,7 @@ namespace ITGlobal.CommandLine.Parsing
                     .ThenBy(_ => _.Key);
 
                 Console.Error.WriteLine("ARGUMENTS".White());
-                var table = TerminalTable.CreateGenerated(arguments, renderer: tableRenderer);
+                var table = TerminalTable.Create(arguments, renderer: tableRenderer);
                 table.Column("", _ => "  ");
                 table.Column("", _ => _.Name);
                 table.Column("", _ => _.Description);
@@ -165,7 +165,7 @@ namespace ITGlobal.CommandLine.Parsing
             if (hasCommands)
             {
                 Console.Error.WriteLine("COMMANDS".White());
-                var table = TerminalTable.CreateGenerated(
+                var table = TerminalTable.Create(
                     CommandInfo.Enumerate(usage.Commands)
                         .OrderBy(_ => _.DisplayOrder)
                         .ThenBy(_ => _.Key),
@@ -264,7 +264,7 @@ namespace ITGlobal.CommandLine.Parsing
             if (hasGlobalOptions || hasGlobalSwitches)
             {
                 Console.Error.WriteLine("GLOBAL OPTIONS".White());
-                var table = TerminalTable.CreateGenerated(
+                var table = TerminalTable.Create(
                     usage.Root.Switches
                         .Where(_ => !_.IsHidden).Select(OptionInfo.Create)
                         .Concat(usage.Root.Options.Where(_ => !_.IsHidden).Select(OptionInfo.Create))
@@ -281,7 +281,7 @@ namespace ITGlobal.CommandLine.Parsing
             if (hasOptions || hasSwitches)
             {
                 Console.Error.WriteLine("OPTIONS".White());
-                var table = TerminalTable.CreateGenerated(
+                var table = TerminalTable.Create(
                     switches.Where(_ => !_.IsHidden).Select(OptionInfo.Create)
                         .Concat(usage.Options.Where(_ => !_.IsHidden).Select(OptionInfo.Create))
                         .OrderBy(_ => _.DisplayOrder)
@@ -297,7 +297,7 @@ namespace ITGlobal.CommandLine.Parsing
             if (hasArguments)
             {
                 Console.Error.WriteLine("ARGUMENTS".White());
-                var table = TerminalTable.CreateGenerated(
+                var table = TerminalTable.Create(
                     usage.Arguments.Where(_ => !_.IsHidden)
                         .Select(ArgumentInfo.Create)
                         .OrderBy(_ => _.DisplayOrder)
@@ -313,7 +313,7 @@ namespace ITGlobal.CommandLine.Parsing
             if (hasCommands)
             {
                 Console.Error.WriteLine("COMMANDS".White());
-                var table = TerminalTable.CreateGenerated(
+                var table = TerminalTable.Create(
                     CommandInfo.Enumerate(usage.Commands)
                         .OrderBy(_ => _.DisplayOrder)
                         .ThenBy(_ => _.Key),

@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Linq;
 using ITGlobal.CommandLine.Table;
 using ITGlobal.CommandLine.Table.Rendering;
@@ -32,6 +33,8 @@ namespace ITGlobal.CommandLine.Example
             table.Add("This", "is a spanned row (span is computed automatically)");
             table.Add("This", "is", "an ordinary row");
             table.Footer("This is a footer row (colored!)".Green());
+            table.Draw();
+            table.Draw(TextWriter.Null);
             table.Draw();
             Console.WriteLine();
         }

@@ -51,6 +51,7 @@ namespace ITGlobal.CommandLine.Table.Impl
                                     output: output,
                                     model: model,
                                     isFirstRow: isFirstRow,
+                                    isLastRow: false,
                                     prevRowIsMultiCell: !isFirstRow && model.Rows[i - 1].Cells.Length == model.ColumnWidths.Length,
                                     nextRowIsMultiCell: !isLastRow && model.Rows[i + 1].Cells.Length == model.ColumnWidths.Length
                                 );
@@ -68,6 +69,7 @@ namespace ITGlobal.CommandLine.Table.Impl
                                 output: output,
                                 model: model,
                                 isFirstRow: isFirstRow,
+                                isLastRow: false,
                                 prevRowIsMultiCell: !isFirstRow && model.Rows[i - 1].Cells.Length == model.ColumnWidths.Length,
                                 nextRowIsMultiCell: !isLastRow && model.Rows[i + 1].Cells.Length == model.ColumnWidths.Length
                             );
@@ -83,6 +85,7 @@ namespace ITGlobal.CommandLine.Table.Impl
                                 output: output,
                                 model: model,
                                 isFirstRow: isFirstRow,
+                                isLastRow: false,
                                 prevRowIsMultiCell: !isFirstRow && model.Rows[i - 1].Cells.Length == model.ColumnWidths.Length,
                                 nextRowIsMultiCell: !isLastRow && model.Rows[i + 1].Cells.Length == model.ColumnWidths.Length
                             );
@@ -104,6 +107,7 @@ namespace ITGlobal.CommandLine.Table.Impl
                                     output: output,
                                     model: model,
                                     isFirstRow: isFirstRow,
+                                    isLastRow: false,
                                     prevRowIsMultiCell: !isFirstRow && model.Rows[i - 1].Cells.Length == model.ColumnWidths.Length,
                                     nextRowIsMultiCell: !isLastRow && model.Rows[i + 1].Cells.Length == model.ColumnWidths.Length
                                 );
@@ -125,6 +129,7 @@ namespace ITGlobal.CommandLine.Table.Impl
                                     output: output,
                                     model: model,
                                     isFirstRow: isFirstRow,
+                                    isLastRow: false,
                                     prevRowIsMultiCell: !isFirstRow && model.Rows[i - 1].Cells.Length == model.ColumnWidths.Length,
                                     nextRowIsMultiCell: !isLastRow && model.Rows[i + 1].Cells.Length == model.ColumnWidths.Length
                                 );
@@ -149,6 +154,7 @@ namespace ITGlobal.CommandLine.Table.Impl
                         output: output,
                         model: model,
                         isFirstRow: false,
+                        isLastRow: true,
                         prevRowIsMultiCell: model.Rows[model.Rows.Length - 1].Cells.Length == model.ColumnWidths.Length,
                         nextRowIsMultiCell: false
                     );
@@ -189,6 +195,7 @@ namespace ITGlobal.CommandLine.Table.Impl
             TextWriter output,
             TableLayout model,
             bool isFirstRow,
+            bool isLastRow,
             bool prevRowIsMultiCell,
             bool nextRowIsMultiCell
             )
@@ -199,7 +206,7 @@ namespace ITGlobal.CommandLine.Table.Impl
                 {
                     output.Write(
                         _style.FrameColors.Apply(
-                            isFirstRow ? _style.BoxDownRight : _style.BoxVerticalAndRight
+                            isFirstRow ? ( _style.BoxDownRight) : (isLastRow ? _style.BoxUpRight : _style.BoxVerticalAndRight)
                         )
                     );
                 }
@@ -234,7 +241,7 @@ namespace ITGlobal.CommandLine.Table.Impl
 
             output.Write(
                 _style.FrameColors.Apply(
-                    isFirstRow ? _style.BoxDownLeft : _style.BoxVerticalAndLeft
+                    isFirstRow ? (_style.BoxDownLeft) : (isLastRow ? _style.BoxUpLeft : _style.BoxVerticalAndLeft)
                 )
             );
             output.WriteLine();

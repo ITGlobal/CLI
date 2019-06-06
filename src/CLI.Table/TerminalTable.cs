@@ -21,12 +21,12 @@ namespace ITGlobal.CommandLine.Table
         }
 
         /// <summary>
-        ///     Creates new fluent table builder
+        ///     Creates new strongly-typed table builder
         /// </summary>
         [NotNull]
-        public static IGeneratedTableBuilder<T> CreateGenerated<T>([NotNull] IEnumerable<T> rows, ITableRenderer renderer = null)
+        public static IDataDrivenGeneratedTableBuilder<T> Create<T>([NotNull] IEnumerable<T> rows, ITableRenderer renderer = null)
         {
-            return new GeneratedTableBuilderImpl<T>(rows, renderer ?? TableRenderer.Default);
+            return new DataDrivenGeneratedTableBuilderImpl<T>(rows, renderer ?? TableRenderer.Default);
         }
     }
 }

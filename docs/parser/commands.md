@@ -1,5 +1,8 @@
+---
+layout: default
+---
 # Commands
 
-> [home](../README.md) > [command line parser](README.md) > commands
+> [home](..) > [command line parser](README) > commands
 
 > TODO

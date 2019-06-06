@@ -1,6 +1,9 @@
+---
+layout: default
+---
 # Options
 
-> [home](../README.md) > [command line parser](README.md) > options
+> [home](..) > [command line parser](README) > options
 
 **Option** is a named command line parameter that have a value.
 
@@ -76,7 +79,7 @@ var option = parser.Option<OptValue>("opt");
 option.UseParser(new OptValueParser());
 ```
 
-[Read more about value parsing here](value-parser.md)
+[Read more about value parsing here](value-parser)
 
 > **NOTE:** you must specify a custom parser unless you use any of built-in types as an option's value.
 

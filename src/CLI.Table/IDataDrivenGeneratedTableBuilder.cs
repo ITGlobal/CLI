@@ -7,37 +7,37 @@ namespace ITGlobal.CommandLine.Table
     ///     Generated table builder
     /// </summary>
     [PublicAPI]
-    public interface IGeneratedTableBuilder<out T> : ITableBuilderBase
+    public interface IDataDrivenGeneratedTableBuilder<out T> : ITableBuilderBase
     {
         /// <summary>
         ///     Set default cell alignment evaluator
         /// </summary>
         [NotNull]
-        IGeneratedTableBuilder<T> Align([NotNull] Func<T, TableCellAlignment?> func);
+        IDataDrivenGeneratedTableBuilder<T> Align([NotNull] Func<T, TableCellAlignment?> func);
         
         /// <summary>
         ///     Set default cell foreground evaluator
         /// </summary>
         [NotNull]
-        IGeneratedTableBuilder<T> Foreground([NotNull] Func<T, ConsoleColor?> func);
+        IDataDrivenGeneratedTableBuilder<T> Foreground([NotNull] Func<T, ConsoleColor?> func);
         
         /// <summary>
         ///     Set default cell background evaluator
         /// </summary>
         [NotNull]
-        IGeneratedTableBuilder<T> Background([NotNull] Func<T, ConsoleColor?> func);
+        IDataDrivenGeneratedTableBuilder<T> Background([NotNull] Func<T, ConsoleColor?> func);
         
         /// <summary>
         ///     Set default cell style evaluator
         /// </summary>
         [NotNull]
-        IGeneratedTableBuilder<T> Style([NotNull] Func<T, IColoredStringStyle> func);
+        IDataDrivenGeneratedTableBuilder<T> Style([NotNull] Func<T, IColoredStringStyle> func);
 
         /// <summary>
         ///     Add a table title
         /// </summary>
         [NotNull]
-        IGeneratedTableBuilder<T> Title(ColoredString text);
+        IDataDrivenGeneratedTableBuilder<T> Title(ColoredString text);
 
         /// <summary>
         ///     Defines a table column
@@ -58,7 +58,7 @@ namespace ITGlobal.CommandLine.Table
         ///     Max column width
         /// </param>
         [PublicAPI, NotNull]
-        IGeneratedTableBuilder<T> Column(
+        IDataDrivenGeneratedTableBuilder<T> Column(
             [NotNull] string title,
             [NotNull] Func<T, ColoredString> property,
             Func<T, IColoredStringStyle> style = null,
@@ -70,6 +70,6 @@ namespace ITGlobal.CommandLine.Table
         ///     Add a table footer
         /// </summary>
         [NotNull]
-        IGeneratedTableBuilder<T> Footer(ColoredString text);
+        IDataDrivenGeneratedTableBuilder<T> Footer(ColoredString text);
     }
 }

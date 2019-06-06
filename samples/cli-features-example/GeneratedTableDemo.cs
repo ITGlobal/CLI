@@ -38,7 +38,7 @@ namespace ITGlobal.CommandLine.Example
             }
 
             var renderer = TableRenderer.Grid(GridTableStyle.Pretty());
-            var table = TerminalTable.CreateGenerated(data, renderer);
+            var table = TerminalTable.Create(data, renderer);
 
             table.Column("ID", _ => _.Id);
             table.Column("Image", _ => _.Image);

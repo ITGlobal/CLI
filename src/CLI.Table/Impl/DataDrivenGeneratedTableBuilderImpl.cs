@@ -6,7 +6,7 @@ using ITGlobal.CommandLine.Table.Rendering;
 
 namespace ITGlobal.CommandLine.Table.Impl
 {
-    internal sealed class GeneratedTableBuilderImpl<T> : IGeneratedTableBuilder<T>
+    internal sealed class DataDrivenGeneratedTableBuilderImpl<T> : IDataDrivenGeneratedTableBuilder<T>
     {
         private sealed class ColumnGenerator
         {
@@ -58,41 +58,41 @@ namespace ITGlobal.CommandLine.Table.Impl
         private ColoredString? _title;
         private ColoredString? _footer;
 
-        public GeneratedTableBuilderImpl(IEnumerable<T> dataItems, ITableRenderer renderer)
+        public DataDrivenGeneratedTableBuilderImpl(IEnumerable<T> dataItems, ITableRenderer renderer)
         {
             _dataItems = dataItems;
             _renderer = renderer;
         }
 
-        public IGeneratedTableBuilder<T> Align(Func<T, TableCellAlignment?> func)
+        public IDataDrivenGeneratedTableBuilder<T> Align(Func<T, TableCellAlignment?> func)
         {
             _defaultAlignment = func;
             return this;
         }
 
-        public IGeneratedTableBuilder<T> Foreground(Func<T, ConsoleColor?> func)
+        public IDataDrivenGeneratedTableBuilder<T> Foreground(Func<T, ConsoleColor?> func)
         {
             throw new NotImplementedException();
         }
 
-        public IGeneratedTableBuilder<T> Background(Func<T, ConsoleColor?> func)
+        public IDataDrivenGeneratedTableBuilder<T> Background(Func<T, ConsoleColor?> func)
         {
             throw new NotImplementedException();
         }
 
-        public IGeneratedTableBuilder<T> Style(Func<T, IColoredStringStyle> func)
+        public IDataDrivenGeneratedTableBuilder<T> Style(Func<T, IColoredStringStyle> func)
         {
             _defaultStyle = func;
             return this;
         }
 
-        public IGeneratedTableBuilder<T> Title(ColoredString text)
+        public IDataDrivenGeneratedTableBuilder<T> Title(ColoredString text)
         {
             _title = text;
             return this;
         }
 
-        public IGeneratedTableBuilder<T> Column(
+        public IDataDrivenGeneratedTableBuilder<T> Column(
             string title,
             Func<T, ColoredString> property,
             Func<T, IColoredStringStyle> style = null,
@@ -103,7 +103,7 @@ namespace ITGlobal.CommandLine.Table.Impl
             return this;
         }
 
-        public IGeneratedTableBuilder<T> Footer(ColoredString text)
+        public IDataDrivenGeneratedTableBuilder<T> Footer(ColoredString text)
         {
             _footer = text;
             return this;

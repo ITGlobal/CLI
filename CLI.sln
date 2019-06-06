@@ -5,6 +5,7 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{A8AA4F6A-B745-4D2B-801C-5F64C0202718}"
 	ProjectSection(SolutionItems) = preProject
 		src\Package.props = src\Package.props
+		src\Targeting.props = src\Targeting.props
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CLI", "src\CLI\CLI.csproj", "{701E58D6-0AC5-43F3-9C9F-241692B616D0}"

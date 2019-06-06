@@ -121,7 +121,7 @@ namespace ITGlobal.CommandLine.Parsing
                     .ThenBy(_ => _.Key);
 
                 Console.Error.WriteLine("OPTIONS".White());
-                var table = TerminalTable.CreateGenerated(options, renderer: tableRenderer);
+                var table = TerminalTable.Create(options, renderer: tableRenderer);
                 table.Column("", _ => "  ");
                 table.Column("", _ => _.Name);
                 table.Column("", _ => _.Description);
@@ -136,7 +136,7 @@ namespace ITGlobal.CommandLine.Parsing
                     .ThenBy(_ => _.Key);
 
                 Console.Error.WriteLine("ARGUMENTS".White());
-                var table = TerminalTable.CreateGenerated(arguments, renderer: tableRenderer);
+                var table = TerminalTable.Create(arguments, renderer: tableRenderer);
                 table.Column("", _ => "  ");
                 table.Column("", _ => _.Name);
                 table.Column("", _ => _.Description);

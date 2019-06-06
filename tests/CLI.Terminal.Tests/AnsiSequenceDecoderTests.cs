@@ -392,6 +392,21 @@ namespace ITGlobal.CommandLine
             );
         }
 
+        [Fact]
+        public void Escaped_escape_sequence()
+        {
+            var handler = Run("\\\x1b[2K");
+            handler.Verify(new[]
+                {
+                    AnsiCommand.Write('\\'),
+                    AnsiCommand.Write('\x1b'),
+                    AnsiCommand.Write('['),
+                    AnsiCommand.Write('2'),
+                    AnsiCommand.Write('K'),
+                }
+            );
+        }
+
         private AnsiCommandHandler Run(params string[] input)
         {
             var handler = new AnsiCommandHandler(_output);

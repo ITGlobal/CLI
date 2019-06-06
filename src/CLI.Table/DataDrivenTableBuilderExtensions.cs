@@ -4,10 +4,10 @@ using JetBrains.Annotations;
 namespace ITGlobal.CommandLine.Table
 {
     /// <summary>
-    ///     Extension methods for <see cref="IGeneratedTableBuilder{T}"/>
+    ///     Extension methods for <see cref="IDataDrivenGeneratedTableBuilder{T}"/>
     /// </summary>
     [PublicAPI]
-    public static class GeneratedTableBuilderExtensions
+    public static class DataDrivenTableBuilderExtensions
     {
         /// <summary>
         ///     Defines a table column
@@ -31,8 +31,8 @@ namespace ITGlobal.CommandLine.Table
         ///     Max column width
         /// </param>
         [PublicAPI, NotNull]
-        public static IGeneratedTableBuilder<T> Column<T>(
-            [NotNull] this IGeneratedTableBuilder<T> builder,
+        public static IDataDrivenGeneratedTableBuilder<T> Column<T>(
+            [NotNull] this IDataDrivenGeneratedTableBuilder<T> builder,
             [NotNull] string title,
             [NotNull] Func<T, string> property,
             Func<T, IColoredStringStyle> style = null,
@@ -70,8 +70,8 @@ namespace ITGlobal.CommandLine.Table
         ///     Max column width
         /// </param>
         [PublicAPI, NotNull]
-        public static IGeneratedTableBuilder<T> Column<T, TProperty>(
-            [NotNull] this IGeneratedTableBuilder<T> builder,
+        public static IDataDrivenGeneratedTableBuilder<T> Column<T, TProperty>(
+            [NotNull] this IDataDrivenGeneratedTableBuilder<T> builder,
             [NotNull] string title,
             [NotNull] Func<T, TProperty> property,
             Func<T, IColoredStringStyle> style = null,

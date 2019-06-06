@@ -8,6 +8,7 @@ namespace ITGlobal.CommandLine.Impl
         private readonly StringBuilder _sb = new StringBuilder();
 
         private bool _isEscSequence;
+        private char _prevChar;
 
         public AnsiSequenceDecoder(IAnsiCommandHandler handler)
         {
@@ -22,13 +23,14 @@ namespace ITGlobal.CommandLine.Impl
                 return;
             }
 
-            if (c == Ansi.ESC)
+            if (c == Ansi.ESC && _prevChar != '\\')
             {
                 _isEscSequence = true;
                 return;
             }
 
             _handler.Write(c);
+            _prevChar = c;
         }
 
         private void ProcessAnsi(char c)

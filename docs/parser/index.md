@@ -1,6 +1,9 @@
+---
+layout: default
+---
 # Command line parser
 
-> [home](../README.md) > command line parser
+> [home](..) > command line parser
 
 `ITGlobal.CLI` offers a simple but powerful command line arguments parser.
 
@@ -77,7 +80,7 @@ var exitCode = parser.Parse("-D", "get", "string").Run();
 
 1. At first parser validates its configuration
 2. Then it parses command line input
-   * at this point, [value parsers](value-parser.md) are invoked if neccessary
+   * at this point, [value parsers](value-parser) are invoked if neccessary
 3. Then parser checks parsed values using validation rules
    * at this point, value validators are invoked if neccessary
 4. Then `BeforeExecute` hooks are executed. Hooks may break the execution flow preventing further execution.
@@ -85,12 +88,12 @@ var exitCode = parser.Parse("-D", "get", "string").Run();
 
 ## Detailed descriptions
 
-### [Switches](switches.md)
+### [Switches](switches)
 
-### [Options](options.md)
+### [Options](options)
 
-### [Arguments](arguments.md)
+### [Arguments](arguments)
 
-### [Commands](commands.md)
+### [Commands](commands)
 
-### [Flags](flags.md)
+### [Flags](flags)

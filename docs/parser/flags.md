@@ -1,6 +1,9 @@
+---
+layout: default
+---
 # Flags
 
-> [home](../README.md) > [command line parser](README.md) > flags
+> [home](..) > [command line parser](README) > flags
 
 Command line parser's behavior may be altered with `CliParserFlags`:
 
