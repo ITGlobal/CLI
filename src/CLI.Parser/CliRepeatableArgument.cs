@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using ITGlobal.CommandLine.Parsing.Impl;
@@ -192,7 +192,7 @@ namespace ITGlobal.CommandLine.Parsing
             {
                 while (true)
                 {
-                    var str = raw.ConsumeArgument(Position);
+                    var str = raw.ConsumeArgument(0);
                     if (str == null)
                     {
                         yield break;
