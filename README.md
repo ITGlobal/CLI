@@ -16,7 +16,7 @@
 
 It runs on Windows, Linux or MacOS.
 
-### [Command line parser](docs/parser)
+### [Command line parser](docs/parser/index.md)
 
 Unlike most command line parsers for .NET, `ITGlobal CLI Parser` uses fluent interface to define command line parameters and commands.
 An example below shows a fast implementation of `git pull` and `git push` commands:
@@ -58,9 +58,9 @@ Parser supports:
 * value validation
 * default values
 
-> [**Read more**](docs/parser)
+> [**Read more**](docs/parser/index.md)
 
-### [Easy color management](docs/colors)
+### [Easy color management](docs/colors/index.md)
 
 ```csharp
 // First, initialize terminal services
@@ -78,7 +78,7 @@ ColoredString str = new ColoredString("Text", ConsoleColor.Green, ConsoleColor.R
 Console.WriteLine($"Output: {str}");
 ```
 
-> [**Read more**](docs/colors)
+> [**Read more**](docs/colors/index.md)
 
 ### Graceful Ctrl+C/SIGINT handlers
 
@@ -118,7 +118,7 @@ await TerminalErrorHandler.HandleAsync(async () =>
 });
 ```
 
-### [Live output](docs/live-output)
+### [Live output](docs/live-output/index.md)
 
 `ITGlobal CLI` contains a "live output" feature, which allows you to create:
 
@@ -172,15 +172,15 @@ using (var liveOutput = LiveOutputManager.Create())
 `LiveOutputManager` proprely handles console output, e.g. you can write log messages to console
 and this won't mess with your progress bars and spinners.
 
-> [**Read more**](docs/live-output)
+> [**Read more**](docs/live-output/index.md)
 
-### [Formatted tables](docs/tables)
+### [Formatted tables](docs/tables/index.md)
 
 ![](docs/tables/data-driven.png)
 
 `ITGlobal CLI` provides a way to print pretty formatted tables into console:
 
-#### [Strongly-typed data-driven tables](docs/tables/data-driven)
+#### [Strongly-typed data-driven tables](docs/tables/data-driven.md)
 
 ```csharp
 // Create a table builder (attached to source data)
@@ -202,7 +202,7 @@ table.Column("Header 3", _ => _.Property1, maxWidth: 24);
 table.Draw();
 ```
 
-#### [Free-format tables](docs/tables/fluent)
+#### [Free-format tables](docs/tables/fluent.md)
 
 ```csharp
 // Create a table builder
