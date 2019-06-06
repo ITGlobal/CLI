@@ -1,0 +1,136 @@
+<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".Generated.cs" #>
+<#
+    var fgColorToAttr = new Dictionary<string, string>();
+
+    Action<string, string> AddFgColor = (string color, string attr) =>
+    {
+        fgColorToAttr[color] = attr;
+    };
+
+    // Non-bright colors
+    AddFgColor("Black",       "ATTR_FG_BLACK");
+    AddFgColor("DarkRed",     "ATTR_FG_RED");
+    AddFgColor("DarkGreen",   "ATTR_FG_GREEN");
+    AddFgColor("DarkYellow",  "ATTR_FG_YELLOW");
+    AddFgColor("DarkBlue",    "ATTR_FG_BLUE");
+    AddFgColor("DarkMagenta", "ATTR_FG_MAGENTA");
+    AddFgColor("DarkCyan",    "ATTR_FG_CYAN");
+    AddFgColor("DarkGray",    "ATTR_FG_WHITE");
+
+    // Bright colors
+    AddFgColor("Gray",        "ATTR_FG_BRIGHT_BLACK");
+    AddFgColor("Red",         "ATTR_FG_BRIGHT_RED");
+    AddFgColor("Green",       "ATTR_FG_BRIGHT_GREEN");
+    AddFgColor("Yellow",      "ATTR_FG_BRIGHT_YELLOW");
+    AddFgColor("Blue",        "ATTR_FG_BRIGHT_BLUE");
+    AddFgColor("Magenta",     "ATTR_FG_BRIGHT_MAGENTA");
+    AddFgColor("Cyan",        "ATTR_FG_BRIGHT_CYAN");
+    AddFgColor("White",       "ATTR_FG_BRIGHT_WHITE");
+
+    var bgColorToAttr = new Dictionary<string, string>();
+
+    Action<string, string> AddBgColor = (string color, string attr) =>
+    {
+        bgColorToAttr[color] = attr;
+    };
+
+    // Non-bright colors
+    AddBgColor("Black",       "ATTR_BG_BLACK");
+    AddBgColor("DarkRed",     "ATTR_BG_RED");
+    AddBgColor("DarkGreen",   "ATTR_BG_GREEN");
+    AddBgColor("DarkYellow",  "ATTR_BG_YELLOW");
+    AddBgColor("DarkBlue",    "ATTR_BG_BLUE");
+    AddBgColor("DarkMagenta", "ATTR_BG_MAGENTA");
+    AddBgColor("DarkCyan",    "ATTR_BG_CYAN");
+    AddBgColor("DarkGray",    "ATTR_BG_WHITE");
+
+    // Bright colors
+    AddBgColor("Gray",        "ATTR_BG_BRIGHT_BLACK");
+    AddBgColor("Red",         "ATTR_BG_BRIGHT_RED");
+    AddBgColor("Green",       "ATTR_BG_BRIGHT_GREEN");
+    AddBgColor("Yellow",      "ATTR_BG_BRIGHT_YELLOW");
+    AddBgColor("Blue",        "ATTR_BG_BRIGHT_BLUE");
+    AddBgColor("Magenta",     "ATTR_BG_BRIGHT_MAGENTA");
+    AddBgColor("Cyan",        "ATTR_BG_BRIGHT_CYAN");
+    AddBgColor("White",       "ATTR_BG_BRIGHT_WHITE");
+#>
+using System;
+
+namespace ITGlobal.CommandLine.Impl
+{
+    partial class Ansi
+    {
+        public static AnsiAttributes ForegroundColorToAttributes(ConsoleColor? color)
+        {
+            switch (color)
+            {
+<# foreach(var p in fgColorToAttr) {
+    var color = p.Key;
+    var attr = p.Value;
+#>
+                case ConsoleColor.<#= color #>:
+                    return AnsiAttributes.<#= attr #>;
+<# } #>
+
+                default:
+                    return 0;
+            }
+        }
+
+        public static AnsiAttributes BackgroundColorToAttributes(ConsoleColor? color)
+        {
+            switch (color)
+            {
+<# foreach(var p in bgColorToAttr) {
+    var color = p.Key;
+    var attr = p.Value;
+#>
+                case ConsoleColor.<#= color #>:
+                    return AnsiAttributes.<#= attr #>;
+<# } #>
+
+                default:
+                    return 0;
+            }
+        }
+
+        public static ConsoleColor? ForegroundColorFromAttributes(AnsiAttributes attributes)
+        {
+            switch(attributes)
+            {
+<# foreach(var p in fgColorToAttr) {
+    var color = p.Key;
+    var attr = p.Value;
+#>
+                case AnsiAttributes.<#= attr #>:
+                    return ConsoleColor.<#= color #>;
+<# } #>
+
+                default:
+                    return null;
+            }
+        }
+
+        public static ConsoleColor? BackgroundColorFromAttributes(AnsiAttributes attributes)
+        {
+            switch(attributes)
+            {
+<# foreach(var p in bgColorToAttr) {
+    var color = p.Key;
+    var attr = p.Value;
+#>
+                case AnsiAttributes.<#= attr #>:
+                    return ConsoleColor.<#= color #>;
+<# } #>
+
+                default:
+                    return null;
+            }
+        }
+    }
+}

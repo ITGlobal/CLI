@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="../Package.props" />
+  <Import Project="../Targeting.props" />
+
+  <PropertyGroup>
+    <PackageId>ITGlobal.CLI.Table</PackageId>
+    <LangVersion>latest</LangVersion>
+    <RootNamespace>ITGlobal.CommandLine.Table</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CLI.Terminal\CLI.Terminal.csproj" />
+  </ItemGroup>
+</Project>

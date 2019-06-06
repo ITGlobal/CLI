@@ -234,10 +234,14 @@ table.Draw();
 
 ## How to build
 
-You'll need PowerShell and .NET Core SDK. Once you've got all the tools, run
+You'll need PowerShell (or Bash) and .NET Core SDK. Once you've got all the tools, run
 
 ```shell
-./build.ps1
+# for Powershell
+./build.ps1 [-Configuration Release] [-Version 3.0.0]
+
+# for Bash
+./build.sh [--configuration Release] [--version 3.0.0]
 ```
 
 This will build the library and put the resulting NuGet packages into the `/artifacts` directory.

@@ -1,8 +1,48 @@
 {
   "profiles": {
-    "cli-features-example": {
+    "table fluent": {
       "commandName": "Project",
-      "commandLineArgs": "table -n 10"
+      "commandLineArgs": "table fluent"
+    },
+    "table generated": {
+      "commandName": "Project",
+      "commandLineArgs": "table generated -n 10"
+    },
+    "live progress": {
+      "commandName": "Project",
+      "commandLineArgs": "live progress"
+    },
+    "live progress-complex": {
+      "commandName": "Project",
+      "commandLineArgs": "live progress-complex"
+    },
+    "live spinner": {
+      "commandName": "Project",
+      "commandLineArgs": "live spinner -t BouncingBall"
+    },
+    "live print": {
+      "commandName": "Project",
+      "commandLineArgs": "live print"
+    },
+    "live print-complex": {
+      "commandName": "Project",
+      "commandLineArgs": "live print-complex"
+    },
+    "colors": {
+      "commandName": "Project",
+      "commandLineArgs": "colors"
+    },
+    "help": {
+      "commandName": "Project",
+      "commandLineArgs": "--help"
+    },
+    "did-you-mean-demo": {
+      "commandName": "Project",
+      "commandLineArgs": "live printer"
+    },
+    "unknown-option": {
+      "commandName": "Project",
+      "commandLineArgs": "live print --test"
     }
   }
 }

@@ -9,3 +9,6 @@ insert_final_newline = false
 
 [*.cs]
 indent_style = space
+
+[*.sh]
+end_of_line = lf

@@ -1,0 +1,70 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="../Package.props" />
+  <Import Project="../Targeting.props" />
+
+  <PropertyGroup>
+    <PackageId>ITGlobal.CLI.Terminal</PackageId>
+    <LangVersion>latest</LangVersion>
+    <RootNamespace>ITGlobal.CommandLine</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="ColoredStringStyle.Generated.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ColoredStringStyle.tt</DependentUpon>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="JetBrains.Annotations" Version="2019.1.1" />
+  </ItemGroup>
+   
+  <ItemGroup>
+    <None Update="ColoredString.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ColoredString.Generated.cs</LastGenOutput>
+    </None>
+    <Compile Update="ColoredString.Generated.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ColoredString.tt</DependentUpon>
+    </Compile>
+    <Compile Update="ColoredStringStyle.Generated.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ColoredStringStyle.tt</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+
+    <None Update="ColoredStringFactory.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ColoredStringFactory.Generated.cs</LastGenOutput>
+    </None>
+    <Compile Update="ColoredStringFactory.Generated.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ColoredStringFactory.tt</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="ColoredStringStyle.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ColoredStringStyle.Generated.cs</LastGenOutput>
+    </None>
+    <None Update="Impl\Ansi.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Ansi.Generated.cs</LastGenOutput>
+    </None>
+    <Compile Update="Impl\Ansi.Generated.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Ansi.tt</DependentUpon>
+    </Compile>
+  </ItemGroup>
+    
+</Project>

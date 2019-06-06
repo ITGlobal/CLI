@@ -1,0 +1,58 @@
+<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".Generated.cs" #>
+using System;
+using JetBrains.Annotations;
+
+namespace ITGlobal.CommandLine
+{
+    partial class ColoredStringStyle
+    {
+        #region Xxx()
+
+<# 
+foreach (ConsoleColor color in Enum.GetValues(typeof(ConsoleColor)))
+{
+#>
+        [NotNull]
+        public static IColoredStringStyle <#= color#> { get; } = Create(ConsoleColor.<#= color #>, null);
+
+<#
+}
+#>
+        #endregion 
+
+        #region OnXxx()
+
+<# 
+foreach (ConsoleColor color in Enum.GetValues(typeof(ConsoleColor)))
+{
+#>
+        [NotNull]
+        public static IColoredStringStyle On<#= color#> { get; } = Create(null, ConsoleColor.<#= color #>);
+
+<#
+}
+#>
+        #endregion
+
+        #region XxxOnYyy()
+<# 
+foreach (ConsoleColor foreground in Enum.GetValues(typeof(ConsoleColor)))
+{
+    foreach (ConsoleColor background in Enum.GetValues(typeof(ConsoleColor)))
+    {
+#>
+        [NotNull]
+        public static IColoredStringStyle <#= foreground#>On<#= background #> { get; } = Create(ConsoleColor.<#= foreground #>, ConsoleColor.<#= background #>);
+
+<# 
+    }
+}
+#>
+        #endregion 
+    }
+}

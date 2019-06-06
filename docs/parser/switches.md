@@ -1,6 +1,9 @@
+---
+layout: default
+---
 # Switches
 
-> [home](../README.md) > [command line parser](README.md) > switches
+> [home](..) > [command line parser](README) > switches
 
 **Switch** is a command line parameter that doesn't have an explicit value, only "set/not set" states.
 
