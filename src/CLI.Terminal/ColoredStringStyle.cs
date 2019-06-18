@@ -53,5 +53,22 @@ namespace ITGlobal.CommandLine
             var key = new Key(foregroundColor, backgroundColor);
             return _CachedValues.GetOrAdd(key, k => new ColoredStringStyleImpl(k.ForegroundColor, k.BackgroundColor));
         }
+
+        [NotNull]
+        public static IColoredStringStyle Update(
+            [NotNull] this IColoredStringStyle style, 
+            ConsoleColor? foregroundColor= null, 
+            ConsoleColor? backgroundColor = null)
+        {
+            switch (style)
+            {
+                case ColoredStringStyleImpl s:
+                    foregroundColor = foregroundColor ?? s.ForegroundColor;
+                    backgroundColor = backgroundColor ?? s.BackgroundColor;
+                    break;
+            }
+
+            return Create(foregroundColor, backgroundColor);
+        }
     }
 }
