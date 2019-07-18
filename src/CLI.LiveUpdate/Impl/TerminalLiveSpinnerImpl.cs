@@ -85,6 +85,11 @@ namespace ITGlobal.CommandLine.Impl
 
         void ILiveOutputItem.OnTimer(int time)
         {
+            lock (_textLock)
+            {
+                _needsRedraw = true;
+            }
+
             _owner.RequestRedraw();
         }
 
