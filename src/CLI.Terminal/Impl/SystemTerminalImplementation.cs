@@ -38,7 +38,7 @@ namespace ITGlobal.CommandLine.Impl
             }
             else
             {
-                width = Console.WindowWidth - 1;
+                width = Terminal.WindowWidth - 1;
             }
 
             Console.ResetColor();

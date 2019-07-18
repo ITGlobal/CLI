@@ -142,7 +142,7 @@ namespace ITGlobal.CommandLine.Table.Impl
             }
 
             var model = new TableModel(rows.ToArray());
-            _renderer.Render(model, writer, maxWidth ?? Console.WindowWidth - 1 /*todo*/);
+            _renderer.Render(model, writer, maxWidth ?? Terminal.WindowWidth - 1 /*todo*/);
         }
     }
 }

@@ -29,6 +29,15 @@ namespace ITGlobal.CommandLine
             {
                 UseImplementation(new AnsiTerminalImplementation());
             }
+
+            try
+            {
+                WindowWidth = Console.WindowWidth;
+            }
+            catch
+            {
+                WindowWidth = 120;
+            }
         }
 
 #if !NET45
@@ -101,5 +110,7 @@ namespace ITGlobal.CommandLine
                 _implementation = implementation;
             }
         }
+
+        internal static int WindowWidth { get; private set; }
     }
 }
