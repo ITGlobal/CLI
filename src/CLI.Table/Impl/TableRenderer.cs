@@ -154,6 +154,11 @@ namespace ITGlobal.CommandLine.Table.Impl
 
         private TableCellLayout AdjustCellLayout(TableCellModel cell, int width)
         {
+            if (width <= 1)
+            {
+                width = 10;
+            }
+
             if (cell.MaxWidth <= width)
             {
                 return AdjustCellLayout(cell.Content, cell.Alignment, width);

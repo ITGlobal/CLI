@@ -15,6 +15,7 @@ namespace ITGlobal.CommandLine
     {
         private static readonly object SyncRoot = new object();
         private static ITerminalImplementation _implementation;
+        private static ITerminalImplementation _defaultImplementation;
 
         /// <summary>
         ///     Initializes terminal output
@@ -23,20 +24,28 @@ namespace ITGlobal.CommandLine
         {
             if (IsRunningOnWindows)
             {
-                UseImplementation(new SystemTerminalImplementation());
+                _defaultImplementation = new SystemTerminalImplementation();
+
             }
             else
             {
-                UseImplementation(new AnsiTerminalImplementation());
+                _defaultImplementation = new AnsiTerminalImplementation();
             }
+
+            UseImplementation(null);
 
             try
             {
-                WindowWidth = Console.WindowWidth;
+                WindowWidth = Console.WindowWidth - 1;
             }
             catch
             {
                 WindowWidth = 120;
+            }
+
+            if (WindowWidth < 40)
+            {
+                WindowWidth = 40;
             }
         }
 
@@ -89,8 +98,12 @@ namespace ITGlobal.CommandLine
         /// </summary>
         [NotNull]
         public static ICtrlCInterceptor OnCtrlC() => new CtrlCInterceptorImpl();
-        
-        private static ITerminalImplementation GetImplementation()
+
+        /// <summary>
+        ///     Get terminal driver
+        /// </summary>
+        [NotNull]
+        public static ITerminalImplementation GetImplementation()
         {
             lock (SyncRoot)
             {
@@ -103,11 +116,14 @@ namespace ITGlobal.CommandLine
             }
         }
 
-        internal static void UseImplementation(ITerminalImplementation implementation)
+        /// <summary>
+        ///     Set terminal driver
+        /// </summary>
+        public static void UseImplementation([NotNull] ITerminalImplementation implementation)
         {
             lock (SyncRoot)
             {
-                _implementation = implementation;
+                _implementation = implementation ?? _defaultImplementation;
             }
         }
 
