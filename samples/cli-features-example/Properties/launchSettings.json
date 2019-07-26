@@ -36,6 +36,10 @@
       "commandName": "Project",
       "commandLineArgs": "--help"
     },
+    "live spinner --help": {
+      "commandName": "Project",
+      "commandLineArgs": "live spinner --help"
+    },
     "did-you-mean-demo": {
       "commandName": "Project",
       "commandLineArgs": "live printer"

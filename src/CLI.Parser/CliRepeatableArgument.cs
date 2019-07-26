@@ -256,7 +256,7 @@ namespace ITGlobal.CommandLine.Parsing
             builder.AddArgument(new CliArgumentUsage(
                 position: Position,
                 name: Name,
-                typeName: TypeNameHelper.GetTypeName<T>(),
+                type: Parser.TypeInfo,
                 helpText: _helpText,
                 isHidden: _hidden,
                 defaultValue: defaultValue,

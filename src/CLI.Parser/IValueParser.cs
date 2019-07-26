@@ -1,4 +1,4 @@
-﻿using JetBrains.Annotations;
+using JetBrains.Annotations;
 
 namespace ITGlobal.CommandLine.Parsing
 {
@@ -8,6 +8,12 @@ namespace ITGlobal.CommandLine.Parsing
     [PublicAPI]
     public interface IValueParser<T>
     {
+        /// <summary>
+        ///     Type info
+        /// </summary>
+        [NotNull]
+        CliTypeInfo TypeInfo { get; }
+
         /// <summary>
         ///     Parses string into a value
         /// </summary>

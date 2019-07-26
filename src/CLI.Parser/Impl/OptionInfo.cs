@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -25,13 +25,14 @@ namespace ITGlobal.CommandLine.Parsing.Impl
                 sb.Append("(repeatable)");
             }
 
-            return new OptionInfo
+            var optionInfo = new OptionInfo
             {
                 DisplayOrder = u.DisplayOrder,
                 Key = u.Names.OrderByDescending(_ => _.Length).First().TrimStart('-').ToLowerInvariant(),
                 Name = string.Join(", ", u.Names),
                 Description = sb.ToString()
             };
+            return optionInfo;
         }
 
         public static OptionInfo Create(CliOptionUsage u)
@@ -52,20 +53,26 @@ namespace ITGlobal.CommandLine.Parsing.Impl
                 sb.Append(")");
             }
 
-            var valueName = !string.IsNullOrEmpty(u.TypeName) ? u.TypeName : "value";
             return new OptionInfo
             {
                 DisplayOrder = u.DisplayOrder,
                 Key = u.Names.OrderByDescending(_ => _.Length).First().TrimStart('-').ToLowerInvariant(),
-                Name = string.Join(", ", u.Names) + " " + valueName,
+                Name = string.Join(", ", u.Names) + " <value>",
                 Description = sb.ToString()
             };
 
             IEnumerable<string> EnumerateOptionDescriptions()
             {
-                if (!string.IsNullOrEmpty(u.TypeName) && u.TypeName != "string")
+                switch (u.Type)
                 {
-                    yield return u.TypeName;
+                    case EnumCliTypeInfo i when i.ValidValues.Length>0:
+                        yield return $"valid values {string.Join("/", from v in i.ValidValues select v.Yellow())}";
+                        break;
+                    case StringCliTypeInfo _:
+                        break;
+                    default:
+                        yield return u.Type.Name;
+                        break;
                 }
 
                 if (u.IsRequired)
@@ -80,7 +87,7 @@ namespace ITGlobal.CommandLine.Parsing.Impl
 
                 if (u.DefaultValue != null)
                 {
-                    yield return $"default {u.DefaultValue}";
+                    yield return $"default {u.DefaultValue.Yellow()}";
                 }
             }
         }

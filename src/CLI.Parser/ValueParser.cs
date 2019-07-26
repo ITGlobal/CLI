@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -112,7 +113,7 @@ namespace ITGlobal.CommandLine.Parsing
         /// </summary>
         [NotNull]
         public static IValueParser<string> String { get; } =
-            new ValueParserImpl<string>(_ => _, _ => _);
+            new StringValueParserImpl();
 
         /// <summary>
         ///     Value parser for DateTime values
@@ -125,7 +126,7 @@ namespace ITGlobal.CommandLine.Parsing
         ///     Get a built-in value parser for specified type
         /// </summary>
         [CanBeNull]
-        public static IValueParser<T> Get<T>() => (IValueParser<T>) Get(typeof(T));
+        public static IValueParser<T> Get<T>() => (IValueParser<T>)Get(typeof(T));
 
         /// <summary>
         ///     Get a built-in value parser for enumtype
@@ -254,9 +255,20 @@ namespace ITGlobal.CommandLine.Parsing
             return dateTime.ToString("s");
         }
 
+        private sealed class StringValueParserImpl : IValueParser<string>
+        {
+            public string Format(string value) => value;
+
+            public CliTypeInfo TypeInfo { get; } = CliTypeInfo.String;
+
+            public ValueParserResult<string> Parse(string str) => ValueParserResult.Success(str);
+        }
+
         private sealed class BooleanValueParserImpl : IValueParser<bool>
         {
             public string Format(bool value) => value ? "true" : "false";
+
+            public CliTypeInfo TypeInfo { get; } = CliTypeInfo.Enum("bool", "t[rue]", "f[alse]", "y[es]", "n[o]");
 
             public ValueParserResult<bool> Parse(string str)
             {
@@ -293,7 +305,11 @@ namespace ITGlobal.CommandLine.Parsing
 
                 _parse = parse;
                 _format = format;
+
+                TypeInfo = CliTypeInfo.Primitive(typeof(T));
             }
+
+            public CliTypeInfo TypeInfo { get; }
 
             public string Format(T value) => _format(value);
 
@@ -326,7 +342,10 @@ namespace ITGlobal.CommandLine.Parsing
             public ArrayValueParserImpl(IValueParser<T> parser)
             {
                 _parser = parser;
+                TypeInfo = CliTypeInfo.Array(parser.TypeInfo);
             }
+
+            public CliTypeInfo TypeInfo { get; }
 
             public string Format(T[] values) => string.Join(", ", values.Select(_parser.Format));
 
@@ -352,15 +371,15 @@ namespace ITGlobal.CommandLine.Parsing
             }
         }
 
-        internal sealed class EnumValueParser<T> : IValueParser<T>
+        internal sealed class EnumInfo
         {
-            public EnumValueParser()
+            public EnumInfo(Type type)
             {
-                KnownValues = Enum.GetNames(typeof(T))
+                KnownValues = Enum.GetNames(type)
                     .Select(_ => new
                     {
                         Name = _.ToLowerInvariant(),
-                        Value = Convert.ToInt32(Enum.Parse(typeof(T), _, false))
+                        Value = Convert.ToInt32(Enum.Parse(type, _, false))
                     })
                     .GroupBy(_ => _.Value)
                     .Select(_ => _.First().Name)
@@ -368,6 +387,36 @@ namespace ITGlobal.CommandLine.Parsing
             }
 
             public string[] KnownValues { get; }
+        }
+
+        private static readonly object EnumValuesDictLock = new object();
+        private static readonly Dictionary<Type, EnumInfo> EnumValuesDict = new Dictionary<Type, EnumInfo>();
+
+        internal static EnumInfo GetEnumInfo(Type type)
+        {
+            lock (EnumValuesDictLock)
+            {
+                if (!EnumValuesDict.TryGetValue(type, out var info))
+                {
+                    info = new EnumInfo(type);
+                    EnumValuesDict.Add(type, info);
+                }
+
+                return info;
+            }
+        }
+
+        internal sealed class EnumValueParser<T> : IValueParser<T>
+        {
+            private readonly EnumInfo _info;
+
+            public EnumValueParser()
+            {
+                _info = GetEnumInfo(typeof(T));
+                TypeInfo = CliTypeInfo.Enum(typeof(T));
+            }
+
+            public CliTypeInfo TypeInfo { get; }
 
             public ValueParserResult<T> Parse(string str)
             {
@@ -379,9 +428,8 @@ namespace ITGlobal.CommandLine.Parsing
                 }
                 catch
                 {
-                    var validValues = Enum.GetNames(typeof(T)).Select(_ => _.ToLowerInvariant());
                     return ValueParserResult.Error<T>(
-                        $"Invalid value \"{str}\". Valid values are: {string.Join(", ", validValues)}"
+                        $"Invalid value \"{str}\". Valid values are: {string.Join(", ", _info.KnownValues)}"
                     );
                 }
             }

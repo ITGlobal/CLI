@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using ITGlobal.CommandLine.Parsing.Impl;
 using JetBrains.Annotations;
@@ -253,7 +253,7 @@ namespace ITGlobal.CommandLine.Parsing
 
             builder.AddOption(new CliOptionUsage(
                 names: builder.GetOptionNames(ShortName, LongName),
-                typeName: TypeNameHelper.GetTypeName<T>(),
+                type: Parser.TypeInfo,
                 helpText: _helpText,
                 isHidden: _hidden,
                 defaultValue: defaultValue,

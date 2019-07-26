@@ -1,26 +1,12 @@
-﻿using System;
-
-#if NETSTANDARD1_6
-using System.Reflection;
-#endif
+using System;
 
 namespace ITGlobal.CommandLine.Parsing
 {
     internal static class TypeNameHelper
     {
-        public static string GetTypeName<T>()
+        public static string GetTypeName(Type type)
         {
-#if NETSTANDARD1_6
-            if (typeof(T).GetTypeInfo().IsEnum)
-#else
-            if (typeof(T).IsEnum)
-#endif
-            {
-                var parser = (ValueParser.EnumValueParser<T>)ValueParser.Get<T>();
-                return string.Join(", ", parser.KnownValues);
-            }
-
-            switch (Type.GetTypeCode(typeof(T)))
+            switch (Type.GetTypeCode(type))
             {
                 case TypeCode.Boolean:
                     return "boolean";
@@ -54,7 +40,7 @@ namespace ITGlobal.CommandLine.Parsing
                     return "datetime";
 
                 default:
-                    return typeof(T).Name;
+                    return type.Name;
             }
         }
     }

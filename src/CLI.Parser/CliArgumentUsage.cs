@@ -1,4 +1,4 @@
-﻿using JetBrains.Annotations;
+using JetBrains.Annotations;
 
 namespace ITGlobal.CommandLine.Parsing
 {
@@ -11,7 +11,7 @@ namespace ITGlobal.CommandLine.Parsing
         internal CliArgumentUsage(
             int position,
             string name,
-            string typeName,
+            CliTypeInfo type,
             string helpText,
             bool isHidden,
             string defaultValue,
@@ -20,7 +20,7 @@ namespace ITGlobal.CommandLine.Parsing
         {
             Position = position;
             Name = name;
-            TypeName = typeName;
+            Type = type;
             HelpText = helpText;
             IsHidden = isHidden;
             DefaultValue = defaultValue;
@@ -43,7 +43,7 @@ namespace ITGlobal.CommandLine.Parsing
         ///     Argument type name
         /// </summary>
         [NotNull]
-        public string TypeName { get; }
+        public CliTypeInfo Type { get; }
 
         /// <summary>
         ///     Help text

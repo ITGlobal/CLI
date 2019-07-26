@@ -1,4 +1,4 @@
-﻿using JetBrains.Annotations;
+using JetBrains.Annotations;
 
 namespace ITGlobal.CommandLine.Parsing
 {
@@ -10,7 +10,7 @@ namespace ITGlobal.CommandLine.Parsing
     {
         internal CliOptionUsage(
             string[] names,
-            string typeName,
+            CliTypeInfo type,
             string helpText,
             bool isHidden,
             string defaultValue,
@@ -19,7 +19,7 @@ namespace ITGlobal.CommandLine.Parsing
             int displayOrder)
         {
             Names = names;
-            TypeName = typeName;
+            Type = type;
             HelpText = helpText;
             IsHidden = isHidden;
             DefaultValue = defaultValue;
@@ -35,10 +35,10 @@ namespace ITGlobal.CommandLine.Parsing
         public string[] Names { get; }
 
         /// <summary>
-        ///     Argument type name
+        ///     Option type
         /// </summary>
         [NotNull]
-        public string TypeName { get; }
+        public CliTypeInfo Type { get; }
 
         /// <summary>
         ///     Help text
