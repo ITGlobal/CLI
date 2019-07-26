@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using ITGlobal.CommandLine.Parsing.Impl;
@@ -90,21 +90,21 @@ namespace ITGlobal.CommandLine.Parsing
 
             if (!string.IsNullOrEmpty(usage.HelpText))
             {
-                Console.Error.WriteLine(usage.HelpText);
+                Console.Error.WriteLine(usage.HelpText.White());
                 Console.Error.WriteLine();
             }
 
             Console.Error.WriteLine("USAGE".White());
             Console.Error.Write("   ");
-            Console.Error.Write(usage.ExecutableName.Yellow());
+            Console.Error.Write(usage.ExecutableName.Cyan());
             if (hasOptions || hasSwitches)
             {
-                Console.Error.Write(" [OPTIONS]");
+                Console.Error.Write(" [OPTIONS]".White());
             }
 
             if (hasCommands)
             {
-                Console.Error.Write(" COMMAND");
+                Console.Error.Write(" COMMAND".Yellow());
             }
 
             foreach (var argument in usage.Arguments.Where(_ => !_.IsHidden).OrderBy(_ => _.Position))
@@ -112,19 +112,22 @@ namespace ITGlobal.CommandLine.Parsing
                 Console.Error.Write(" ");
                 if (!argument.IsRequired)
                 {
-                    Console.Error.Write("[");
+                    Console.Error.Write("[".White());
+                    Console.Error.Write(argument.Name.ToUpperInvariant().White());
                 }
-
-                Console.Error.Write(argument.Name.ToUpperInvariant());
+                else
+                {
+                    Console.Error.Write(argument.Name.ToUpperInvariant().Yellow());
+                }
 
                 if (argument.IsRepeatable)
                 {
-                    Console.Error.Write("...");
+                    Console.Error.Write("...".White());
                 }
 
                 if (!argument.IsRequired)
                 {
-                    Console.Error.Write("]");
+                    Console.Error.Write("]".White());
                 }
             }
             Console.Error.WriteLine();
@@ -142,8 +145,8 @@ namespace ITGlobal.CommandLine.Parsing
                 Console.Error.WriteLine("OPTIONS".White());
                 var table = TerminalTable.Create(options, renderer: tableRenderer);
                 table.Column("", _ => "  ");
-                table.Column("", _ => _.Name);
-                table.Column("", _ => _.Description);
+                table.Column("", _ => _.Name.Yellow());
+                table.Column("", _ => _.Description.White());
                 table.Draw();
             }
 
@@ -157,8 +160,8 @@ namespace ITGlobal.CommandLine.Parsing
                 Console.Error.WriteLine("ARGUMENTS".White());
                 var table = TerminalTable.Create(arguments, renderer: tableRenderer);
                 table.Column("", _ => "  ");
-                table.Column("", _ => _.Name);
-                table.Column("", _ => _.Description);
+                table.Column("", _ => _.Name.Yellow());
+                table.Column("", _ => _.Description.White());
                 table.Draw();
             }
 
@@ -172,8 +175,8 @@ namespace ITGlobal.CommandLine.Parsing
                     renderer: tableRenderer
                 );
                 table.Column("", _ => "  ");
-                table.Column("", _ => _.Name);
-                table.Column("", _ => _.Description);
+                table.Column("", _ => _.Name.Yellow());
+                table.Column("", _ => _.Description.White());
                 table.Draw();
             }
         }
@@ -217,23 +220,23 @@ namespace ITGlobal.CommandLine.Parsing
 
             if (!string.IsNullOrEmpty(usage.HelpText))
             {
-                Console.Error.WriteLine(usage.HelpText);
+                Console.Error.WriteLine(usage.HelpText.White());
                 Console.Error.WriteLine();
             }
 
             Console.Error.WriteLine("USAGE".White());
             Console.Error.Write("   ");
-            Console.Error.Write(rootUsage.ExecutableName.Yellow());
+            Console.Error.Write(rootUsage.ExecutableName.Cyan());
             Console.Error.Write($" {string.Join(" ", usage.GetName())}");
 
             if (hasGlobalOptions || hasGlobalSwitches || hasOptions || hasSwitches)
             {
-                Console.Error.Write(" [OPTIONS]");
+                Console.Error.Write(" [OPTIONS]".White());
             }
 
             if (hasCommands)
             {
-                Console.Error.Write(" COMMAND");
+                Console.Error.Write(" COMMAND".Yellow());
             }
 
             foreach (var argument in usage.Arguments.Where(_ => !_.IsHidden).OrderBy(_ => _.Position))
@@ -241,19 +244,22 @@ namespace ITGlobal.CommandLine.Parsing
                 Console.Error.Write(" ");
                 if (!argument.IsRequired)
                 {
-                    Console.Error.Write("[");
+                    Console.Error.Write("[".White());
+                    Console.Error.Write(argument.Name.ToUpperInvariant().White());
                 }
-
-                Console.Error.Write(argument.Name.ToUpperInvariant());
+                else
+                {
+                    Console.Error.Write(argument.Name.ToUpperInvariant().Yellow());
+                }
 
                 if (argument.IsRepeatable)
                 {
-                    Console.Error.Write("...");
+                    Console.Error.Write("...".White());
                 }
 
                 if (!argument.IsRequired)
                 {
-                    Console.Error.Write("]");
+                    Console.Error.Write("]".White());
                 }
             }
             Console.Error.WriteLine();
@@ -273,8 +279,8 @@ namespace ITGlobal.CommandLine.Parsing
                     renderer: tableRenderer
                 );
                 table.Column("", _ => "  ");
-                table.Column("", _ => _.Name);
-                table.Column("", _ => _.Description);
+                table.Column("", _ => _.Name.Yellow());
+                table.Column("", _ => _.Description.White());
                 table.Draw();
             }
 
@@ -289,8 +295,8 @@ namespace ITGlobal.CommandLine.Parsing
                     renderer: tableRenderer
                 );
                 table.Column("", _ => "  ");
-                table.Column("", _ => _.Name);
-                table.Column("", _ => _.Description);
+                table.Column("", _ => _.Name.Yellow());
+                table.Column("", _ => _.Description.White());
                 table.Draw();
             }
 
@@ -305,8 +311,8 @@ namespace ITGlobal.CommandLine.Parsing
                     renderer: tableRenderer
                 );
                 table.Column("", _ => "  ");
-                table.Column("", _ => _.Name);
-                table.Column("", _ => _.Description);
+                table.Column("", _ => _.Name.Yellow());
+                table.Column("", _ => _.Description.White());
                 table.Draw();
             }
 
@@ -320,8 +326,8 @@ namespace ITGlobal.CommandLine.Parsing
                     renderer: tableRenderer
                 );
                 table.Column("", _ => "  ");
-                table.Column("", _ => _.Name);
-                table.Column("", _ => _.Description);
+                table.Column("", _ => _.Name.Yellow());
+                table.Column("", _ => _.Description.White());
                 table.Draw();
             }
         }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using ITGlobal.CommandLine.Parsing.Impl;
 using ITGlobal.CommandLine.Table;
@@ -76,7 +76,7 @@ namespace ITGlobal.CommandLine.Parsing
 
             if (!string.IsNullOrEmpty(usage.HelpText))
             {
-                Console.Error.WriteLine(usage.HelpText);
+                Console.Error.WriteLine(usage.HelpText.White());
                 Console.Error.WriteLine();
             }
 
@@ -85,7 +85,7 @@ namespace ITGlobal.CommandLine.Parsing
             Console.Error.Write(usage.ExecutableName.Yellow());
             if (hasOptions || hasSwitches)
             {
-                Console.Error.Write(" [OPTIONS]");
+                Console.Error.Write(" [OPTIONS]".White());
             }
 
             foreach (var argument in usage.Arguments.Where(_ => !_.IsHidden).OrderBy(_ => _.Position))
@@ -93,19 +93,22 @@ namespace ITGlobal.CommandLine.Parsing
                 Console.Error.Write(" ");
                 if (!argument.IsRequired)
                 {
-                    Console.Error.Write("[");
+                    Console.Error.Write("[".White());
+                    Console.Error.Write(argument.Name.ToUpperInvariant().White());
                 }
-
-                Console.Error.Write(argument.Name.ToUpperInvariant());
+                else
+                {
+                    Console.Error.Write(argument.Name.ToUpperInvariant().Yellow());
+                }
 
                 if (argument.IsRepeatable)
                 {
-                    Console.Error.Write("...");
+                    Console.Error.Write("...".White());
                 }
 
                 if (!argument.IsRequired)
                 {
-                    Console.Error.Write("]");
+                    Console.Error.Write("]".White());
                 }
             }
             Console.Error.WriteLine();
@@ -124,7 +127,7 @@ namespace ITGlobal.CommandLine.Parsing
                 var table = TerminalTable.Create(options, renderer: tableRenderer);
                 table.Column("", _ => "  ");
                 table.Column("", _ => _.Name);
-                table.Column("", _ => _.Description);
+                table.Column("", _ => _.Description.White());
                 table.Draw();
             }
 
@@ -138,8 +141,8 @@ namespace ITGlobal.CommandLine.Parsing
                 Console.Error.WriteLine("ARGUMENTS".White());
                 var table = TerminalTable.Create(arguments, renderer: tableRenderer);
                 table.Column("", _ => "  ");
-                table.Column("", _ => _.Name);
-                table.Column("", _ => _.Description);
+                table.Column("", _ => _.Name.Yellow());
+                table.Column("", _ => _.Description.White());
                 table.Draw();
             }
         }

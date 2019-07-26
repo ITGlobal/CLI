@@ -15,8 +15,8 @@ namespace ITGlobal.CommandLine.Table.Impl
             DrawHeaders = drawHeaders;
             UppercaseHeaders = uppercaseHeaders;
             UnderlineHeaders = underlineHeaders;
-            BodyColors = bodyColors ?? ColoredStringStyle.Gray;
-            HeaderColors = headerColors ?? ColoredStringStyle.White;
+            BodyColors = bodyColors ?? ColoredStringStyle.White;
+            HeaderColors = headerColors ?? ColoredStringStyle.Gray;
             TitleColors = titleColors ?? ColoredStringStyle.Yellow;
             FooterColors = footerColors ?? ColoredStringStyle.White;
         }
