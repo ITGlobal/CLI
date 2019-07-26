@@ -73,14 +73,14 @@ namespace ITGlobal.CommandLine.Table.Impl
         public IDataDrivenGeneratedTableBuilder<T> Foreground(Func<T, ConsoleColor?> func)
         {
             var oldDefaultStyle = _defaultStyle;
-            _defaultStyle = x => oldDefaultStyle(x).Update(backgroundColor: func(x));
+            _defaultStyle = x => oldDefaultStyle(x).Update(foregroundColor: func(x));
             return this;
         }
 
         public IDataDrivenGeneratedTableBuilder<T> Background(Func<T, ConsoleColor?> func)
         {
             var oldDefaultStyle = _defaultStyle;
-            _defaultStyle = x => oldDefaultStyle(x).Update(foregroundColor: func(x));
+            _defaultStyle = x => oldDefaultStyle(x).Update(backgroundColor: func(x));
             return this;
         }
 
