@@ -4,7 +4,7 @@ using System.IO;
 
 namespace ITGlobal.CommandLine.Impl
 {
-    internal sealed class LockedTerminalImplementation : ITerminalLock, ITerminalImplementation, IDisposable
+    internal sealed class LockedTerminalImplementation : ITerminalLock, ITerminalImplementation
     {
         private readonly struct ConsoleChar
         {
@@ -86,8 +86,9 @@ namespace ITGlobal.CommandLine.Impl
         }
 
         ITerminalWriter ITerminalLock.Stdout => _terminal.Stdout;
-
         ITerminalWriter ITerminalLock.Stderr => _terminal.Stderr;
+        string ITerminalImplementation.DriverName => _terminal.DriverName;
+        int ITerminalImplementation.WindowWidth => _terminal.WindowWidth;
 
         public void MoveToLine(int offset) => _terminal.MoveToLine(offset);
 

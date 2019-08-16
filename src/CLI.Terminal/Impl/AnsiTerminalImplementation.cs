@@ -19,14 +19,29 @@ namespace ITGlobal.CommandLine.Impl
 
         public ITerminalWriter Stderr { get; }
 
+        public string DriverName => "ANSI";
+
+        public int WindowWidth
+        {
+            get
+            {
+                var width = Console.BufferWidth;
+                if (width <= 0)
+                {
+                    width = Terminal.DefaultWindowWidth;
+                }
+                return width;
+            }
+        }
+
         public void MoveToLine(int offset)
         {
             string cmd;
-            if(offset > 0)
+            if (offset > 0)
             {
                 cmd = Ansi.CUD(offset);
             }
-            else if(offset < 0)
+            else if (offset < 0)
             {
                 cmd = Ansi.CUU(-offset);
             }
@@ -34,8 +49,8 @@ namespace ITGlobal.CommandLine.Impl
             {
                 return;
             }
-           
-            _stderr.Write(cmd);            
+
+            _stderr.Write(cmd);
             _stderr.Flush();
         }
 
@@ -44,7 +59,7 @@ namespace ITGlobal.CommandLine.Impl
             _stderr.Write('\r');
             _stderr.Write(Ansi.EL);
             _stderr.Write('\r');
-            
+
             _stderr.Flush();
         }
     }

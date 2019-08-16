@@ -21,6 +21,9 @@ namespace ITGlobal.CommandLine.Impl
         public ITerminalWriter Stdout { get; }
 
         public ITerminalWriter Stderr { get; }
+        public string DriverName => "SystemConsole";
+
+        public int WindowWidth => Console.WindowWidth - 1;
 
         public void MoveToLine(int offset)
         {

@@ -14,10 +14,14 @@ namespace ITGlobal.CommandLine
     [PublicAPI]
     public static class Terminal
     {
+        private const int MinWindowWidth = 40;
+        internal const int DefaultWindowWidth = 150;
+
         private static readonly object SyncRoot = new object();
         private static bool _isInitialized;
         private static ITerminalImplementation _implementation;
         private static ITerminalImplementation _defaultImplementation;
+        private static int _windowWidth;
 
         /// <summary>
         ///     Initializes terminal output
@@ -49,21 +53,8 @@ namespace ITGlobal.CommandLine
                 }
 
                 _implementation = _defaultImplementation;
+                _windowWidth = _implementation.WindowWidth;
                 _isInitialized = true;
-            }
-
-            try
-            {
-                WindowWidth = Console.WindowWidth - 1;
-            }
-            catch
-            {
-                WindowWidth = 120;
-            }
-
-            if (WindowWidth < 40)
-            {
-                WindowWidth = 40;
             }
         }
 
@@ -96,6 +87,31 @@ namespace ITGlobal.CommandLine
             {
                 Initialize();
                 return GetImplementation().Stderr;
+            }
+        }
+
+        /// <summary>
+        ///     Terminal window width
+        /// </summary>
+        public static int WindowWidth
+        {
+            get
+            {
+                Initialize();
+                lock (SyncRoot)
+                {
+                    return _windowWidth;
+                }
+            }
+            set
+            {
+                value = value < MinWindowWidth ? MinWindowWidth : value;
+
+                Initialize();
+                lock (SyncRoot)
+                {
+                     _windowWidth = value;
+                }
             }
         }
 
@@ -166,7 +182,5 @@ namespace ITGlobal.CommandLine
                 _implementation = implementation ?? _defaultImplementation;
             }
         }
-
-        internal static int WindowWidth { get; private set; }
     }
 }

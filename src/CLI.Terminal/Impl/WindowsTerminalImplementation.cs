@@ -48,6 +48,21 @@ namespace ITGlobal.CommandLine.Impl
 
         public ITerminalWriter Stderr { get; }
 
+        public string DriverName => "Win32";
+
+        public int WindowWidth
+        {
+            get
+            {
+                if (!Win32.GetConsoleScreenBufferInfo(_hStdErr, out var bufferInfo))
+                {
+                    throw new Win32Exception();
+                }
+
+                return bufferInfo.dwSize.X;
+            }
+        }
+
         public void MoveToLine(int offset)
         {
             var cursorTop = Console.CursorTop;

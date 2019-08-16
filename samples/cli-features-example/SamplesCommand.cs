@@ -17,6 +17,12 @@ namespace ITGlobal.CommandLine.Example
                     var cmd = command.Command("nested-ansi", helpText: "Test for https://github.com/ITGlobal/CLI/issues/18");
                     cmd.OnExecute(_ => { NestedAnsiOutput(); });
                 }
+
+                // sample info
+                {
+                    var cmd = command.Command("info", helpText: "Test for https://github.com/ITGlobal/CLI/issues/17");
+                    cmd.OnExecute(_ => { Info(); });
+                }
             }
         }
 
@@ -45,6 +51,13 @@ namespace ITGlobal.CommandLine.Example
                 Console.WriteLine($"OnDarkRed       {"OnDarkBlue ".OnDarkBlue()}  OnDarkRed".OnDarkRed());
                 Console.WriteLine("(Default colors)");
             }
+        }
+
+        private static void Info()
+        {
+            var t = Terminal.GetImplementation();
+            Console.WriteLine($"Driver:      {t.DriverName}");
+            Console.WriteLine($"WindowWidth: {t.WindowWidth}");
         }
     }
 }

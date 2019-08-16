@@ -10,6 +10,9 @@ namespace ITGlobal.CommandLine
         [NotNull]
         ITerminalWriter Stderr { get; }
 
+        string DriverName { get; }
+        int WindowWidth { get; }
+
         void MoveToLine(int offset);
         void ClearLine();
     }

@@ -51,6 +51,10 @@
     "sample nested-ansi": {
       "commandName": "Project",
       "commandLineArgs": "sample nested-ansi"
+    },
+    "sample info": {
+      "commandName": "Project",
+      "commandLineArgs": "sample info"
     }
   }
 }
