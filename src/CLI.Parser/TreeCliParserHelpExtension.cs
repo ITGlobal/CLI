@@ -146,7 +146,7 @@ namespace ITGlobal.CommandLine.Parsing
                 var table = TerminalTable.Create(options, renderer: tableRenderer);
                 table.Column("", _ => "  ");
                 table.Column("", _ => _.Name.Yellow());
-                table.Column("", _ => _.Description.White());
+                table.Column("", _ => (_.Description ?? "").White());
                 table.Draw();
             }
 
@@ -161,7 +161,7 @@ namespace ITGlobal.CommandLine.Parsing
                 var table = TerminalTable.Create(arguments, renderer: tableRenderer);
                 table.Column("", _ => "  ");
                 table.Column("", _ => _.Name.Yellow());
-                table.Column("", _ => _.Description.White());
+                table.Column("", _ => (_.Description ?? "").White());
                 table.Draw();
             }
 
@@ -176,7 +176,7 @@ namespace ITGlobal.CommandLine.Parsing
                 );
                 table.Column("", _ => "  ");
                 table.Column("", _ => _.Name.Yellow());
-                table.Column("", _ => _.Description.White());
+                table.Column("", _ => (_.Description ?? "").White());
                 table.Draw();
             }
         }
@@ -280,7 +280,7 @@ namespace ITGlobal.CommandLine.Parsing
                 );
                 table.Column("", _ => "  ");
                 table.Column("", _ => _.Name.Yellow());
-                table.Column("", _ => _.Description.White());
+                table.Column("", _ => (_.Description ?? "").White());
                 table.Draw();
             }
 
@@ -296,7 +296,7 @@ namespace ITGlobal.CommandLine.Parsing
                 );
                 table.Column("", _ => "  ");
                 table.Column("", _ => _.Name.Yellow());
-                table.Column("", _ => _.Description.White());
+                table.Column("", _ => (_.Description ?? "").White());
                 table.Draw();
             }
 
@@ -312,7 +312,7 @@ namespace ITGlobal.CommandLine.Parsing
                 );
                 table.Column("", _ => "  ");
                 table.Column("", _ => _.Name.Yellow());
-                table.Column("", _ => _.Description.White());
+                table.Column("", _ => (_.Description ?? "").White());
                 table.Draw();
             }
 
@@ -327,7 +327,7 @@ namespace ITGlobal.CommandLine.Parsing
                 );
                 table.Column("", _ => "  ");
                 table.Column("", _ => _.Name.Yellow());
-                table.Column("", _ => _.Description.White());
+                table.Column("", _ => (_.Description ?? "").White());
                 table.Draw();
             }
         }

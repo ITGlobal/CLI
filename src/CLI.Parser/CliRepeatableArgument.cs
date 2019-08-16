@@ -17,7 +17,7 @@ namespace ITGlobal.CommandLine.Parsing
         private readonly List<ValueValidator<T[]>> _validators = new List<ValueValidator<T[]>>();
         private readonly List<DefaultValueProvider<T[]>> _defaultValueProviders = new List<DefaultValueProvider<T[]>>();
 
-        private string _helpText;
+        private string _helpText = "";
         private bool _hidden;
         private bool _isRequired;
 

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using ITGlobal.CommandLine.Parsing.Impl;
 using JetBrains.Annotations;
 

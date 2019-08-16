@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using ITGlobal.CommandLine.Parsing.Impl;
 using JetBrains.Annotations;
 
@@ -12,7 +12,7 @@ namespace ITGlobal.CommandLine.Parsing
     {
         #region fields
 
-        private string _helpText;
+        private string _helpText = "";
         private bool _hidden;
         private int _displayOrder;
         private bool _isHelpSwitch;

@@ -23,7 +23,7 @@ namespace ITGlobal.CommandLine.Parsing
         private readonly List<CliAsyncHandler> _beforeExecuteHandlers = new List<CliAsyncHandler>();
         private readonly List<CliAsyncHandler> _executeHandlers = new List<CliAsyncHandler>();
 
-        private string _helpText;
+        private string _helpText = "";
         private bool _hidden;
         private int _displayOrder;
         private int _argumentCount;

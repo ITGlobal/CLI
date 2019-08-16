@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace ITGlobal.CommandLine.Parsing.Impl
@@ -19,7 +19,7 @@ namespace ITGlobal.CommandLine.Parsing.Impl
                     DisplayOrder = u.DisplayOrder,
                     Key = u.Names.OrderByDescending(_ => _.Length).First().TrimStart('-').ToLowerInvariant(),
                     Name = string.Join(", ", u.Names),
-                    Description = u.HelpText
+                    Description = u.HelpText ?? ""
                 };
             }
         }
