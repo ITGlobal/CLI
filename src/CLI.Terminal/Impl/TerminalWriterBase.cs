@@ -97,7 +97,7 @@ namespace ITGlobal.CommandLine.Impl
 
         public void WriteLine()
         {
-            Write((ColoredString)"\n");
+            Write(ColoredString.LF);
         }
 
         protected abstract void WriteImpl(ColoredString str);

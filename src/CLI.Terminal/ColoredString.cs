@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using ITGlobal.CommandLine.Impl;
 using JetBrains.Annotations;
@@ -11,6 +12,9 @@ namespace ITGlobal.CommandLine
     [PublicAPI]
     public readonly partial struct ColoredString : IEquatable<ColoredString>
     {
+        [SuppressMessage("ReSharper", "InconsistentNaming")]
+        internal static ColoredString LF { get; } = new ColoredString("\n", null, null);
+
         public ColoredString([NotNull] string text, ConsoleColor? foregroundColor = null, ConsoleColor? backgroundColor = null)
         {
             Text = text ?? throw new ArgumentNullException(nameof(text));
@@ -112,14 +116,8 @@ namespace ITGlobal.CommandLine
             }
         }
 
-        public static bool operator ==(ColoredString left, ColoredString right)
-        {
-            return left.Equals(right);
-        }
+        public static bool operator ==(ColoredString left, ColoredString right) => left.Equals(right);
 
-        public static bool operator !=(ColoredString left, ColoredString right)
-        {
-            return !left.Equals(right);
-        }
+        public static bool operator !=(ColoredString left, ColoredString right) => !left.Equals(right);
     }
 }

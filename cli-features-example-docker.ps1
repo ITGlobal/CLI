@@ -6,4 +6,4 @@ if($LASTEXITCODE -ne 0)
     exit $LASTEXITCODE
 }
 
-docker run -it --rm $IMAGE $*
+docker run -it --rm $IMAGE $args

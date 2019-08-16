@@ -13,15 +13,15 @@ namespace ITGlobal.CommandLine.Example
             Run("Table demo: grid table with \"pretty\" style", TableRenderer.Grid(GridTableStyle.Pretty()));
             var lightGridTableStyle = GridTableStyle.Pretty(
                 bodyColors: ColoredStringStyle.BlackOnWhite,
-                frameColors: ColoredStringStyle.DarkGrayOnWhite,
-                titleColors: ColoredStringStyle.CyanOnWhite,
-                headerColors: ColoredStringStyle.YellowOnWhite,
+                frameColors: ColoredStringStyle.GrayOnWhite,
+                titleColors: ColoredStringStyle.DarkCyanOnWhite,
+                headerColors: ColoredStringStyle.DarkYellowOnWhite,
                 footerColors: ColoredStringStyle.BlackOnWhite
             );
             Run("Table demo: grid table with \"pretty-light\" style", TableRenderer.Grid(lightGridTableStyle));
             Run("Table demo: grid table with \"sketch\" style", TableRenderer.Grid(GridTableStyle.Sketch()));
-            Run("Table demo: grid table with \"plain\" style", TableRenderer.Plain());
             Run("Table demo: grid table with \"pipe\" style", TableRenderer.Pipe());
+            Run("Table demo: grid table with \"plain\" style", TableRenderer.Plain());
         }
 
         private static void Run(string title, ITableRenderer renderer)
@@ -41,7 +41,6 @@ namespace ITGlobal.CommandLine.Example
             table.Add("This", "is a spanned row (span is computed automatically)");
             table.Add("This", "is", "an ordinary row");
             table.Footer("This is a footer row (colored!)".Green());
-            table.Draw();
             table.Draw(TextWriter.Null);
             table.Draw();
             Console.WriteLine();

@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 #if !NET45
 using System.Runtime.InteropServices;
 #endif
@@ -14,6 +15,7 @@ namespace ITGlobal.CommandLine
     public static class Terminal
     {
         private static readonly object SyncRoot = new object();
+        private static bool _isInitialized;
         private static ITerminalImplementation _implementation;
         private static ITerminalImplementation _defaultImplementation;
 
@@ -22,16 +24,33 @@ namespace ITGlobal.CommandLine
         /// </summary>
         public static void Initialize()
         {
-            if (IsRunningOnWindows)
+            lock (SyncRoot)
             {
-                _defaultImplementation = new SystemTerminalImplementation();
-            }
-            else
-            {
-                _defaultImplementation = new AnsiTerminalImplementation();
-            }
+                if (_isInitialized)
+                {
+                    return;
+                }
 
-            UseImplementation(null);
+                try
+                {
+                    if (IsRunningOnWindows)
+                    {
+                        _defaultImplementation = new WindowsTerminalImplementation();
+                    }
+                    else
+                    {
+                        _defaultImplementation = new AnsiTerminalImplementation();
+                    }
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine($"CLI: unable to initialize terminal driver: {e}");
+                    _defaultImplementation = new SystemTerminalImplementation();
+                }
+
+                _implementation = _defaultImplementation;
+                _isInitialized = true;
+            }
 
             try
             {
@@ -58,18 +77,36 @@ namespace ITGlobal.CommandLine
         ///     Terminal standard output wrapper
         /// </summary>
         [NotNull]
-        public static ITerminalWriter Stdout => GetImplementation().Stdout;
+        public static ITerminalWriter Stdout
+        {
+            get
+            {
+                Initialize();
+                return GetImplementation().Stdout;
+            }
+        }
 
         /// <summary>
         ///     Terminal standard error wrapper
         /// </summary>
         [NotNull]
-        public static ITerminalWriter Stderr => GetImplementation().Stderr;
+        public static ITerminalWriter Stderr
+        {
+            get
+            {
+                Initialize();
+                return GetImplementation().Stderr;
+            }
+        }
 
         /// <summary>
         ///     Clears current line
         /// </summary>
-        public static void ClearLine() => GetImplementation().ClearLine();
+        public static void ClearLine()
+        {
+            Initialize();
+            GetImplementation().ClearLine();
+        }
 
         /// <summary>
         ///     Locks terminal output
@@ -77,6 +114,7 @@ namespace ITGlobal.CommandLine
         [NotNull]
         public static ITerminalLock Lock([NotNull] ITerminalLockOwner owner)
         {
+            Initialize();
             lock (SyncRoot)
             {
                 var impl = GetImplementation();
@@ -96,7 +134,11 @@ namespace ITGlobal.CommandLine
         ///     Attach a handler for Ctrl-C/SIGINT
         /// </summary>
         [NotNull]
-        public static ICtrlCInterceptor OnCtrlC() => new CtrlCInterceptorImpl();
+        public static ICtrlCInterceptor OnCtrlC()
+        {
+            Initialize();
+            return new CtrlCInterceptorImpl();
+        }
 
         /// <summary>
         ///     Get terminal driver
@@ -104,13 +146,10 @@ namespace ITGlobal.CommandLine
         [NotNull]
         public static ITerminalImplementation GetImplementation()
         {
+            Initialize();
+
             lock (SyncRoot)
             {
-                if (_implementation == null)
-                {
-                    Initialize();
-                }
-
                 return _implementation;
             }
         }
@@ -120,6 +159,8 @@ namespace ITGlobal.CommandLine
         /// </summary>
         public static void UseImplementation([NotNull] ITerminalImplementation implementation)
         {
+            Initialize();
+
             lock (SyncRoot)
             {
                 _implementation = implementation ?? _defaultImplementation;
