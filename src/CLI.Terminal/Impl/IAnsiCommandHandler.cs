@@ -7,6 +7,7 @@ namespace ITGlobal.CommandLine.Impl
         void SetForegroundColor(ConsoleColor color);
 
         void SetBackgroundColor(ConsoleColor color);
+        void SetColors(ConsoleColor foreground, ConsoleColor background);
 
         void ResetColors();
 

@@ -42,6 +42,12 @@ namespace ITGlobal.CommandLine
             _commands.Add(AnsiCommand.SetBackgroundColor(color));
         }
 
+        void IAnsiCommandHandler.SetColors(ConsoleColor foreground, ConsoleColor background)
+        {
+            _commands.Add(AnsiCommand.SetForegroundColor(foreground));
+            _commands.Add(AnsiCommand.SetBackgroundColor(background));
+        }
+
         void IAnsiCommandHandler.ResetColors()
         {
             _commands.Add(AnsiCommand.ResetColors());

@@ -83,6 +83,9 @@ namespace ITGlobal.CommandLine.Example
                     }
                 }
 
+                // sample *
+                SamplesCommand.Setup(app);
+
                 return app.Parse(args).Run();
             });
         }

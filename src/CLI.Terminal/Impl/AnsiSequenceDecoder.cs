@@ -1,3 +1,4 @@
+using System;
 using System.Text;
 
 namespace ITGlobal.CommandLine.Impl
@@ -59,31 +60,42 @@ namespace ITGlobal.CommandLine.Impl
             }
 
             var parts = _sb.ToString(1, _sb.Length - 1).Split(Ansi.SGR_SEP);
+            ConsoleColor? fg = null;
+            ConsoleColor? bg = null;
+            var resetColors = false;
             foreach (var part in parts)
             {
                 if (int.TryParse(part, out var f))
                 {
-                    var attr = (AnsiAttributes) f;
+                    var attr = (AnsiAttributes)f;
                     if (attr == AnsiAttributes.ATTR_DEFAULT)
                     {
-                        _handler.ResetColors();
+                        resetColors = true;
                     }
                     else
                     {
-                        var fg = Ansi.ForegroundColorFromAttributes(attr);
-                        var bg = Ansi.BackgroundColorFromAttributes(attr);
-
-                        if (fg != null)
-                        {
-                            _handler.SetForegroundColor(fg.Value);
-                        }
-
-                        if (bg != null)
-                        {
-                            _handler.SetBackgroundColor(bg.Value);
-                        }
+                        fg = fg ?? Ansi.ForegroundColorFromAttributes(attr);
+                        bg = bg ?? Ansi.BackgroundColorFromAttributes(attr);
                     }
                 }
+            }
+
+            if (resetColors)
+            {
+                _handler.ResetColors();
+            }
+
+            if (fg != null && bg != null)
+            {
+                _handler.SetColors(fg.Value, bg.Value);
+            }
+            else if (fg != null)
+            {
+                _handler.SetForegroundColor(fg.Value);
+            }
+            else if (bg != null)
+            {
+                _handler.SetBackgroundColor(bg.Value);
             }
         }
     }

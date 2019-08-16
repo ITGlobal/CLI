@@ -25,7 +25,6 @@ namespace ITGlobal.CommandLine
             if (IsRunningOnWindows)
             {
                 _defaultImplementation = new SystemTerminalImplementation();
-
             }
             else
             {

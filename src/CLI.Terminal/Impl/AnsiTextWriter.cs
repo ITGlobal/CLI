@@ -1,18 +1,45 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
 namespace ITGlobal.CommandLine.Impl
 {
-    internal sealed class AnsiTextWriter : TextWriter, IAnsiCommandHandler
+    internal class AnsiTextWriter : TextWriter, IAnsiCommandHandler
     {
+        private readonly struct AnsiColors
+        {
+            public AnsiColors(ConsoleColor fg, ConsoleColor bg)
+            {
+                Fg = fg;
+                Bg = bg;
+            }
+
+            public readonly ConsoleColor Fg;
+            public readonly ConsoleColor Bg;
+
+            public void Deconstruct(out ConsoleColor fg, out ConsoleColor bg)
+            {
+                fg = Fg;
+                bg = Bg;
+            }
+
+            public override string ToString() => $"{Fg}/{Bg}";
+
+            public AnsiColors With(ConsoleColor? fg = null, ConsoleColor? bg = null) => new AnsiColors(fg ?? Fg, bg ?? Bg);
+        }
+
         private readonly TextWriter _writer;
         private readonly AnsiSequenceDecoder _decoder;
+        private readonly Stack<AnsiColors> _colorHistory = new Stack<AnsiColors>();
+        private AnsiColors? _colors;
 
         public AnsiTextWriter(TextWriter writer)
         {
             _writer = writer;
             _decoder = new AnsiSequenceDecoder(this);
+
+            PushColors();
         }
 
         public override Encoding Encoding => _writer.Encoding;
@@ -24,20 +51,30 @@ namespace ITGlobal.CommandLine.Impl
 
         void IAnsiCommandHandler.SetForegroundColor(ConsoleColor color)
         {
-            Console.ForegroundColor = color;
+            PushColors(foreground: color);
         }
 
         void IAnsiCommandHandler.SetBackgroundColor(ConsoleColor color)
         {
-            Console.BackgroundColor = color;
+            PushColors(background: color);
+        }
+
+        void IAnsiCommandHandler.SetColors(ConsoleColor foreground, ConsoleColor background)
+        {
+            PushColors(foreground, background);
         }
 
         void IAnsiCommandHandler.ResetColors()
         {
-            Console.ResetColor();
+            PopColors();
         }
 
         void IAnsiCommandHandler.Write(char c)
+        {
+            WriteImpl(c, _colors?.Fg, _colors?.Bg);
+        }
+
+        protected virtual void WriteImpl(char c, ConsoleColor? fg, ConsoleColor? bg)
         {
             switch (c)
             {
@@ -48,7 +85,42 @@ namespace ITGlobal.CommandLine.Impl
                     _writer.Write(c);
                     break;
             }
+        }
 
+        private void PushColors(ConsoleColor? foreground = null, ConsoleColor? background = null)
+        {
+            var colors = new AnsiColors(Console.ForegroundColor, Console.BackgroundColor);
+            _colorHistory.Push(colors);
+
+            if (foreground != null)
+            {
+                Console.ForegroundColor = foreground.Value;
+            }
+
+            if (background != null)
+            {
+                Console.BackgroundColor = background.Value;
+            }
+
+            _colors = colors.With(foreground, background);
+        }
+
+        private void PopColors()
+        {
+            if (_colorHistory.Count > 0)
+            {
+                var colors = _colorHistory.Pop();
+                var (fg, bg) = colors;
+                Console.ForegroundColor = fg;
+                Console.BackgroundColor = bg;
+
+                _colors = colors;
+            }
+            else
+            {
+                Console.ResetColor();
+                _colors = null;
+            }
         }
     }
 }

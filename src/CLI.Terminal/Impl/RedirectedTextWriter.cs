@@ -1,54 +1,23 @@
 using System;
 using System.IO;
-using System.Text;
 
 namespace ITGlobal.CommandLine.Impl
 {
-    internal sealed class RedirectedTextWriter : TextWriter, IAnsiCommandHandler
+    internal sealed class RedirectedTextWriter : AnsiTextWriter
     {
-        private readonly TextWriter _writer;
         private readonly LockedTerminalImplementation _output;
         private readonly StreamType _stream;
-
-        private readonly AnsiSequenceDecoder _ansiDecoder;
-        private ConsoleColor? _foregroundColor;
-        private ConsoleColor? _backgroundColor;
-
+        
         public RedirectedTextWriter(TextWriter writer, LockedTerminalImplementation output, StreamType stream)
+            : base(writer)
         {
-            _writer = writer;
             _output = output;
             _stream = stream;
-
-            _ansiDecoder = new AnsiSequenceDecoder(this);
         }
 
-        public override Encoding Encoding => _writer.Encoding;
-
-        public override void Write(char value)
+        protected override void WriteImpl(char c, ConsoleColor? fg, ConsoleColor? bg)
         {
-            _ansiDecoder.Process(value);
-        }
-
-        void IAnsiCommandHandler.SetForegroundColor(ConsoleColor color)
-        {
-            _foregroundColor = color;
-        }
-
-        void IAnsiCommandHandler.SetBackgroundColor(ConsoleColor color)
-        {
-            _backgroundColor = color;
-        }
-
-        void IAnsiCommandHandler.ResetColors()
-        {
-            _foregroundColor = null;
-            _backgroundColor = null;
-        }
-
-        void IAnsiCommandHandler.Write(char c)
-        {
-            _output.Write(_stream, c, _foregroundColor, _backgroundColor);
+            _output.Write(_stream, c, fg, bg);
         }
     }
 }

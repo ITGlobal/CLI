@@ -47,6 +47,10 @@
     "unknown-option": {
       "commandName": "Project",
       "commandLineArgs": "live print --test"
+    },
+    "sample nested-ansi": {
+      "commandName": "Project",
+      "commandLineArgs": "sample nested-ansi"
     }
   }
 }
