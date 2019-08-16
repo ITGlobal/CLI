@@ -4,7 +4,7 @@ using ITGlobal.CommandLine.Table.Rendering;
 
 namespace ITGlobal.CommandLine.Table.Impl
 {
-    internal sealed class GridTableRenderer : TableRenderer
+    internal sealed class GridTableRenderer : TableRendererBase
     {
         private readonly IGridTableStyle _style;
 
@@ -249,16 +249,18 @@ namespace ITGlobal.CommandLine.Table.Impl
 
         private void DrawSingleCell(TextWriter output, TableLayout model, TableCellLayout cell, IColoredStringStyle colors)
         {
+            var space = _style.FrameColors.Apply(" ");
+
             foreach (var text in cell.Content)
             {
                 output.Write(_style.FrameColors.Apply(_style.BoxVertical));
-                output.Write(' ');
+                output.Write(space);
                 output.Write(colors.Apply(text));
                 for (var i = text.Length; i < model.Width - 4; i++)
                 {
-                    output.Write(' ');
+                    output.Write(space);
                 }
-                output.Write(' ');
+                output.Write(space);
                 output.Write(_style.FrameColors.Apply(_style.BoxVertical));
                 output.WriteLine();
             }
@@ -266,6 +268,7 @@ namespace ITGlobal.CommandLine.Table.Impl
 
         private void DrawMultiCell(TextWriter output, TableCellLayout[] cells, IColoredStringStyle colors)
         {
+            var space = colors.Apply(" ");
             var lines = cells.Max(_ => _.Content.Length);
 
             for (var line = 0; line < lines; line++)
@@ -274,7 +277,7 @@ namespace ITGlobal.CommandLine.Table.Impl
                 {
                     var cell = cells[column];
                     output.Write(_style.FrameColors.Apply(_style.BoxVertical));
-                    output.Write(' ');
+                    output.Write(space);
                     var cellWidth = 0;
                     if (line < cell.Content.Length)
                     {
@@ -286,10 +289,10 @@ namespace ITGlobal.CommandLine.Table.Impl
 
                     for (var i = cellWidth; i < maxCellWidth; i++)
                     {
-                        output.Write(' ');
+                        output.Write(space);
                     }
 
-                    output.Write(' ');
+                    output.Write(space);
                 }
                 output.Write(_style.FrameColors.Apply(_style.BoxVertical));
                 output.WriteLine();

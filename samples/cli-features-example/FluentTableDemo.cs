@@ -11,6 +11,14 @@ namespace ITGlobal.CommandLine.Example
         public static void Run()
         {
             Run("Table demo: grid table with \"pretty\" style", TableRenderer.Grid(GridTableStyle.Pretty()));
+            var lightGridTableStyle = GridTableStyle.Pretty(
+                bodyColors: ColoredStringStyle.BlackOnWhite,
+                frameColors: ColoredStringStyle.DarkGrayOnWhite,
+                titleColors: ColoredStringStyle.CyanOnWhite,
+                headerColors: ColoredStringStyle.YellowOnWhite,
+                footerColors: ColoredStringStyle.BlackOnWhite
+            );
+            Run("Table demo: grid table with \"pretty-light\" style", TableRenderer.Grid(lightGridTableStyle));
             Run("Table demo: grid table with \"sketch\" style", TableRenderer.Grid(GridTableStyle.Sketch()));
             Run("Table demo: grid table with \"plain\" style", TableRenderer.Plain());
             Run("Table demo: grid table with \"pipe\" style", TableRenderer.Pipe());

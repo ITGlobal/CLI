@@ -9,12 +9,12 @@ namespace ITGlobal.CommandLine.Example
         {
             // sample *
             {
-                var tableCmd = app.Command("sample")
+                var command = app.Command("sample")
                     .HelpText("Various samples");
 
                 // sample nested-ansi
                 {
-                    var cmd = tableCmd.Command("nested-ansi", helpText: "Test for https://github.com/ITGlobal/CLI/issues/18");
+                    var cmd = command.Command("nested-ansi", helpText: "Test for https://github.com/ITGlobal/CLI/issues/18");
                     cmd.OnExecute(_ => { NestedAnsiOutput(); });
                 }
             }
@@ -31,7 +31,8 @@ namespace ITGlobal.CommandLine.Example
             Console.WriteLine("(Default colors)");
             Console.WriteLine($"OnDarkRed       {"OnDarkBlue ".OnDarkBlue()}  OnDarkRed".OnDarkRed());
             Console.WriteLine("(Default colors)");
-
+            Console.WriteLine();
+            Console.WriteLine();
             Console.WriteLine("Locked terminal demo");
             Console.WriteLine();
             using (LiveOutputManager.Create())

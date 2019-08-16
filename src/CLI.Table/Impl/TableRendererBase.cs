@@ -6,7 +6,7 @@ using ITGlobal.CommandLine.Table.Rendering;
 
 namespace ITGlobal.CommandLine.Table.Impl
 {
-    internal abstract class TableRenderer : ITableRenderer
+    internal abstract class TableRendererBase : ITableRenderer
     {
         public void Render(TableModel model, TextWriter output, int? maxViewWidth)
         {
@@ -24,7 +24,7 @@ namespace ITGlobal.CommandLine.Table.Impl
         protected abstract int CalcSpannedColumnWidth(int[] columnWidths);
         protected abstract void Render(TableLayout model, TextWriter output);
 
-        private void Measure(TableModel model, out int[] columnWidths)
+        private static void Measure(TableModel model, out int[] columnWidths)
         {
             var columnCount = model.Rows.Max(_ => _.Cells.Length);
             columnWidths = new int[columnCount];
@@ -71,7 +71,7 @@ namespace ITGlobal.CommandLine.Table.Impl
             return layout;
         }
 
-        private void AdjustColumnWidth(int[] columnWidths, int totalTableWidth, int totalContentWidth, int maxViewWidth)
+        private static void AdjustColumnWidth(int[] columnWidths, int totalTableWidth, int totalContentWidth, int maxViewWidth)
         {
             const int minColumnWidth = 8;
 
@@ -152,7 +152,7 @@ namespace ITGlobal.CommandLine.Table.Impl
             return new TableRowLayout(row.Type, cells);
         }
 
-        private TableCellLayout AdjustCellLayout(TableCellModel cell, int width)
+        private static TableCellLayout AdjustCellLayout(TableCellModel cell, int width)
         {
             if (width <= 1)
             {
@@ -184,7 +184,7 @@ namespace ITGlobal.CommandLine.Table.Impl
             return AdjustCellLayout(strs.ToArray(), cell.Alignment, width);
         }
 
-        private TableCellLayout AdjustCellLayout(ColoredString[] strings, TableCellAlignment alignment, int width)
+        private static TableCellLayout AdjustCellLayout(ColoredString[] strings, TableCellAlignment alignment, int width)
         {
             for (var i = 0; i < strings.Length; i++)
             {
@@ -194,7 +194,7 @@ namespace ITGlobal.CommandLine.Table.Impl
             return new TableCellLayout(strings, alignment, width);
         }
 
-        private ColoredString AdjustCellLayout(ColoredString str, TableCellAlignment alignment, int width)
+        private static ColoredString AdjustCellLayout(ColoredString str, TableCellAlignment alignment, int width)
         {
             var text = str.Text;
             switch (alignment)

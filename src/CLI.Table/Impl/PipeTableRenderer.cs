@@ -5,7 +5,7 @@ using ITGlobal.CommandLine.Table.Rendering;
 
 namespace ITGlobal.CommandLine.Table.Impl
 {
-    internal sealed class PipeTableRenderer : TableRenderer
+    internal sealed class PipeTableRenderer : TableRendererBase
     {
         private readonly IPipeTableStyle _style;
 
@@ -66,6 +66,8 @@ namespace ITGlobal.CommandLine.Table.Impl
 
         private void DrawHeaders(TableRowLayout row, TextWriter output)
         {
+            var space = _style.HeaderColors.Apply(" ");
+
             var maxRowNum = row.Cells.Max(_ => _.Content.Length);
 
             for (var rowNum = 0; rowNum < maxRowNum; rowNum++)
@@ -92,7 +94,7 @@ namespace ITGlobal.CommandLine.Table.Impl
 
             void DrawCell(TableCellLayout cell, int rowNum)
             {
-                output.Write(' ');
+                output.Write(space);
 
                 var n = 0;
                 if (cell.Content.Length > rowNum)
@@ -104,7 +106,7 @@ namespace ITGlobal.CommandLine.Table.Impl
 
                 for (var i = n; i < cell.Width; i++)
                 {
-                    output.Write(' ');
+                    output.Write(space);
                 }
 
                 output.Write(_style.FrameColors.Apply(" |"));
@@ -113,6 +115,7 @@ namespace ITGlobal.CommandLine.Table.Impl
 
         private void DrawBody(TableRowLayout row, TextWriter output)
         {
+            var space = _style.BodyColors.Apply(" ");
             var maxRowNum = row.Cells.Max(_ => _.Content.Length);
 
             for (var rowNum = 0; rowNum < maxRowNum; rowNum++)
@@ -128,7 +131,7 @@ namespace ITGlobal.CommandLine.Table.Impl
 
             void DrawCell(TableCellLayout cell, int rowNum)
             {
-                output.Write(' ');
+                output.Write(space);
 
                 var n = 0;
                 if (cell.Content.Length > rowNum)
@@ -140,7 +143,7 @@ namespace ITGlobal.CommandLine.Table.Impl
 
                 for (var i = n; i < cell.Width; i++)
                 {
-                    output.Write(' ');
+                    output.Write(space);
                 }
 
                 output.Write(_style.FrameColors.Apply(" |"));

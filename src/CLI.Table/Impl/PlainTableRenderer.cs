@@ -5,7 +5,7 @@ using ITGlobal.CommandLine.Table.Rendering;
 
 namespace ITGlobal.CommandLine.Table.Impl
 {
-    internal sealed class PlainTableRenderer : TableRenderer
+    internal sealed class PlainTableRenderer : TableRendererBase
     {
         private readonly IPlainTableStyle _style;
 
@@ -13,7 +13,7 @@ namespace ITGlobal.CommandLine.Table.Impl
         {
             _style = style;
         }
-        
+
         protected override int CalcTotalTableWidth(int[] columnWidths)
         {
             var totalContentWidth = columnWidths.Sum();
@@ -76,6 +76,8 @@ namespace ITGlobal.CommandLine.Table.Impl
                 return;
             }
 
+            var space = _style.HeaderColors.Apply(" ");
+            var dash = _style.HeaderColors.Apply("-");
             var maxRowNum = row.Cells.Max(_ => _.Content.Length);
 
             for (var rowNum = 0; rowNum < maxRowNum; rowNum++)
@@ -85,7 +87,7 @@ namespace ITGlobal.CommandLine.Table.Impl
                     DrawCell(row.Cells[i], rowNum);
                     if (i != row.Cells.Length - 1)
                     {
-                        output.Write(' ');
+                        output.Write(space);
                     }
                 }
 
@@ -98,12 +100,12 @@ namespace ITGlobal.CommandLine.Table.Impl
                 {
                     for (var j = 0; j < row.Cells[i].Width; j++)
                     {
-                        output.Write('-');
+                        output.Write(dash);
                     }
 
                     if (i != row.Cells.Length - 1)
                     {
-                        output.Write('-');
+                        output.Write(dash);
                     }
                 }
 
@@ -128,13 +130,14 @@ namespace ITGlobal.CommandLine.Table.Impl
 
                 for (var i = n; i < cell.Width; i++)
                 {
-                    output.Write(' ');
+                    output.Write(space);
                 }
             }
         }
 
         private void DrawBody(TableRowLayout row, TextWriter output)
         {
+            var space = _style.BodyColors.Apply(" ");
             var maxRowNum = row.Cells.Max(_ => _.Content.Length);
 
             for (var rowNum = 0; rowNum < maxRowNum; rowNum++)
@@ -144,7 +147,7 @@ namespace ITGlobal.CommandLine.Table.Impl
                     DrawCell(row.Cells[i], rowNum);
                     if (i != row.Cells.Length - 1)
                     {
-                        output.Write(' ');
+                        output.Write(space);
                     }
                 }
 
@@ -160,10 +163,10 @@ namespace ITGlobal.CommandLine.Table.Impl
                     output.Write(_style.BodyColors.Apply(s));
                     n = s.Length;
                 }
-
+                
                 for (var i = n; i < cell.Width; i++)
                 {
-                    output.Write(' ');
+                    output.Write(space);
                 }
             }
         }
