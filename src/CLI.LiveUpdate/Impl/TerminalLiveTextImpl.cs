@@ -11,11 +11,16 @@ namespace ITGlobal.CommandLine.Impl
         private ColoredString[] _text = new ColoredString[0];
 #endif
         private bool _needsRedraw = true;
-        private bool _isCompleted;
+        private bool? _wipeAfter;
 
         public TerminalLiveTextImpl(ILiveOutputItemOwner owner)
         {
             _owner = owner;
+        }
+
+        public void WipeAfter(bool enable = true)
+        {
+            _wipeAfter = enable;
         }
 
         public void Write(params ColoredString[] strs)
@@ -34,17 +39,7 @@ namespace ITGlobal.CommandLine.Impl
             }
             _owner.RequestRedraw();
         }
-
-        public void Complete(params ColoredString[] strs)
-        {
-            lock (_textLock)
-            {
-                _text = strs;
-                _isCompleted = true;
-            }
-            _owner.RequestRedraw();
-        }
-
+        
         bool ILiveOutputItem.NeedsRedraw
         {
             get
@@ -66,11 +61,11 @@ namespace ITGlobal.CommandLine.Impl
             Draw(terminal);
         }
 
-        bool ILiveOutputItem.DrawFinal(ITerminalLock terminal, int time)
+        bool ILiveOutputItem.DrawFinal(ITerminalLock terminal, int time, bool defaultWipeAfter)
         {
             lock (_textLock)
             {
-                if (!_isCompleted)
+                if (_wipeAfter ?? defaultWipeAfter)
                 {
                     return false;
                 }

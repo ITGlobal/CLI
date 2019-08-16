@@ -23,6 +23,8 @@ namespace ITGlobal.CommandLine.Impl
         private int _time;
         private bool _needsRedraw;
 
+        private bool _cleanupAfter;
+
         public LiveOutputManagerImpl(ISpinnerRenderer spinnerRenderer, IProgressBarRenderer progressBarRenderer)
         {
             _spinnerRenderer = spinnerRenderer;
@@ -33,6 +35,11 @@ namespace ITGlobal.CommandLine.Impl
             _timer = new Timer(OnTimer, null, ANIMATION_STEP_MS, ANIMATION_STEP_MS);
         }
 
+
+        public void WipeAfter(bool enable = true)
+        {
+            _cleanupAfter = enable;
+        }
 
         public ITerminalLiveText CreateText(params ColoredString[] str)
         {
@@ -93,7 +100,7 @@ namespace ITGlobal.CommandLine.Impl
                 for (var i = 0; i < _items.Count; i++)
                 {
                     var item = _items[i];
-                    if (item.DrawFinal(_terminal, time))
+                    if (item.DrawFinal(_terminal, time, _cleanupAfter))
                     {
                         _terminal.Stderr.WriteLine();
                     }

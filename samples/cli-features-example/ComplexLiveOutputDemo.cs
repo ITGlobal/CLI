@@ -40,7 +40,9 @@ namespace ITGlobal.CommandLine.Example
                     }
                 }
                 
-                w1.Complete("Download completed, see output directory".Green());
+                w1.Write("Download completed, see output directory".Green());
+                w2.WipeAfter();
+                w1.WipeAfter(false);
             }
 
             Console.WriteLine("--- AFTER DEMO ---");

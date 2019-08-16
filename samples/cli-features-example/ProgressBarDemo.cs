@@ -13,7 +13,7 @@ namespace ITGlobal.CommandLine.Example
             Shades,
         }
 
-        public static void Run(Type type)
+        public static void Run(Type type, bool wipe)
         {
             IProgressBarRenderer progressBarRenderer;
 
@@ -35,10 +35,15 @@ namespace ITGlobal.CommandLine.Example
                     throw new ArgumentOutOfRangeException(nameof(type), type, null);
             }
 
+            if (wipe)
+            {
+                Console.WriteLine("Will wipe out progress bar when completed");
+            }
             Console.WriteLine("--- BEFORE DEMO ---");
 
             using (var liveOutput = LiveOutputManager.Create(progressBarRenderer: progressBarRenderer))
             {
+                liveOutput.WipeAfter(wipe);
                 var bar = liveOutput.CreateProgressBar("Downloading...");
 
                 for (var i = 0; i < 100; i += 5)

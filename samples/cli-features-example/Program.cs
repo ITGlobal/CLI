@@ -48,7 +48,9 @@ namespace ITGlobal.CommandLine.Example
                         var type = cmd.Option<ProgressBarDemo.Type>('t', "type")
                             .HelpText("Progress bar type")
                             .DefaultValue(ProgressBarDemo.Type.Arrow);
-                        cmd.OnExecute(_ => { ProgressBarDemo.Run(type); });
+                        var wipe = cmd.Switch('w', "wipe")
+                            .HelpText("Wipe out progress bar from screen when completed");
+                        cmd.OnExecute(_ => { ProgressBarDemo.Run(type, wipe); });
                     }
 
                     
@@ -58,7 +60,9 @@ namespace ITGlobal.CommandLine.Example
                         var type = cmd.Option<ComplexProgressBarDemo.Type>('t', "type")
                             .HelpText("Progress bar type")
                             .DefaultValue(ComplexProgressBarDemo.Type.Arrow);
-                        cmd.OnExecute(_ => { ComplexProgressBarDemo.Run(type); });
+                        var wipe = cmd.Switch('w', "wipe")
+                            .HelpText("Wipe out progress bar from screen when completed");
+                        cmd.OnExecute(_ => { ComplexProgressBarDemo.Run(type, wipe); });
                     }
 
                     {

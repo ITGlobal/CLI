@@ -21,7 +21,7 @@ namespace ITGlobal.CommandLine.Impl
                 throw new Win32Exception();
             }
 
-            if (str == ColoredString.LF)
+            if (str.Text == "\n")
             {
                 var cursor = new Win32.COORD
                 {

@@ -43,25 +43,25 @@ namespace ITGlobal.CommandLine
         public static implicit operator string(ColoredString str) => str.ToString();
 
         [Pure]
-        public static implicit operator ColoredString(bool value) => new ColoredString(value ? "true" : "false");
+        public static explicit operator ColoredString(bool value) => new ColoredString(value ? "true" : "false");
 
         [Pure]
         public static implicit operator ColoredString(char value) => new ColoredString(new string(value, 1));
 
         [Pure]
-        public static implicit operator ColoredString(int value) => new ColoredString(value.ToString(CultureInfo.InvariantCulture));
+        public static explicit operator ColoredString(int value) => new ColoredString(value.ToString(CultureInfo.InvariantCulture));
 
         [Pure]
-        public static implicit operator ColoredString(long value) => new ColoredString(value.ToString(CultureInfo.InvariantCulture));
+        public static explicit operator ColoredString(long value) => new ColoredString(value.ToString(CultureInfo.InvariantCulture));
 
         [Pure]
-        public static implicit operator ColoredString(float value) => new ColoredString(value.ToString(CultureInfo.InvariantCulture));
+        public static explicit operator ColoredString(float value) => new ColoredString(value.ToString(CultureInfo.InvariantCulture));
 
         [Pure]
-        public static implicit operator ColoredString(double value) => new ColoredString(value.ToString(CultureInfo.InvariantCulture));
+        public static explicit operator ColoredString(double value) => new ColoredString(value.ToString(CultureInfo.InvariantCulture));
 
         [Pure]
-        public static implicit operator ColoredString(decimal value) => new ColoredString(value.ToString(CultureInfo.InvariantCulture));
+        public static explicit operator ColoredString(decimal value) => new ColoredString(value.ToString(CultureInfo.InvariantCulture));
 
         [Pure]
         public override string ToString()

@@ -23,7 +23,8 @@ namespace ITGlobal.CommandLine.Example
                     Thread.Sleep(250);
                 }
 
-                w.Complete("Completed".Green());
+                w.WipeAfter(false);
+                w.Write("Completed".Green());
             }
 
             Console.WriteLine("--- AFTER DEMO ---");

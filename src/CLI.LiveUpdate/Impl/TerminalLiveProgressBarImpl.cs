@@ -14,12 +14,20 @@ namespace ITGlobal.CommandLine.Impl
         private int _value;
         private bool _needsRedraw = true;
         private bool _isCompleted;
+        private bool? _wipeAfter;
 
         public TerminalLiveProgressBarImpl(ILiveOutputItemOwner owner, IProgressBarRenderer renderer)
         {
             _owner = owner;
             _renderer = renderer;
         }
+
+        public void WipeAfter(bool enable = true)
+        {
+            _wipeAfter = enable;
+        }
+
+        public void Write(params ColoredString[] strs) => Write(null, strs);
 
         public void Write(int? value, ColoredString[] strs)
         {
@@ -83,11 +91,11 @@ namespace ITGlobal.CommandLine.Impl
             Draw(terminal, time);
         }
 
-        public bool DrawFinal(ITerminalLock terminal, int time)
+        bool ILiveOutputItem.DrawFinal(ITerminalLock terminal, int time, bool defaultWipeAfter)
         {
             lock (_textLock)
             {
-                if (!_isCompleted)
+                if (_wipeAfter ?? defaultWipeAfter)
                 {
                     return false;
                 }
@@ -108,14 +116,24 @@ namespace ITGlobal.CommandLine.Impl
             {
                 if (_isCompleted)
                 {
-                    foreach (var s in _text)
-                    {
-                        terminal.Stderr.Write(s);
-                    }
+                    DrawCompleted(terminal);
                 }
                 else
                 {
                     _renderer.Render(terminal, _text, _value, time);
+                }
+
+                _needsRedraw = false;
+            }
+        }
+        
+        private void DrawCompleted(ITerminalLock terminal)
+        {
+            lock (_textLock)
+            {
+                foreach (var s in _text)
+                {
+                    terminal.Stderr.Write(s);
                 }
 
                 _needsRedraw = false;
