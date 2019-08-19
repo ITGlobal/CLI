@@ -3,7 +3,6 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
-using System.Security.Cryptography.X509Certificates;
 
 namespace ITGlobal.CommandLine.Impl
 {
@@ -45,20 +44,20 @@ namespace ITGlobal.CommandLine.Impl
 
             var hConsoleBuffer = Win32.CreateFile(
                 fileName: "CONOUT$",
-                fileAccess: 0x40000000,
+                fileAccess: Win32.GENERIC_READ | Win32.GENERIC_WRITE,
                 fileShare: 2,
                 securityAttributes: IntPtr.Zero,
                 creationDisposition: FileMode.Open,
                 flags: 0,
                 template: IntPtr.Zero
             );
-            if (hConsoleBuffer.IsInvalid)
+            if (hConsoleBuffer == Win32.INVALID_HANDLE_VALUE)
             {
                 Trace.WriteLine(
                     string.Format(
                         "CreateFile(\"{0}\", ...) -> {1}, 0x{2:X08}",
                         "CONOUT$",
-                        hConsoleBuffer.DangerousGetHandle().ToInt32(),
+                        hConsoleBuffer.ToInt32(),
                         Marshal.GetLastWin32Error()
                     )
                 );
@@ -70,8 +69,8 @@ namespace ITGlobal.CommandLine.Impl
             Console.SetError(new AnsiTextWriter(Console.Error));
             Console.SetOut(new AnsiTextWriter(Console.Out));
 
-            Stderr = new WindowsTerminalWriter(_hStdErr, hConsoleBuffer.DangerousGetHandle());
-            Stdout = new WindowsTerminalWriter(hStdOut, hConsoleBuffer.DangerousGetHandle());
+            Stderr = new WindowsTerminalWriter(_hStdErr, hConsoleBuffer);
+            Stdout = new WindowsTerminalWriter(hStdOut, hConsoleBuffer);
         }
 
         public ITerminalWriter Stdout { get; }
@@ -138,7 +137,7 @@ namespace ITGlobal.CommandLine.Impl
                         "FillConsoleOutputAttribute(0x{0:X08}, {1}, {2}, {{ X: {3}, Y: {4} }}) -> 0x{5:X08}",
                         _hStdErr.ToInt32(),
                         0,
-                        (uint)width, 
+                        (uint)width,
                         coord.X,
                         coord.Y,
                         Marshal.GetLastWin32Error()
@@ -155,7 +154,7 @@ namespace ITGlobal.CommandLine.Impl
                         "FillConsoleOutputCharacter(0x{0:X08}, \"{1}\", {2}, {{ X: {3}, Y: {4} }}) -> 0x{5:X08}",
                         _hStdErr.ToInt32(),
                         ' ',
-                        (uint)width, 
+                        (uint)width,
                         coord.X,
                         coord.Y,
                         Marshal.GetLastWin32Error()
