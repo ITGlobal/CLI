@@ -27,44 +27,60 @@ namespace ITGlobal.CommandLine.Impl
         {
             get
             {
-                var width = Console.WindowWidth;
-                if (width <= 0)
+                try
                 {
-                    width = Terminal.DefaultWindowWidth;
+                    var width = Console.WindowWidth;
+                    if (width <= 0)
+                    {
+                        width = Terminal.DefaultWindowWidth;
+                    }
+                    return width;
                 }
-                return width;
+                catch (IOException)
+                {
+                    return Terminal.DefaultWindowWidth;
+                }
             }
         }
 
         public void MoveToLine(int offset)
         {
-            var cursorTop = Console.CursorTop;
-            cursorTop += offset;
-            Console.CursorTop = cursorTop > 0 ? cursorTop : 0;
+            try
+            {
+                var cursorTop = Console.CursorTop;
+                cursorTop += offset;
+                Console.CursorTop = cursorTop > 0 ? cursorTop : 0;
+            }
+            catch (IOException) { }
         }
 
         public void ClearLine()
         {
-            int width;
-            if (Console.CursorLeft > 0)
+            try
             {
-                width = Console.CursorLeft;
-            }
-            else
-            {
-                width = Terminal.WindowWidth - 1;
-            }
+                int width;
+                if (Console.CursorLeft > 0)
+                {
+                    width = Console.CursorLeft;
+                }
+                else
+                {
+                    width = Terminal.WindowWidth - 1;
+                }
 
-            Console.ResetColor();
+                Console.ResetColor();
 
-            _stderr.Write('\r');
-            for (var i = 0; i < width; i++)
-            {
-                _stderr.Write(' ');
+                _stderr.Write('\r');
+                for (var i = 0; i < width; i++)
+                {
+                    _stderr.Write(' ');
+                }
+
+                _stderr.Write('\r');
+                _stderr.Flush();
+
             }
-
-            _stderr.Write('\r');
-            _stderr.Flush();
+            catch (IOException) { }
         }
     }
 }
