@@ -68,8 +68,8 @@ if ($LASTEXITCODE -ne 0) {
 
 # PACK
 write-host "< pack >" -f cyan
-& dotnet pack /nologo -v q -c $CONFIGURATION /p:Version=$VERSION --include-symbols --include-source `
-    --no-restore --no-build --output $ARTIFACTS ./CLI.sln
+& dotnet pack -v q -c $CONFIGURATION /p:Version=$VERSION --include-symbols --include-source `
+    --no-restore --no-build --output $ARTIFACTS ./CLI.sln /nologo
 if ($LASTEXITCODE -ne 0) {
     Write-Host "`"dotnet pack`" failed with $LASTEXITCODE"
     exit $LASTEXITCODE
