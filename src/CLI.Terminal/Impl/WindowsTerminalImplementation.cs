@@ -1,7 +1,6 @@
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.IO;
 using System.Runtime.InteropServices;
 
 namespace ITGlobal.CommandLine.Impl
@@ -43,13 +42,13 @@ namespace ITGlobal.CommandLine.Impl
             }
 
             var hConsoleBuffer = Win32.CreateFile(
-                fileName: "CONOUT$",
-                fileAccess: Win32.GENERIC_READ | Win32.GENERIC_WRITE,
-                fileShare: 2,
-                securityAttributes: IntPtr.Zero,
-                creationDisposition: FileMode.Open,
-                flags: 0,
-                template: IntPtr.Zero
+                lpFileName: "CONOUT$",
+                dwDesiredAccess: Win32.FileAccess.GenericRead|Win32.FileAccess.GenericWrite,
+                dwShareMode: Win32.FileShare.Write,
+                lpSecurityAttributes: IntPtr.Zero,
+                dwCreationDisposition: Win32.CreationDisposition.OpenAlways,
+                dwFlagsAndAttributes: 0,
+                hTemplateFile: IntPtr.Zero
             );
             if (hConsoleBuffer == Win32.INVALID_HANDLE_VALUE)
             {

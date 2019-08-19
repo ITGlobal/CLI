@@ -18,6 +18,11 @@ namespace ITGlobal.CommandLine.Impl
 
         protected override void WriteImpl(ColoredString str)
         {
+            if (str.Length == 0)
+            {
+                return;
+            }
+
             if (!Win32.GetConsoleScreenBufferInfo(_hConsole, out var bufferInfo))
             {
                 Trace.WriteLine(
@@ -87,7 +92,7 @@ namespace ITGlobal.CommandLine.Impl
                 Trace.WriteLine(
                     string.Format(
                         "WriteConsoleOutput(h: 0x{0:X08}, [{1}], {{ X: {2}, Y: {3} }}, ...) -> 0x{4:X08}",
-                        _hConsoleBuffer.ToInt32(),                        
+                        _hConsoleBuffer.ToInt32(),
                         chars.Length,
                         dwBufferSize.X,
                         dwBufferSize.Y,
