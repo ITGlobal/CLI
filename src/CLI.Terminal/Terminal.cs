@@ -50,6 +50,8 @@ namespace ITGlobal.CommandLine
                 }
                 catch (Exception e)
                 {
+                    _defaultImplementation?.Dispose();
+
                     _defaultImplementation = new SystemTerminalImplementation();
                     _windowWidth = _defaultImplementation.WindowWidth;
 
@@ -58,6 +60,30 @@ namespace ITGlobal.CommandLine
                 }
 
                 _implementation = _defaultImplementation;
+                _isInitialized = true;
+            }
+        }
+
+        /// <summary>
+        ///     Deinitializes terminal output
+        /// </summary>
+        public static void Shutdown()
+        {
+            lock (SyncRoot)
+            {
+                if (!_isInitialized)
+                {
+                    return;
+                }
+                
+                _defaultImplementation?.Dispose();
+                if (!ReferenceEquals(_defaultImplementation, _implementation))
+                {
+                    _implementation?.Dispose();
+                }
+
+                _implementation = null;
+                _defaultImplementation = null;
                 _isInitialized = true;
             }
         }

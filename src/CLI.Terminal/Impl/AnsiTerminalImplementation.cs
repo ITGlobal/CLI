@@ -62,5 +62,7 @@ namespace ITGlobal.CommandLine.Impl
 
             _stderr.Flush();
         }
+
+        public void Dispose() { }
     }
 }

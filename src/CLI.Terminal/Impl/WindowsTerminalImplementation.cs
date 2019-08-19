@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Runtime.InteropServices;
 
 namespace ITGlobal.CommandLine.Impl
@@ -8,6 +9,11 @@ namespace ITGlobal.CommandLine.Impl
     internal sealed class WindowsTerminalImplementation : ITerminalImplementation
     {
         private readonly IntPtr _hStdErr;
+        private readonly IntPtr _hStdOut;
+        private readonly IntPtr _hConsoleBuffer;
+
+        private readonly TextWriter _originalStdErr;
+        private readonly TextWriter _originalStdOut;
 
         public WindowsTerminalImplementation()
         {
@@ -26,7 +32,7 @@ namespace ITGlobal.CommandLine.Impl
                 throw new Win32Exception();
             }
 
-            var hStdOut = Win32.GetStdHandle(Win32.STD_OUTPUT_HANDLE);
+            var _hStdOut = Win32.GetStdHandle(Win32.STD_OUTPUT_HANDLE);
             if (_hStdErr == Win32.INVALID_HANDLE_VALUE)
             {
                 Trace.WriteLine(
@@ -41,7 +47,7 @@ namespace ITGlobal.CommandLine.Impl
                 throw new Win32Exception();
             }
 
-            var hConsoleBuffer = Win32.CreateFile(
+            _hConsoleBuffer = Win32.CreateFile(
                 lpFileName: "CONOUT$",
                 dwDesiredAccess: Win32.FileAccess.GenericRead|Win32.FileAccess.GenericWrite,
                 dwShareMode: Win32.FileShare.Write,
@@ -50,13 +56,13 @@ namespace ITGlobal.CommandLine.Impl
                 dwFlagsAndAttributes: 0,
                 hTemplateFile: IntPtr.Zero
             );
-            if (hConsoleBuffer == Win32.INVALID_HANDLE_VALUE)
+            if (_hConsoleBuffer == Win32.INVALID_HANDLE_VALUE)
             {
                 Trace.WriteLine(
                     string.Format(
                         "CreateFile(\"{0}\", ...) -> {1}, 0x{2:X08}",
                         "CONOUT$",
-                        hConsoleBuffer.ToInt32(),
+                        _hConsoleBuffer.ToInt32(),
                         Marshal.GetLastWin32Error()
                     )
                 );
@@ -64,12 +70,17 @@ namespace ITGlobal.CommandLine.Impl
                 throw new Win32Exception();
             }
 
+            var stderr = new WindowsTerminalWriter(_hStdErr, _hConsoleBuffer);
+            var stdout = new WindowsTerminalWriter(_hStdOut, _hConsoleBuffer);
+
+            _originalStdErr = Console.Error;
+            _originalStdOut = Console.Out;
 
             Console.SetError(new AnsiTextWriter(Console.Error));
             Console.SetOut(new AnsiTextWriter(Console.Out));
 
-            Stderr = new WindowsTerminalWriter(_hStdErr, hConsoleBuffer);
-            Stdout = new WindowsTerminalWriter(hStdOut, hConsoleBuffer);
+            Stderr = stderr;
+            Stdout = stdout;
         }
 
         public ITerminalWriter Stdout { get; }
@@ -186,6 +197,16 @@ namespace ITGlobal.CommandLine.Impl
             var bgAttr = (Win32.Color)((int)bg << 4);
 
             return (short)(fgAttr | bgAttr);
+        }
+
+        public void Dispose()
+        {
+            Console.SetError(_originalStdErr);
+            Console.SetOut(_originalStdOut);
+
+            Win32.CloseHandle(_hConsoleBuffer);
+            Win32.CloseHandle(_hStdOut);
+            Win32.CloseHandle(_hStdErr);
         }
     }
 }

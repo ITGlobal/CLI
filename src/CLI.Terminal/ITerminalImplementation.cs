@@ -1,8 +1,9 @@
+using System;
 using JetBrains.Annotations;
 
 namespace ITGlobal.CommandLine
 {
-    public interface ITerminalImplementation
+    public interface ITerminalImplementation : IDisposable
     {
         [NotNull]
         ITerminalWriter Stdout { get; }

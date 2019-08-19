@@ -1,6 +1,8 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.ConstrainedExecution;
 using System.Runtime.InteropServices;
+using System.Security;
 
 #pragma warning disable 649
 
@@ -253,5 +255,11 @@ namespace ITGlobal.CommandLine.Impl
             COORD dwBufferCoord,
             ref SMALL_RECT lpWriteRegion
         );
+
+        [DllImport("kernel32.dll", SetLastError=true)]
+        [ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)]
+        [SuppressUnmanagedCodeSecurity]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool CloseHandle(IntPtr hObject);
     }
 }

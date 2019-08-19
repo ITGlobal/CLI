@@ -76,15 +76,7 @@ namespace ITGlobal.CommandLine.Impl
 
         protected virtual void WriteImpl(char c, ConsoleColor? fg, ConsoleColor? bg)
         {
-            switch (c)
-            {
-                case '\n':
-                    _writer.WriteLine();
-                    break;
-                default:
-                    _writer.Write(c);
-                    break;
-            }
+            _writer.Write(c);
         }
 
         private void PushColors(ConsoleColor? foreground = null, ConsoleColor? background = null)

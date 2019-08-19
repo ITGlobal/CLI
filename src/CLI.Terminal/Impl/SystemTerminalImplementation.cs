@@ -6,13 +6,15 @@ namespace ITGlobal.CommandLine.Impl
     internal sealed class SystemTerminalImplementation : ITerminalImplementation
     {
         private readonly TextWriter _stderr;
-
+        private readonly TextWriter _stdout;
+        
         public SystemTerminalImplementation()
         {
             Console.SetError(new AnsiTextWriter(Console.Error));
             Console.SetOut(new AnsiTextWriter(Console.Out));
 
             _stderr = Console.Error;
+            _stdout = Console.Out;
 
             Stdout = new SystemTerminalWriter(Console.Out);
             Stderr = new SystemTerminalWriter(Console.Error);
@@ -81,6 +83,12 @@ namespace ITGlobal.CommandLine.Impl
 
             }
             catch (IOException) { }
+        }
+
+        public void Dispose()
+        {
+            Console.SetError(_stderr);
+            Console.SetOut(_stdout);
         }
     }
 }

@@ -66,8 +66,8 @@ namespace ITGlobal.CommandLine.Parsing
         {
             if (!string.IsNullOrEmpty(usage.Logo))
             {
-                Console.Error.WriteLine(usage.Logo.Cyan());
-                Console.Error.WriteLine();
+                Console.Out.WriteLine(usage.Logo.Cyan());
+                Console.Out.WriteLine();
             }
 
             var hasOptions = usage.Arguments.Count(_ => !_.IsHidden) > 0;
@@ -76,43 +76,43 @@ namespace ITGlobal.CommandLine.Parsing
 
             if (!string.IsNullOrEmpty(usage.HelpText))
             {
-                Console.Error.WriteLine(usage.HelpText.White());
-                Console.Error.WriteLine();
+                Console.Out.WriteLine(usage.HelpText.White());
+                Console.Out.WriteLine();
             }
 
-            Console.Error.WriteLine("USAGE".White());
-            Console.Error.Write("   ");
-            Console.Error.Write(usage.ExecutableName.Yellow());
+            Console.Out.WriteLine("USAGE".White());
+            Console.Out.Write("   ");
+            Console.Out.Write(usage.ExecutableName.Yellow());
             if (hasOptions || hasSwitches)
             {
-                Console.Error.Write(" [OPTIONS]".White());
+                Console.Out.Write(" [OPTIONS]".White());
             }
 
             foreach (var argument in usage.Arguments.Where(_ => !_.IsHidden).OrderBy(_ => _.Position))
             {
-                Console.Error.Write(" ");
+                Console.Out.Write(" ");
                 if (!argument.IsRequired)
                 {
-                    Console.Error.Write("[".White());
-                    Console.Error.Write(argument.Name.ToUpperInvariant().White());
+                    Console.Out.Write("[".White());
+                    Console.Out.Write(argument.Name.ToUpperInvariant().White());
                 }
                 else
                 {
-                    Console.Error.Write(argument.Name.ToUpperInvariant().Yellow());
+                    Console.Out.Write(argument.Name.ToUpperInvariant().Yellow());
                 }
 
                 if (argument.IsRepeatable)
                 {
-                    Console.Error.Write("...".White());
+                    Console.Out.Write("...".White());
                 }
 
                 if (!argument.IsRequired)
                 {
-                    Console.Error.Write("]".White());
+                    Console.Out.Write("]".White());
                 }
             }
-            Console.Error.WriteLine();
-            Console.Error.WriteLine();
+            Console.Out.WriteLine();
+            Console.Out.WriteLine();
 
             var tableRenderer = TableRenderer.Plain(PlainTableStyle.Create(drawHeaders: false));
 
@@ -123,12 +123,12 @@ namespace ITGlobal.CommandLine.Parsing
                     .OrderBy(_ => _.DisplayOrder)
                     .ThenBy(_ => _.Key);
 
-                Console.Error.WriteLine("OPTIONS".White());
+                Console.Out.WriteLine("OPTIONS".White());
                 var table = TerminalTable.Create(options, renderer: tableRenderer);
                 table.Column("", _ => "  ");
                 table.Column("", _ => _.Name);
                 table.Column("", _ => _.Description.White());
-                table.Draw();
+                table.Draw(Console.Out);
             }
 
             if (hasArguments)
@@ -138,12 +138,12 @@ namespace ITGlobal.CommandLine.Parsing
                     .OrderBy(_ => _.DisplayOrder)
                     .ThenBy(_ => _.Key);
 
-                Console.Error.WriteLine("ARGUMENTS".White());
+                Console.Out.WriteLine("ARGUMENTS".White());
                 var table = TerminalTable.Create(arguments, renderer: tableRenderer);
                 table.Column("", _ => "  ");
                 table.Column("", _ => _.Name.Yellow());
                 table.Column("", _ => _.Description.White());
-                table.Draw();
+                table.Draw(Console.Out);
             }
         }
     }
