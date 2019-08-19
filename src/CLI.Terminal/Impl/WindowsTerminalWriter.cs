@@ -1,5 +1,7 @@
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace ITGlobal.CommandLine.Impl
 {
@@ -18,6 +20,13 @@ namespace ITGlobal.CommandLine.Impl
         {
             if (!Win32.GetConsoleScreenBufferInfo(_hConsole, out var bufferInfo))
             {
+                Trace.WriteLine(
+                    string.Format(
+                        "GetConsoleScreenBufferInfo(h: 0x{0:X08}) -> 0x{1:X08}",
+                        _hConsole.ToInt32(),
+                        Marshal.GetLastWin32Error()
+                    )
+                );
                 throw new Win32Exception();
             }
 
@@ -30,6 +39,15 @@ namespace ITGlobal.CommandLine.Impl
                 };
                 if (!Win32.SetConsoleCursorPosition(_hConsole, cursor))
                 {
+                    Trace.WriteLine(
+                        string.Format(
+                            "SetConsoleCursorPosition(h: 0x{0:X08}, {{ X: {1}, Y: {2} }}) -> 0x{3:X08}",
+                            _hConsole.ToInt32(),
+                            cursor.X,
+                            cursor.Y,
+                            Marshal.GetLastWin32Error()
+                        )
+                    );
                     throw new Win32Exception();
                 }
                 return;
@@ -66,6 +84,16 @@ namespace ITGlobal.CommandLine.Impl
             };
             if (!Win32.WriteConsoleOutput(_hConsoleBuffer, chars, dwBufferSize, dwBufferCoord, ref lpWriteRegion))
             {
+                Trace.WriteLine(
+                    string.Format(
+                        "WriteConsoleOutput(h: 0x{0:X08}, [{1}], {{ X: {2}, Y: {3} }}, ...) -> 0x{4:X08}",
+                        _hConsoleBuffer.ToInt32(),                        
+                        chars.Length,
+                        dwBufferSize.X,
+                        dwBufferSize.Y,
+                        Marshal.GetLastWin32Error()
+                    )
+                );
                 throw new Win32Exception();
             }
 
@@ -76,6 +104,15 @@ namespace ITGlobal.CommandLine.Impl
             };
             if (!Win32.SetConsoleCursorPosition(_hConsole, dwCoord))
             {
+                Trace.WriteLine(
+                    string.Format(
+                        "SetConsoleCursorPosition(h: 0x{0:X08}, {{ X: {1}, Y: {2} }}) -> 0x{3:X08}",
+                        _hConsole.ToInt32(),
+                        dwCoord.X,
+                        dwCoord.Y,
+                        Marshal.GetLastWin32Error()
+                    )
+                );
                 throw new Win32Exception();
             }
         }

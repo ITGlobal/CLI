@@ -1,6 +1,9 @@
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
+using System.Runtime.InteropServices;
+using System.Security.Cryptography.X509Certificates;
 
 namespace ITGlobal.CommandLine.Impl
 {
@@ -13,12 +16,30 @@ namespace ITGlobal.CommandLine.Impl
             _hStdErr = Win32.GetStdHandle(Win32.STD_ERROR_HANDLE);
             if (_hStdErr == Win32.INVALID_HANDLE_VALUE)
             {
+                Trace.WriteLine(
+                    string.Format(
+                        "GetStdHandle({0}) -> {1}, 0x{2:X08}",
+                        Win32.STD_ERROR_HANDLE,
+                        _hStdErr.ToInt32(),
+                        Marshal.GetLastWin32Error()
+                    )
+                );
+
                 throw new Win32Exception();
             }
 
             var hStdOut = Win32.GetStdHandle(Win32.STD_OUTPUT_HANDLE);
             if (_hStdErr == Win32.INVALID_HANDLE_VALUE)
             {
+                Trace.WriteLine(
+                    string.Format(
+                        "GetStdHandle({0}) -> {1}, 0x{2:X08}",
+                        Win32.STD_OUTPUT_HANDLE,
+                        _hStdErr.ToInt32(),
+                        Marshal.GetLastWin32Error()
+                    )
+                );
+
                 throw new Win32Exception();
             }
 
@@ -33,6 +54,15 @@ namespace ITGlobal.CommandLine.Impl
             );
             if (hConsoleBuffer.IsInvalid)
             {
+                Trace.WriteLine(
+                    string.Format(
+                        "CreateFile(\"{0}\", ...) -> {1}, 0x{2:X08}",
+                        "CONOUT$",
+                        hConsoleBuffer.DangerousGetHandle().ToInt32(),
+                        Marshal.GetLastWin32Error()
+                    )
+                );
+
                 throw new Win32Exception();
             }
 
@@ -56,6 +86,14 @@ namespace ITGlobal.CommandLine.Impl
             {
                 if (!Win32.GetConsoleScreenBufferInfo(_hStdErr, out var bufferInfo))
                 {
+                    Trace.WriteLine(
+                        string.Format(
+                            "GetConsoleScreenBufferInfo(0x{0:X08}) -> 0x{1:X08}",
+                            _hStdErr.ToInt32(),
+                            Marshal.GetLastWin32Error()
+                        )
+                    );
+
                     throw new Win32Exception();
                 }
 
@@ -74,6 +112,14 @@ namespace ITGlobal.CommandLine.Impl
         {
             if (!Win32.GetConsoleScreenBufferInfo(_hStdErr, out var bufferInfo))
             {
+                Trace.WriteLine(
+                    string.Format(
+                        "GetConsoleScreenBufferInfo(0x{0:X08}) -> 0x{1:X08}",
+                        _hStdErr.ToInt32(),
+                        Marshal.GetLastWin32Error()
+                    )
+                );
+
                 throw new Win32Exception();
             }
 
@@ -87,16 +133,49 @@ namespace ITGlobal.CommandLine.Impl
 
             if (!Win32.FillConsoleOutputAttribute(_hStdErr, 0, (uint)width, coord, out _))
             {
+                Trace.WriteLine(
+                    string.Format(
+                        "FillConsoleOutputAttribute(0x{0:X08}, {1}, {2}, {{ X: {3}, Y: {4} }}) -> 0x{5:X08}",
+                        _hStdErr.ToInt32(),
+                        0,
+                        (uint)width, 
+                        coord.X,
+                        coord.Y,
+                        Marshal.GetLastWin32Error()
+                    )
+                );
+
                 throw new Win32Exception();
             }
 
             if (!Win32.FillConsoleOutputCharacter(_hStdErr, ' ', (uint)width, coord, out _))
             {
+                Trace.WriteLine(
+                    string.Format(
+                        "FillConsoleOutputCharacter(0x{0:X08}, \"{1}\", {2}, {{ X: {3}, Y: {4} }}) -> 0x{5:X08}",
+                        _hStdErr.ToInt32(),
+                        ' ',
+                        (uint)width, 
+                        coord.X,
+                        coord.Y,
+                        Marshal.GetLastWin32Error()
+                    )
+                );
                 throw new Win32Exception();
             }
 
             if (!Win32.SetConsoleCursorPosition(_hStdErr, coord))
             {
+                Trace.WriteLine(
+                    string.Format(
+                        "SetConsoleCursorPosition(0x{0:X08}, {{ X: {1}, Y: {2} }}) -> 0x{3:X08}",
+                        _hStdErr.ToInt32(),
+                        coord.X,
+                        coord.Y,
+                        Marshal.GetLastWin32Error()
+                    )
+                );
+
                 throw new Win32Exception();
             }
 
