@@ -51,7 +51,7 @@ namespace ITGlobal.CommandLine
                 catch (Exception e)
                 {
                     _defaultImplementation = new SystemTerminalImplementation();
-                    _windowWidth = _implementation.WindowWidth;
+                    _windowWidth = _defaultImplementation.WindowWidth;
 
                     Debug.WriteLine($"CLI: unable to initialize terminal driver: {e}");
                     Debug.WriteLine($"CLI: falling back to {_defaultImplementation.DriverName}");
