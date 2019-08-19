@@ -23,7 +23,18 @@ namespace ITGlobal.CommandLine.Impl
         public ITerminalWriter Stderr { get; }
         public string DriverName => "SystemConsole";
 
-        public int WindowWidth => Console.WindowWidth - 1;
+        public int WindowWidth
+        {
+            get
+            {
+                var width = Console.WindowWidth;
+                if (width <= 0)
+                {
+                    width = Terminal.DefaultWindowWidth;
+                }
+                return width;
+            }
+        }
 
         public void MoveToLine(int offset)
         {

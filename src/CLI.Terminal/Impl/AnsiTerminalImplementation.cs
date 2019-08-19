@@ -25,7 +25,7 @@ namespace ITGlobal.CommandLine.Impl
         {
             get
             {
-                var width = Console.BufferWidth;
+                var width = Console.WindowWidth;
                 if (width <= 0)
                 {
                     width = Terminal.DefaultWindowWidth;

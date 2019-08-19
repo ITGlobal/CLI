@@ -45,15 +45,19 @@ namespace ITGlobal.CommandLine
                     {
                         _defaultImplementation = new AnsiTerminalImplementation();
                     }
+
+                    _windowWidth = _implementation.WindowWidth;
                 }
                 catch (Exception e)
                 {
-                    Debug.WriteLine($"CLI: unable to initialize terminal driver: {e}");
                     _defaultImplementation = new SystemTerminalImplementation();
+                    _windowWidth = _implementation.WindowWidth;
+
+                    Debug.WriteLine($"CLI: unable to initialize terminal driver: {e}");
+                    Debug.WriteLine($"CLI: falling back to {_defaultImplementation.DriverName}");
                 }
 
                 _implementation = _defaultImplementation;
-                _windowWidth = _implementation.WindowWidth;
                 _isInitialized = true;
             }
         }
