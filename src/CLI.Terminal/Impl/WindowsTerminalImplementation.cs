@@ -32,7 +32,7 @@ namespace ITGlobal.CommandLine.Impl
                 throw new Win32Exception();
             }
 
-            var _hStdOut = Win32.GetStdHandle(Win32.STD_OUTPUT_HANDLE);
+            _hStdOut = Win32.GetStdHandle(Win32.STD_OUTPUT_HANDLE);
             if (_hStdErr == Win32.INVALID_HANDLE_VALUE)
             {
                 Trace.WriteLine(
@@ -49,7 +49,7 @@ namespace ITGlobal.CommandLine.Impl
 
             _hConsoleBuffer = Win32.CreateFile(
                 lpFileName: "CONOUT$",
-                dwDesiredAccess: Win32.FileAccess.GenericRead|Win32.FileAccess.GenericWrite,
+                dwDesiredAccess: Win32.FileAccess.GenericRead | Win32.FileAccess.GenericWrite,
                 dwShareMode: Win32.FileShare.Write,
                 lpSecurityAttributes: IntPtr.Zero,
                 dwCreationDisposition: Win32.CreationDisposition.OpenAlways,
@@ -205,8 +205,6 @@ namespace ITGlobal.CommandLine.Impl
             Console.SetOut(_originalStdOut);
 
             Win32.CloseHandle(_hConsoleBuffer);
-            Win32.CloseHandle(_hStdOut);
-            Win32.CloseHandle(_hStdErr);
         }
     }
 }
