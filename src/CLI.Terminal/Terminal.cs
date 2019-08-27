@@ -46,7 +46,7 @@ namespace ITGlobal.CommandLine
                         _defaultImplementation = new AnsiTerminalImplementation();
                     }
 
-                    _windowWidth = _implementation.WindowWidth;
+                    _windowWidth = _defaultImplementation.WindowWidth;
                 }
                 catch (Exception e)
                 {
