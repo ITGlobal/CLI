@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using ITGlobal.CommandLine.Impl;
 using ITGlobal.CommandLine.Table.Rendering;
 
 namespace ITGlobal.CommandLine.Table.Impl
@@ -17,7 +18,13 @@ namespace ITGlobal.CommandLine.Table.Impl
             var layout = Layout(model, columnWidths, maxViewWidth);
 
             // Render table
-            Render(layout, output);
+            var token = (Terminal.GetImplementation() as WindowsTerminalImplementation)?.DisableWrapAtEolOutput();
+            using (token)
+            {
+                // NOTE: Will disable ENABLE_WRAP_AT_EOL_OUTPUT even when not printing to console
+                // NOTE: This is for simplicity, otherwise we may miss some corner cases like printing to locked terminal
+                Render(layout, output);
+            }
         }
 
         protected abstract int CalcTotalTableWidth(int[] columnWidths);

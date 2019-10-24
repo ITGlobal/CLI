@@ -8,6 +8,20 @@ namespace ITGlobal.CommandLine.Impl
 {
     internal sealed class WindowsTerminalImplementation : ITerminalImplementation
     {
+        private sealed class RestoreWrapAtEolOutputToken : IDisposable
+        {
+            private readonly IntPtr _hConsoleBuffer;
+            private readonly uint _lpMode;
+
+            public RestoreWrapAtEolOutputToken(IntPtr hConsoleBuffer, uint lpMode)
+            {
+                _hConsoleBuffer = hConsoleBuffer;
+                _lpMode = lpMode;
+            }
+
+            public void Dispose() => SetConsoleMode(_hConsoleBuffer, _lpMode);
+        }
+
         private readonly IntPtr _hStdErr;
         private readonly IntPtr _hStdOut;
         private readonly IntPtr _hConsoleBuffer;
@@ -206,25 +220,51 @@ namespace ITGlobal.CommandLine.Impl
             Win32.CloseHandle(_hConsoleBuffer);
         }
 
+        public IDisposable DisableWrapAtEolOutput()
+        {
+            if (!TryGetConsoleMode(_hConsoleBuffer, out var originalMode))
+            {
+                return null;
+            }
+            
+            // Disable auto line wraps. Tables won't be able to print properly otherwise.
+            var newMode = originalMode & ~(uint) Win32.ConsoleOutputModes.ENABLE_WRAP_AT_EOL_OUTPUT;
+            SetConsoleMode(_hConsoleBuffer, newMode);
+
+            return new RestoreWrapAtEolOutputToken(_hConsoleBuffer, newMode);
+        }
+
         private static void TryConfigureConsole(IntPtr hConsole)
         {
-            if (!Win32.GetConsoleMode(hConsole, out var lpMode))
+            if (!TryGetConsoleMode(hConsole, out var lpMode))
+            {
+                return;
+            }
+
+            // Disable ANSI sequences support (if present). We handle ANSI outselves
+            lpMode &= ~(uint)Win32.ConsoleOutputModes.ENABLE_VIRTUAL_TERMINAL_PROCESSING;
+
+            SetConsoleMode(hConsole, lpMode);
+        }
+
+        private static bool TryGetConsoleMode(IntPtr hConsole, out uint lpMode)
+        {
+            if (!Win32.GetConsoleMode(hConsole, out lpMode))
             {
                 Trace.WriteLine(
                     $"GetConsoleMode(0x{hConsole.ToInt32():X08}) -> ERROR 0x{Marshal.GetLastWin32Error():X08}"
                 );
-                return;
+                return false;
             }
 
             Trace.WriteLine(
                 $"GetConsoleMode(0x{hConsole.ToInt32():X08}) -> 0x{lpMode:X08}"
             );
+            return true;
+        }
 
-            // Disable ANSI sequences support (if present). We handle ANSI outselves
-            lpMode &= ~(uint)Win32.ConsoleOutputModes.ENABLE_VIRTUAL_TERMINAL_PROCESSING;
-            // Disable auto line wraps. Tables won't be able to print properly otherwise.
-            lpMode &= ~(uint)Win32.ConsoleOutputModes.ENABLE_WRAP_AT_EOL_OUTPUT;
-
+        private static void SetConsoleMode(IntPtr hConsole, uint lpMode)
+        {
             if (!Win32.SetConsoleMode(hConsole, lpMode))
             {
                 Trace.WriteLine(
