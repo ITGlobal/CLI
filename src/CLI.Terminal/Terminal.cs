@@ -212,5 +212,13 @@ namespace ITGlobal.CommandLine
                 _implementation = implementation ?? _defaultImplementation;
             }
         }
+
+        /// <summary>
+        ///     Disable terminal colors
+        /// </summary>
+        public static void DisableColors()
+        {
+            UseImplementation(new NoColorTerminalImplementation(GetImplementation()));
+        }
     }
 }

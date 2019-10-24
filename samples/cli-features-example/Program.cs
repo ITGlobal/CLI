@@ -13,6 +13,8 @@ namespace ITGlobal.CommandLine.Example
                 var app = CliParser.NewTreeParser(executableName: "cli-features-example");
                 app.HelpText("Demo application for IT Global CLI");
 
+                var noColor = app.Switch("no-color").HelpText("Disable colors");
+
                 // colors
                 {
                     var cmd = app.Command("colors");
@@ -48,7 +50,7 @@ namespace ITGlobal.CommandLine.Example
                 {
                     var liveCmd = app.Command("live")
                         .HelpText("Run a 'live' demo");
-                    
+
                     {
                         var cmd = liveCmd.Command("progress");
                         cmd.HelpText("Run a 'progress' demo");
@@ -60,7 +62,7 @@ namespace ITGlobal.CommandLine.Example
                         cmd.OnExecute(_ => { ProgressBarDemo.Run(type, wipe); });
                     }
 
-                    
+
                     {
                         var cmd = liveCmd.Command("progress-complex");
                         cmd.HelpText("Run a 'progress-complex' demo");
@@ -80,13 +82,13 @@ namespace ITGlobal.CommandLine.Example
                             .DefaultValue(SpinnerDemo.Type.RotatingBar);
                         cmd.OnExecute(_ => { SpinnerDemo.Run(type); });
                     }
-                    
+
                     {
                         var cmd = liveCmd.Command("print");
                         cmd.HelpText("Run a 'live print' demo");
                         cmd.OnExecute(_ => { LiveOutputDemo.Run(); });
                     }
-                    
+
                     {
                         var cmd = liveCmd.Command("print-complex");
                         cmd.HelpText("Run a 'live print-complex' demo");
@@ -96,6 +98,14 @@ namespace ITGlobal.CommandLine.Example
 
                 // sample *
                 SamplesCommand.Setup(app);
+
+                app.BeforeExecute(_ =>
+                {
+                    if (noColor)
+                    {
+                        Terminal.DisableColors();
+                    }
+                });
 
                 return app.Parse(args).Run();
             });
