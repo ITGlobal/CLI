@@ -26,7 +26,11 @@ namespace ITGlobal.CommandLine.Impl
 
         private readonly List<ColoredString> _results = new List<ColoredString>();
         private readonly StringBuilder _sb = new StringBuilder();
-        
+
+        private static readonly ColoredString[] Empty = new[] {(ColoredString) ""};
+        private static readonly ColoredString[] LF = new[] {(ColoredString) "\n"};
+        private static readonly ColoredString[] CR = new[] {(ColoredString) "\r"};
+
         public AnsiSplitter()
         {
             _decoder = new AnsiSequenceDecoder(this);
@@ -34,6 +38,16 @@ namespace ITGlobal.CommandLine.Impl
 
         public IList<ColoredString> Split(ColoredString input)
         {
+            switch (input.Text)
+            {
+                case "\n":
+                    return LF;
+                case "\r":
+                    return CR;
+                case "":
+                    return Empty;
+            }
+
             _results.Clear();
             _sb.Clear();
 
@@ -75,7 +89,7 @@ namespace ITGlobal.CommandLine.Impl
 
         void IAnsiCommandHandler.Write(char c)
         {
-            if (c == '\n')
+            if (c == '\n' || c == '\r')
             {
                 TryEmitResult();
             }

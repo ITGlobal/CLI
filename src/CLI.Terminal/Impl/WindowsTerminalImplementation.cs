@@ -84,8 +84,6 @@ namespace ITGlobal.CommandLine.Impl
                 throw new Win32Exception();
             }
 
-            TryConfigureConsole(_hConsoleBuffer);
-
             var stderr = new WindowsTerminalWriter(_hStdErr, _hConsoleBuffer);
             var stdout = new WindowsTerminalWriter(_hStdOut, _hConsoleBuffer);
 
@@ -232,19 +230,6 @@ namespace ITGlobal.CommandLine.Impl
             SetConsoleMode(_hConsoleBuffer, newMode);
 
             return new RestoreWrapAtEolOutputToken(_hConsoleBuffer, newMode);
-        }
-
-        private static void TryConfigureConsole(IntPtr hConsole)
-        {
-            if (!TryGetConsoleMode(hConsole, out var lpMode))
-            {
-                return;
-            }
-
-            // Disable ANSI sequences support (if present). We handle ANSI outselves
-            lpMode &= ~(uint)Win32.ConsoleOutputModes.ENABLE_VIRTUAL_TERMINAL_PROCESSING;
-
-            SetConsoleMode(hConsole, lpMode);
         }
 
         private static bool TryGetConsoleMode(IntPtr hConsole, out uint lpMode)
