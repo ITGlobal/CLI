@@ -21,6 +21,7 @@ namespace ITGlobal.CommandLine.Impl
             if (_isEscSequence)
             {
                 ProcessAnsi(c);
+                _prevChar = c;
                 return;
             }
 
@@ -32,6 +33,12 @@ namespace ITGlobal.CommandLine.Impl
 
             _handler.Write(c);
             _prevChar = c;
+        }
+
+        public void Reset()
+        {
+            _isEscSequence = false;
+            _prevChar = default;
         }
 
         private void ProcessAnsi(char c)

@@ -407,6 +407,37 @@ namespace ITGlobal.CommandLine
             );
         }
 
+
+        [Fact]
+        public void Reset_test()
+        {
+            var handler = new AnsiCommandHandler(_output);
+
+            var decoder = new AnsiSequenceDecoder(handler);
+            var inputs = new[] { "\\", "\u001b[93mX\u001b[96mY\u001b[0mZ\u001b[0m" };
+            foreach (var input in inputs)
+            {
+                decoder.Reset();
+                foreach (var c in input)
+                {
+                    decoder.Process(c);
+                }
+            }
+
+            handler.Verify(new[]
+                {
+                    AnsiCommand.Write('\\'),
+                    AnsiCommand.SetForegroundColor(ConsoleColor.Yellow),
+                    AnsiCommand.Write('X'),
+                    AnsiCommand.SetForegroundColor(ConsoleColor.Cyan),
+                    AnsiCommand.Write('Y'),
+                    AnsiCommand.ResetColors(),
+                    AnsiCommand.Write('Z'),
+                    AnsiCommand.ResetColors(),
+                }
+            );
+        }
+
         private AnsiCommandHandler Run(params string[] input)
         {
             var handler = new AnsiCommandHandler(_output);

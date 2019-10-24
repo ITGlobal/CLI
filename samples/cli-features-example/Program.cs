@@ -20,6 +20,13 @@ namespace ITGlobal.CommandLine.Example
                     cmd.OnExecute(_ => { ConsoleColorsDemo.Run(); });
                 }
 
+                // nested-colors
+                {
+                    var cmd = app.Command("nested-colors");
+                    cmd.HelpText("Run a 'nested-colors' demo");
+                    cmd.OnExecute(_ => { ConsoleNestedColorsDemo.Run(); });
+                }
+
                 // table *
                 {
                     var tableCmd = app.Command("table")

@@ -32,6 +32,10 @@
       "commandName": "Project",
       "commandLineArgs": "colors"
     },
+    "nested-colors": {
+      "commandName": "Project",
+      "commandLineArgs": "nested-colors"
+    },
     "help": {
       "commandName": "Project",
       "commandLineArgs": "--help"

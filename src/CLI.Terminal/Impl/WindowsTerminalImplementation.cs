@@ -70,6 +70,8 @@ namespace ITGlobal.CommandLine.Impl
                 throw new Win32Exception();
             }
 
+            TryConfigureConsole(_hConsoleBuffer);
+
             var stderr = new WindowsTerminalWriter(_hStdErr, _hConsoleBuffer);
             var stdout = new WindowsTerminalWriter(_hStdOut, _hConsoleBuffer);
 
@@ -96,17 +98,14 @@ namespace ITGlobal.CommandLine.Impl
                 if (!Win32.GetConsoleScreenBufferInfo(_hStdErr, out var bufferInfo))
                 {
                     Trace.WriteLine(
-                        string.Format(
-                            "GetConsoleScreenBufferInfo(0x{0:X08}) -> 0x{1:X08}",
-                            _hStdErr.ToInt32(),
-                            Marshal.GetLastWin32Error()
-                        )
+                        $"GetConsoleScreenBufferInfo(0x{_hStdErr.ToInt32():X08}) -> 0x{Marshal.GetLastWin32Error():X08}"
                     );
 
                     throw new Win32Exception();
                 }
 
-                return bufferInfo.dwSize.X;
+                var width = bufferInfo.srWindow.Right - bufferInfo.srWindow.Left + 1;
+                return width;
             }
         }
 
@@ -205,6 +204,38 @@ namespace ITGlobal.CommandLine.Impl
             Console.SetOut(_originalStdOut);
 
             Win32.CloseHandle(_hConsoleBuffer);
+        }
+
+        private static void TryConfigureConsole(IntPtr hConsole)
+        {
+            if (!Win32.GetConsoleMode(hConsole, out var lpMode))
+            {
+                Trace.WriteLine(
+                    $"GetConsoleMode(0x{hConsole.ToInt32():X08}) -> ERROR 0x{Marshal.GetLastWin32Error():X08}"
+                );
+                return;
+            }
+
+            Trace.WriteLine(
+                $"GetConsoleMode(0x{hConsole.ToInt32():X08}) -> 0x{lpMode:X08}"
+            );
+
+            // Disable ANSI sequences support (if present). We handle ANSI outselves
+            lpMode &= ~(uint)Win32.ConsoleOutputModes.ENABLE_VIRTUAL_TERMINAL_PROCESSING;
+            // Disable auto line wraps. Tables won't be able to print properly otherwise.
+            lpMode &= ~(uint)Win32.ConsoleOutputModes.ENABLE_WRAP_AT_EOL_OUTPUT;
+
+            if (!Win32.SetConsoleMode(hConsole, lpMode))
+            {
+                Trace.WriteLine(
+                    $"SetConsoleMode(0x{hConsole.ToInt32():X08},  0x{lpMode:X08}) -> ERROR 0x{Marshal.GetLastWin32Error():X08}"
+                );
+                return;
+            }
+
+            Trace.WriteLine(
+                $"SetConsoleMode(0x{hConsole.ToInt32():X08},  0x{lpMode:X08}) -> OK"
+            );
         }
     }
 }

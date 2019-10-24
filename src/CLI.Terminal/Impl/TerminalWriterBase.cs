@@ -1,5 +1,6 @@
-#if !NET45
 using System;
+using System.Threading;
+#if !NET45
 using System.Globalization;
 #endif
 
@@ -7,28 +8,18 @@ namespace ITGlobal.CommandLine.Impl
 {
     internal abstract class TerminalWriterBase : ITerminalWriter
     {
+        private readonly ThreadLocal<AnsiSplitter> _ansiSplitter =
+            new ThreadLocal<AnsiSplitter>(() => new AnsiSplitter());
+
         public void Write(ColoredString str)
         {
-            var i = str.Text.IndexOf('\n');
-            if (i > 0)
+            // Split input string into separate colored strings
+            // Each of them is guarantied not to contain any ANSI escape sequences
+            var splitter = _ansiSplitter.Value;
+            var parts = splitter.Split(str);
+            foreach (var s in parts)
             {
-                var s = new ColoredString(
-                    str.Text.Substring(0, i),
-                    str.ForegroundColor,
-                    str.BackgroundColor
-                );
-                var rem = new ColoredString(
-                    str.Text.Substring(i),
-                    str.ForegroundColor,
-                    str.BackgroundColor
-                );
-
                 WriteImpl(s);
-                Write(rem);
-            }
-            else
-            {
-                WriteImpl(str);
             }
         }
 

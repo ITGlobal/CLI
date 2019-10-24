@@ -66,7 +66,7 @@ namespace ITGlobal.CommandLine.Table.Impl
         public void Draw(TextWriter writer, int? maxWidth = null)
         {
             var model = new TableModel(_rows.ToArray());
-            _renderer.Render(model, writer, maxWidth ?? Terminal.WindowWidth - 1 /*todo*/);
+            _renderer.Render(model, writer, maxWidth ?? Terminal.WindowWidth);
         }
         
         private void AddRow(TableRowModel row) => _rows.Add(row);

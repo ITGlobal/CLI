@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using ITGlobal.CommandLine.Impl;
@@ -10,10 +11,11 @@ namespace ITGlobal.CommandLine
     ///     A colored string chunk
     /// </summary>
     [PublicAPI]
+    [DebuggerDisplay("{" + nameof(DebuggerView) + "()}")]
     public readonly partial struct ColoredString : IEquatable<ColoredString>
     {
         [SuppressMessage("ReSharper", "InconsistentNaming")]
-        internal static ColoredString LF { get; } = new ColoredString("\n", null, null);
+        public static ColoredString LF { get; } = new ColoredString("\n");
 
         public ColoredString([NotNull] string text, ConsoleColor? foregroundColor = null, ConsoleColor? backgroundColor = null)
         {
@@ -92,6 +94,16 @@ namespace ITGlobal.CommandLine
             }
 
             return Text;
+        }
+
+        [Pure]
+        private string DebuggerView()
+        {
+            var fgName = ForegroundColor != null ? ForegroundColor.Value.ToString() : "Default";
+            var bgName = BackgroundColor != null ? BackgroundColor.Value.ToString() : "Default";
+
+            var str = $"\"{Text}\" ({fgName} on {bgName})";
+            return str;
         }
 
         public bool Equals(ColoredString other)
