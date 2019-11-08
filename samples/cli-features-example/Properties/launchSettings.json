@@ -59,6 +59,10 @@
     "sample info": {
       "commandName": "Project",
       "commandLineArgs": "sample info"
+    },
+    "nested-help-output": {
+      "commandName": "Project",
+      "commandLineArgs": "nested-help-output"
     }
   }
 }

@@ -96,6 +96,13 @@ namespace ITGlobal.CommandLine.Example
                     }
                 }
 
+                // nested-help-output
+                {
+                    var cmd = app.Command("nested-help-output");
+                    cmd.HelpText("Run a 'nested-help-output' demo");
+                    cmd.OnExecute(_ => { NestedHelpOutputDemo.Run(); });
+                }
+
                 // sample *
                 SamplesCommand.Setup(app);
 

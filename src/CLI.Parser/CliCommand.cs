@@ -607,15 +607,26 @@ namespace ITGlobal.CommandLine.Parsing
         internal void BuildUsage(ICliCommandUsageBuilder parentBuilder)
         {
             var builder = parentBuilder.AddCommand(_names.ToArray(), _helpText, _hidden, _displayOrder);
+            
+            foreach (var command in _commands)
+            {
+                command.BuildUsage(builder);
+            }
+            
+            BuildUsageImpl(builder);
+        }
 
+        private void BuildUsageImpl(CliCommandUsageBuilder builder)
+        {
             foreach (var consumer in _consumers)
             {
                 consumer.BuildUsage(builder);
             }
 
-            foreach (var command in _commands)
+            var parent = Parent;
+            if (parent != null)
             {
-                command.BuildUsage(builder);
+                parent.BuildUsageImpl(builder);
             }
         }
 
