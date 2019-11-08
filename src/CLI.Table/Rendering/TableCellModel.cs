@@ -18,7 +18,6 @@ namespace ITGlobal.CommandLine.Table.Rendering
         {
             Content = content;
             Alignment = alignment;
-            MaxWidth = content.Length > 0 ? content.Max(_ => _.Length) : 0;
         }
 
         /// <summary>
@@ -35,7 +34,7 @@ namespace ITGlobal.CommandLine.Table.Rendering
         /// <summary>
         ///     Max cell line width
         /// </summary>
-        public int MaxWidth { get; }
+        public int MaxWidth =>Content.Length > 0 ? Content.Max(_ => _.Length) : 0;
 
         internal string DebuggerView =>
             $"Align = [{Alignment}], MaxWidth = {MaxWidth}, Text = {string.Join("\n", Content.Select(_ => _.Text))}";
