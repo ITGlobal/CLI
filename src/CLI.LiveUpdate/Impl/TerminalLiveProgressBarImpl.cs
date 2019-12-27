@@ -6,11 +6,7 @@ namespace ITGlobal.CommandLine.Impl
         private readonly IProgressBarRenderer _renderer;
 
         private readonly object _textLock = new object();
-#if !NET45
-        private ColoredString[] _text = System.Array.Empty<ColoredString>();
-#else
-        private ColoredString[] _text = new ColoredString[0];
-#endif
+        private AnsiString _text = AnsiString.Empty;
         private int _value;
         private bool _needsRedraw = true;
         private bool _isCompleted;
@@ -27,17 +23,19 @@ namespace ITGlobal.CommandLine.Impl
             _wipeAfter = enable;
         }
 
-        public void Write(params ColoredString[] strs) => Write(null, strs);
+        public void Write(params AnsiString[] strs) => Write(null, strs);
 
-        public void Write(int? value, ColoredString[] strs)
+        public void Write(int? value, AnsiString[] strs)
         {
             lock (_textLock)
             {
-                if (!ColoredStringHelper.AreEqual(_text, strs) ||
+                var s = strs != null ? AnsiString.Concat(strs) : _text;
+
+                if (s != _text ||
                     _value != (value ?? _value) ||
                     _isCompleted)
                 {
-                    _text = strs ?? _text;
+                    _text = s;
                     _value = value ?? _value;
                     _isCompleted = false;
                     _needsRedraw = true;
@@ -51,13 +49,14 @@ namespace ITGlobal.CommandLine.Impl
             _owner.RequestRedraw();
         }
 
-        public void Complete(params ColoredString[] strs)
+        public void Complete(params AnsiString[] strs)
         {
+            var s = AnsiString.Concat(strs);
             lock (_textLock)
             {
-                if (!ColoredStringHelper.AreEqual(_text, strs) || !_isCompleted)
+                if (s != _text || !_isCompleted)
                 {
-                    _text = strs;
+                    _text = s;
                     _isCompleted = true;
                     _needsRedraw = true;
                 }
@@ -126,15 +125,12 @@ namespace ITGlobal.CommandLine.Impl
                 _needsRedraw = false;
             }
         }
-        
+
         private void DrawCompleted(ITerminalLock terminal)
         {
             lock (_textLock)
             {
-                foreach (var s in _text)
-                {
-                    terminal.Stderr.Write(s);
-                }
+                terminal.Stderr.Write(_text);
 
                 _needsRedraw = false;
             }

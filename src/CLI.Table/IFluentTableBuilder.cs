@@ -19,19 +19,19 @@ namespace ITGlobal.CommandLine.Table
         ///     Add a table title
         /// </summary>
         [NotNull]
-        IFluentTableBuilder Title(ColoredString text);
+        IFluentTableBuilder Title(AnsiString text);
 
         /// <summary>
         ///     Add a table headers
         /// </summary>
         [NotNull]
-        IFluentTableBuilder Headers([NotNull] params ColoredString[] headers);
+        IFluentTableBuilder Headers([NotNull] params AnsiString[] headers);
 
         /// <summary>
         ///     Add a table row
         /// </summary>
         [NotNull]
-        IFluentTableBuilder Add([NotNull] params ColoredString[] headers);
+        IFluentTableBuilder Add([NotNull] params AnsiString[] headers);
 
 
         /// <summary>
@@ -49,6 +49,6 @@ namespace ITGlobal.CommandLine.Table
         ///     Add a table footer
         /// </summary>
         [NotNull]
-        IFluentTableBuilder Footer(ColoredString text);
+        IFluentTableBuilder Footer(AnsiString text);
     }
 }

@@ -9,12 +9,14 @@ namespace ITGlobal.CommandLine.Table.Impl
             IColoredStringStyle footerColors = null,
             bool drawHeaders = true, 
             bool uppercaseHeaders = true,
-            bool underlineHeaders = false
+            bool underlineHeaders = false,
+            bool underlineTitle = false
         )
         {
             DrawHeaders = drawHeaders;
             UppercaseHeaders = uppercaseHeaders;
             UnderlineHeaders = underlineHeaders;
+            UnderlineTitle = underlineTitle;
             BodyColors = bodyColors ?? ColoredStringStyle.White;
             HeaderColors = headerColors ?? ColoredStringStyle.Gray;
             TitleColors = titleColors ?? ColoredStringStyle.Yellow;
@@ -28,5 +30,6 @@ namespace ITGlobal.CommandLine.Table.Impl
         public bool DrawHeaders { get; }
         public bool UppercaseHeaders { get; }
         public bool UnderlineHeaders { get; }
+        public bool UnderlineTitle { get; }
     }
 }

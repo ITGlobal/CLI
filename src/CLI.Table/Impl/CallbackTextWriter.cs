@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Text;
 
-namespace ITGlobal.CommandLine.Table
+namespace ITGlobal.CommandLine.Table.Impl
 {
     internal sealed class CallbackTextWriter : TextWriter
     {

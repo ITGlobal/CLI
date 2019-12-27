@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using ITGlobal.CommandLine.Impl;
 
@@ -6,7 +6,7 @@ namespace ITGlobal.CommandLine.Parsing.Impl
 {
     internal static class CliHandlerHelper
     {
-#if NET40 || NET45
+#if NET45
         public static void Run(this IEnumerable<CliAsyncHandler> handlers, CliContext ctx)
         {
             foreach (var handler in handlers)
@@ -42,7 +42,7 @@ namespace ITGlobal.CommandLine.Parsing.Impl
             return ctx =>
             {
                 handler(ctx);
-#if NET40 || NET45
+#if NET45
                 return TaskExt.CompletedTask;
 #else
                 return Task.CompletedTask;

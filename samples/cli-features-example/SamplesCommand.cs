@@ -1,5 +1,6 @@
 using System;
 using ITGlobal.CommandLine.Parsing;
+using ITGlobal.CommandLine.Table;
 
 namespace ITGlobal.CommandLine.Example
 {
@@ -56,8 +57,11 @@ namespace ITGlobal.CommandLine.Example
         private static void Info()
         {
             var t = Terminal.GetImplementation();
-            Console.WriteLine($"Driver:      {t.DriverName}");
-            Console.WriteLine($"WindowWidth: {t.WindowWidth}");
+            Console.WriteLine($"Driver:                 {t.DriverName}");
+            Console.WriteLine($"WindowWidth (Driver):   {t.WindowWidth}");
+            Console.WriteLine($"WindowWidth (Terminal): {Terminal.WindowWidth}");
+            Console.WriteLine($"DefaultForegroundColor: {Terminal.DefaultForegroundColor}");
+            Console.WriteLine($"DefaultBackgroundColor: {Terminal.DefaultBackgroundColor}");
         }
     }
 }

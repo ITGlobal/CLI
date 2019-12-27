@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using JetBrains.Annotations;
@@ -14,7 +15,7 @@ namespace ITGlobal.CommandLine.Table.Rendering
         /// <summary>
         ///     .ctor
         /// </summary>
-        public TableCellLayout([NotNull] ColoredString[] content, TableCellAlignment alignment, int width)
+        public TableCellLayout([NotNull] AnsiString[] content, TableCellAlignment alignment, int width)
         {
             Content = content;
             Alignment = alignment;
@@ -25,7 +26,7 @@ namespace ITGlobal.CommandLine.Table.Rendering
         ///     Cell lines
         /// </summary>
         [NotNull]
-        public ColoredString[] Content { get; }
+        public IReadOnlyList<AnsiString> Content { get; }
 
         /// <summary>
         ///     Cell line alignment

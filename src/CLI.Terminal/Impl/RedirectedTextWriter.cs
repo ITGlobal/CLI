@@ -1,5 +1,5 @@
 using System;
-using System.IO;
+using System.Text;
 
 namespace ITGlobal.CommandLine.Impl
 {
@@ -7,9 +7,9 @@ namespace ITGlobal.CommandLine.Impl
     {
         private readonly LockedTerminalImplementation _output;
         private readonly StreamType _stream;
-        
-        public RedirectedTextWriter(TextWriter writer, LockedTerminalImplementation output, StreamType stream)
-            : base(writer)
+
+        public RedirectedTextWriter(ITerminalWriter writer, Encoding encoding, LockedTerminalImplementation output, StreamType stream)
+            : base(writer, encoding)
         {
             _output = output;
             _stream = stream;

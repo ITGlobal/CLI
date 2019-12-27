@@ -1,6 +1,5 @@
-using System;
-using System.Threading;
 #if !NET45
+using System;
 using System.Globalization;
 #endif
 
@@ -8,18 +7,17 @@ namespace ITGlobal.CommandLine.Impl
 {
     internal abstract class TerminalWriterBase : ITerminalWriter
     {
-        private readonly ThreadLocal<AnsiSplitter> _ansiSplitter =
-            new ThreadLocal<AnsiSplitter>(() => new AnsiSplitter());
+        private static readonly AnsiString LF = new AnsiString(new[] { new AnsiChar('\n'), });
 
-        public void Write(ColoredString str)
+        public void Write(AnsiString str)
         {
             // Split input string into separate colored strings
             // Each of them is guarantied not to contain any ANSI escape sequences
-            var splitter = _ansiSplitter.Value;
-            var parts = splitter.Split(str);
+            
+            var parts = str.SplitIntoChunks();
             foreach (var s in parts)
             {
-                WriteImpl(s);
+                Write(s);
             }
         }
 
@@ -32,21 +30,21 @@ namespace ITGlobal.CommandLine.Impl
                 switch (token.Type)
                 {
                     case StringFormatParser.TokenType.Plain:
-                        Write((ColoredString)(string)token.Value);
+                        Write((AnsiString)(string)token.Value);
                         break;
 
                     case StringFormatParser.TokenType.Field:
-                        if (token.Value is ColoredString cs)
+                        if (token.Value is AnsiString cs)
                         {
                             Write(cs);
                         }
                         else if (token.Value is IFormattable formattable)
                         {
-                            Write((ColoredString)formattable.ToString(token.Format, CultureInfo.InvariantCulture));
+                            Write((AnsiString)formattable.ToString(token.Format, CultureInfo.InvariantCulture));
                         }
                         else if (token.Value != null)
                         {
-                            Write((ColoredString)token.Value.ToString());
+                            Write((AnsiString)token.Value.ToString());
                         }
                         break;
                 }
@@ -54,7 +52,7 @@ namespace ITGlobal.CommandLine.Impl
         }
 #endif
 
-        public void Write(params ColoredString[] strs)
+        public void Write(params AnsiString[] strs)
         {
             foreach (var str in strs)
             {
@@ -70,13 +68,13 @@ namespace ITGlobal.CommandLine.Impl
         }
 #endif
 
-        public void WriteLine(ColoredString str)
+        public void WriteLine(AnsiString str)
         {
             Write(str);
             WriteLine();
         }
 
-        public void WriteLine(params ColoredString[] strs)
+        public void WriteLine(params AnsiString[] strs)
         {
             foreach (var str in strs)
             {
@@ -88,9 +86,9 @@ namespace ITGlobal.CommandLine.Impl
 
         public void WriteLine()
         {
-            Write(ColoredString.LF);
+            Write(LF);
         }
 
-        protected abstract void WriteImpl(ColoredString str);
+        public abstract void Write(AnsiString.Chunk str);
     }
 }

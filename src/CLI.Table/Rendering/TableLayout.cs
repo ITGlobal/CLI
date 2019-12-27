@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Diagnostics;
 using JetBrains.Annotations;
 
@@ -24,7 +25,7 @@ namespace ITGlobal.CommandLine.Table.Rendering
         ///     Table rows
         /// </summary>
         [NotNull]
-        public TableRowLayout[] Rows { get; }
+        public IReadOnlyList<TableRowLayout> Rows { get; }
 
         /// <summary>
         ///     Total table width
@@ -34,8 +35,8 @@ namespace ITGlobal.CommandLine.Table.Rendering
         /// <summary>
         ///     Colum widths
         /// </summary>
-        public int[] ColumnWidths { get; }
+        public IReadOnlyList<int> ColumnWidths { get; }
 
-        private string DebuggerView => $"Rows = [{Rows.Length}], Width = {Width}";
+        private string DebuggerView => $"Rows = [{Rows.Count}], Width = {Width}";
     }
 }

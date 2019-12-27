@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using JetBrains.Annotations;
@@ -14,7 +15,7 @@ namespace ITGlobal.CommandLine.Table.Rendering
         /// <summary>
         ///     .ctor
         /// </summary>
-        public TableCellModel([NotNull] ColoredString[] content, TableCellAlignment alignment)
+        public TableCellModel([NotNull] AnsiString[] content, TableCellAlignment alignment)
         {
             Content = content;
             Alignment = alignment;
@@ -24,7 +25,7 @@ namespace ITGlobal.CommandLine.Table.Rendering
         ///     Cell lines
         /// </summary>
         [NotNull]
-        public ColoredString[] Content { get; }
+        public IReadOnlyList<AnsiString> Content { get; }
 
         /// <summary>
         ///     Cell line alignment
@@ -34,18 +35,17 @@ namespace ITGlobal.CommandLine.Table.Rendering
         /// <summary>
         ///     Max cell line width
         /// </summary>
-        public int MaxWidth =>Content.Length > 0 ? Content.Max(_ => _.Length) : 0;
+        public int MaxWidth => Content.Count > 0 ? Content.Max(_ => _.Length) : 0;
 
         internal string DebuggerView =>
             $"Align = [{Alignment}], MaxWidth = {MaxWidth}, Text = {string.Join("\n", Content.Select(_ => _.Text))}";
 
-        internal static TableCellModel Create(ColoredString text, TableCellAlignment alignment = TableCellAlignment.Left)
+        internal static TableCellModel Create(AnsiString text, TableCellAlignment alignment = TableCellAlignment.Left)
         {
-            ColoredString[] content;
-            if (text.Text.IndexOf('\n') >= 0)
+            AnsiString[] content;
+            if (text.Chars.Any(_ => _.Char == '\n'))
             {
-                var parts = text.Text.Split('\n');
-                content = parts.Select(str => str.Colored(text.ForegroundColor, text.BackgroundColor)).ToArray();
+                content = text.Split('\n').ToArray();
             }
             else
             {

@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using System.Threading;
@@ -14,6 +15,36 @@ namespace ITGlobal.CommandLine.Impl
         
         private static readonly ThreadLocal<StringBuilder> SbLocal =
             new ThreadLocal<StringBuilder>(() => new StringBuilder());
+
+        public static string SGR(ConsoleColor? foregroundColor, ConsoleColor? backgroundColor)
+        {
+            if (foregroundColor != null && backgroundColor != null)
+            {
+                var sgr = SGR(
+                    ForegroundColorToAttributes(foregroundColor.Value),
+                    BackgroundColorToAttributes(backgroundColor.Value)
+                );
+                return sgr;
+            }
+
+            if (foregroundColor != null)
+            {
+                var sgr = SGR(
+                    ForegroundColorToAttributes(foregroundColor.Value)
+                );
+                return sgr;
+            }
+
+            if (backgroundColor != null)
+            {
+                var sgr = SGR(
+                    BackgroundColorToAttributes(backgroundColor.Value)
+                );
+                return sgr;
+            }
+
+            return string.Empty;
+        }
 
         public static string SGR(AnsiAttributes attribute)
         {

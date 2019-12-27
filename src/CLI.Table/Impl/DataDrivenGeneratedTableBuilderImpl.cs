@@ -10,14 +10,14 @@ namespace ITGlobal.CommandLine.Table.Impl
     {
         private sealed class ColumnGenerator
         {
-            private readonly Func<T, ColoredString> _property;
+            private readonly Func<T, AnsiString> _property;
             private readonly Func<T, IColoredStringStyle> _style;
             private readonly Func<T, TableCellAlignment?> _align;
             private readonly int? _maxWidth;
 
             public ColumnGenerator(
                 string title,
-                Func<T, ColoredString> property,
+                Func<T, AnsiString> property,
                 Func<T, IColoredStringStyle> style,
                 Func<T, TableCellAlignment?> align,
                 int? maxWidth)
@@ -42,7 +42,7 @@ namespace ITGlobal.CommandLine.Table.Impl
                 text = style.Apply(text);
 
                 var alignment = _align(dataItem) ?? defaultAlignmentSelector(dataItem) ?? TableCellAlignment.Left;
-
+                
                 return new TableCellModel(new[] { text }, alignment);
             }
         }
@@ -55,8 +55,8 @@ namespace ITGlobal.CommandLine.Table.Impl
         private Func<T, TableCellAlignment?> _defaultAlignment = _ => null;
         private Func<T, IColoredStringStyle> _defaultStyle = _ => ColoredStringStyle.Null;
 
-        private ColoredString? _title;
-        private ColoredString? _footer;
+        private AnsiString? _title;
+        private AnsiString? _footer;
 
         public DataDrivenGeneratedTableBuilderImpl(IEnumerable<T> dataItems, ITableRenderer renderer)
         {
@@ -90,7 +90,7 @@ namespace ITGlobal.CommandLine.Table.Impl
             return this;
         }
 
-        public IDataDrivenGeneratedTableBuilder<T> Title(ColoredString text)
+        public IDataDrivenGeneratedTableBuilder<T> Title(AnsiString text)
         {
             _title = text;
             return this;
@@ -98,7 +98,7 @@ namespace ITGlobal.CommandLine.Table.Impl
 
         public IDataDrivenGeneratedTableBuilder<T> Column(
             string title,
-            Func<T, ColoredString> property,
+            Func<T, AnsiString> property,
             Func<T, IColoredStringStyle> style = null,
             Func<T, TableCellAlignment?> align = null,
             int? maxWidth = null)
@@ -107,7 +107,7 @@ namespace ITGlobal.CommandLine.Table.Impl
             return this;
         }
 
-        public IDataDrivenGeneratedTableBuilder<T> Footer(ColoredString text)
+        public IDataDrivenGeneratedTableBuilder<T> Footer(AnsiString text)
         {
             _footer = text;
             return this;

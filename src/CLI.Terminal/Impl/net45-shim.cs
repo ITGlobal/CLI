@@ -2,23 +2,7 @@ using System.Threading.Tasks;
 
 namespace ITGlobal.CommandLine.Impl
 {
-#if NET40
-
-    internal static class AssemblyExt
-    {
-        public static T GetCustomAttribute<T>(this Assembly assembly)
-            where T : Attribute
-        {
-            return assembly
-                .GetCustomAttributes(typeof(T), false)
-                .Cast<T>()
-                .FirstOrDefault();
-        }
-    }
-
-#endif
-
-#if NET40 || NET45
+#if NET45
 
     internal static class TaskExt
     {

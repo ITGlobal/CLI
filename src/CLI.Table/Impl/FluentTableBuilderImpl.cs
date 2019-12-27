@@ -25,19 +25,19 @@ namespace ITGlobal.CommandLine.Table.Impl
             return this;
         }
 
-        public IFluentTableBuilder Title(ColoredString text)
+        public IFluentTableBuilder Title(AnsiString text)
         {
             AddRow(TableRowModel.Title(text));
             return this;
         }
 
-        public IFluentTableBuilder Headers(params ColoredString[] headers)
+        public IFluentTableBuilder Headers(params AnsiString[] headers)
         {
             AddRow(TableRowModel.Header(headers));
             return this;
         }
 
-        public IFluentTableBuilder Add(params ColoredString[] headers)
+        public IFluentTableBuilder Add(params AnsiString[] headers)
         {
             AddRow(TableRowModel.Body(headers));
             return this;
@@ -57,7 +57,7 @@ namespace ITGlobal.CommandLine.Table.Impl
             return this;
         }
 
-        public IFluentTableBuilder Footer(ColoredString text)
+        public IFluentTableBuilder Footer(AnsiString text)
         {
             AddRow(TableRowModel.Footer(text));
             return this;

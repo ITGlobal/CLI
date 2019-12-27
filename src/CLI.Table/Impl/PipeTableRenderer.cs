@@ -68,12 +68,12 @@ namespace ITGlobal.CommandLine.Table.Impl
         {
             var space = _style.HeaderColors.Apply(" ");
 
-            var maxRowNum = row.Cells.Max(_ => _.Content.Length);
+            var maxRowNum = row.Cells.Max(_ => _.Content.Count);
 
             for (var rowNum = 0; rowNum < maxRowNum; rowNum++)
             {
                 output.Write(_style.FrameColors.Apply("|"));
-                for (var i = 0; i < row.Cells.Length; i++)
+                for (var i = 0; i < row.Cells.Count; i++)
                 {
                     DrawCell(row.Cells[i], rowNum);
                 }
@@ -82,7 +82,7 @@ namespace ITGlobal.CommandLine.Table.Impl
             }
 
             output.Write(_style.FrameColors.Apply("|"));
-            for (var i = 0; i < row.Cells.Length; i++)
+            for (var i = 0; i < row.Cells.Count; i++)
             {
                 for (var j = 0; j < row.Cells[i].Width + 2; j++)
                 {
@@ -97,7 +97,7 @@ namespace ITGlobal.CommandLine.Table.Impl
                 output.Write(space);
 
                 var n = 0;
-                if (cell.Content.Length > rowNum)
+                if (cell.Content.Count > rowNum)
                 {
                     var s = cell.Content[rowNum];
                     output.Write(_style.HeaderColors.Apply(s));
@@ -116,12 +116,12 @@ namespace ITGlobal.CommandLine.Table.Impl
         private void DrawBody(TableRowLayout row, TextWriter output)
         {
             var space = _style.BodyColors.Apply(" ");
-            var maxRowNum = row.Cells.Max(_ => _.Content.Length);
+            var maxRowNum = row.Cells.Max(_ => _.Content.Count);
 
             for (var rowNum = 0; rowNum < maxRowNum; rowNum++)
             {
                 output.Write(_style.FrameColors.Apply("|"));
-                for (var i = 0; i < row.Cells.Length; i++)
+                for (var i = 0; i < row.Cells.Count; i++)
                 {
                     DrawCell(row.Cells[i], rowNum);
                 }
@@ -134,7 +134,7 @@ namespace ITGlobal.CommandLine.Table.Impl
                 output.Write(space);
 
                 var n = 0;
-                if (cell.Content.Length > rowNum)
+                if (cell.Content.Count > rowNum)
                 {
                     var s = cell.Content[rowNum];
                     output.Write(_style.BodyColors.Apply(s));

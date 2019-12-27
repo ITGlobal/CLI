@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Diagnostics;
 using JetBrains.Annotations;
 
@@ -22,8 +23,8 @@ namespace ITGlobal.CommandLine.Table.Rendering
         ///     Table rows
         /// </summary>
         [NotNull]
-        public TableRowModel[] Rows { get; }
+        public IReadOnlyList<TableRowModel> Rows { get; }
 
-        private string DebuggerView => $"Rows = [{Rows.Length}]";
+        private string DebuggerView => $"Rows = [{Rows.Count}]";
     }
 }

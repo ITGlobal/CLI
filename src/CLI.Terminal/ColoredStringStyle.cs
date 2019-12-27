@@ -5,6 +5,9 @@ using JetBrains.Annotations;
 
 namespace ITGlobal.CommandLine
 {
+    /// <summary>
+    ///     An implementation of <see cref="IColoredStringStyle"/>
+    /// </summary>
     [PublicAPI]
     public static partial class ColoredStringStyle
     {
@@ -41,19 +44,28 @@ namespace ITGlobal.CommandLine
             public static bool operator !=(Key left, Key right) => !left.Equals(right);
         }
 
-        private static readonly ConcurrentDictionary<Key, IColoredStringStyle> _CachedValues
+        private static readonly ConcurrentDictionary<Key, IColoredStringStyle> CachedValues
             = new ConcurrentDictionary<Key, IColoredStringStyle>();
 
+        /// <summary>
+        ///     An empty <see cref="IColoredStringStyle"/> 
+        /// </summary>
         [NotNull]
         public static IColoredStringStyle Null { get; } = Create(null, null);
 
+        /// <summary>
+        ///     Creates new <see cref="IColoredStringStyle"/> with the specified parameters
+        /// </summary>
         [NotNull]
         public static IColoredStringStyle Create(ConsoleColor? foregroundColor, ConsoleColor? backgroundColor)
         {
             var key = new Key(foregroundColor, backgroundColor);
-            return _CachedValues.GetOrAdd(key, k => new ColoredStringStyleImpl(k.ForegroundColor, k.BackgroundColor));
+            return CachedValues.GetOrAdd(key, k => new ColoredStringStyleImpl(k.ForegroundColor, k.BackgroundColor));
         }
 
+        /// <summary>
+        ///     Creates new <see cref="IColoredStringStyle"/> from an existing one
+        /// </summary>
         [NotNull]
         public static IColoredStringStyle Update(
             [NotNull] this IColoredStringStyle style, 
@@ -63,8 +75,8 @@ namespace ITGlobal.CommandLine
             switch (style)
             {
                 case ColoredStringStyleImpl s:
-                    foregroundColor = foregroundColor ?? s.ForegroundColor;
-                    backgroundColor = backgroundColor ?? s.BackgroundColor;
+                    foregroundColor ??= s.ForegroundColor;
+                    backgroundColor ??= s.BackgroundColor;
                     break;
             }
 

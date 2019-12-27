@@ -1,5 +1,7 @@
 using System;
 using System.Text;
+using ITGlobal.CommandLine.Impl;
+using ITGlobal.CommandLine.Table.Impl;
 using JetBrains.Annotations;
 
 namespace ITGlobal.CommandLine.Table
@@ -25,7 +27,7 @@ namespace ITGlobal.CommandLine.Table
         [PublicAPI]
         public static void Draw([NotNull] this ITableBuilderBase builder, [NotNull] ITerminalWriter writer, int? maxWidth = null)
         {
-            builder.Draw(str => writer.WriteLine((ColoredString)str), maxWidth);
+            builder.Draw(str => writer.WriteLine((AnsiString)str), maxWidth);
         }
 
         /// <summary>
@@ -34,7 +36,8 @@ namespace ITGlobal.CommandLine.Table
         [PublicAPI]
         public static void Draw([NotNull] this ITableBuilderBase builder, [NotNull] Action<string> writer, int? maxWidth = null)
         {
-            using (var w = new CallbackTextWriter(writer))
+            using (var callback = new CallbackTextWriter(writer))
+            using (var w = new TrimAnsiTextWriter(callback))
             {
                 builder.Draw(w, maxWidth);
             }

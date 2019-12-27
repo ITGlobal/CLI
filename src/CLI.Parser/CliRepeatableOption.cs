@@ -42,7 +42,7 @@ namespace ITGlobal.CommandLine.Parsing
         /// </summary>
         [PublicAPI]
         public T[] Values { get; private set; }
-#if !NET40 && !NET45
+#if !NET45
             = Array.Empty<T>();
 #else
             = new T[0];

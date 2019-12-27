@@ -22,6 +22,8 @@ namespace ITGlobal.CommandLine
         private static ITerminalImplementation _implementation;
         private static ITerminalImplementation _defaultImplementation;
         private static int _windowWidth;
+        private static ConsoleColor _defaultForegroundColor;
+        private static ConsoleColor _defaultBackgroundColor;
 
         /// <summary>
         ///     Initializes terminal output
@@ -59,6 +61,20 @@ namespace ITGlobal.CommandLine
                     Debug.WriteLine($"CLI: falling back to {_defaultImplementation.DriverName}");
                 }
 
+                Console.ResetColor();
+                
+                _defaultForegroundColor = Console.ForegroundColor;
+                if (!Enum.IsDefined(typeof(ConsoleColor), _defaultForegroundColor))
+                {
+                    _defaultForegroundColor = ConsoleColor.Gray;
+                }
+
+                _defaultBackgroundColor = Console.BackgroundColor;
+                if (!Enum.IsDefined(typeof(ConsoleColor), _defaultBackgroundColor))
+                {
+                    _defaultBackgroundColor = ConsoleColor.Black;
+                }
+
                 _implementation = _defaultImplementation;
                 _isInitialized = true;
             }
@@ -75,7 +91,7 @@ namespace ITGlobal.CommandLine
                 {
                     return;
                 }
-                
+
                 _defaultImplementation?.Dispose();
                 if (!ReferenceEquals(_defaultImplementation, _implementation))
                 {
@@ -140,7 +156,37 @@ namespace ITGlobal.CommandLine
                 Initialize();
                 lock (SyncRoot)
                 {
-                     _windowWidth = value;
+                    _windowWidth = value;
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Terminal default foreground color
+        /// </summary>
+        public static ConsoleColor DefaultForegroundColor
+        {
+            get
+            {
+                Initialize();
+                lock (SyncRoot)
+                {
+                    return _defaultForegroundColor;
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Terminal default background color
+        /// </summary>
+        public static ConsoleColor DefaultBackgroundColor
+        {
+            get
+            {
+                Initialize();
+                lock (SyncRoot)
+                {
+                    return _defaultBackgroundColor;
                 }
             }
         }
@@ -170,7 +216,10 @@ namespace ITGlobal.CommandLine
                 }
 
                 var lockedTerminal = new LockedTerminalImplementation(impl, owner);
-                UseImplementation(lockedTerminal);
+                lock (SyncRoot)
+                {
+                    _implementation = lockedTerminal;
+                }
 
                 return lockedTerminal;
             }
@@ -203,22 +252,43 @@ namespace ITGlobal.CommandLine
         /// <summary>
         ///     Set terminal driver
         /// </summary>
-        public static void UseImplementation([NotNull] ITerminalImplementation implementation)
+        public static IDisposable UseImplementation([NotNull] ITerminalImplementation implementation)
         {
             Initialize();
 
             lock (SyncRoot)
             {
+                var resetToImplementation = _implementation;
                 _implementation = implementation ?? _defaultImplementation;
+
+                return new UseImplementationToken(resetToImplementation);
+            }
+        }
+
+        private sealed class UseImplementationToken : IDisposable
+        {
+            private readonly ITerminalImplementation _resetToImplementation;
+
+            public UseImplementationToken(ITerminalImplementation resetToImplementation)
+            {
+                _resetToImplementation = resetToImplementation;
+            }
+
+            public void Dispose()
+            {
+                lock (SyncRoot)
+                {
+                    _implementation = _resetToImplementation ?? _defaultImplementation;
+                }
             }
         }
 
         /// <summary>
         ///     Disable terminal colors
         /// </summary>
-        public static void DisableColors()
+        public static IDisposable DisableColors()
         {
-            UseImplementation(new NoColorTerminalImplementation(GetImplementation()));
+            return UseImplementation(new NoColorTerminalImplementation(GetImplementation()));
         }
     }
 }

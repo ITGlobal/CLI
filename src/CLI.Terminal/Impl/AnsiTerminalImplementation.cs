@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 
 namespace ITGlobal.CommandLine.Impl
@@ -12,8 +11,8 @@ namespace ITGlobal.CommandLine.Impl
         {
             _stderr = Console.Error;
 
-            Stdout = new SystemTerminalWriter(Console.Out);
-            Stderr = new SystemTerminalWriter(Console.Error);
+            Stdout = new AnsiTerminalWriter(Console.Out);
+            Stderr = new AnsiTerminalWriter(Console.Error);
         }
 
         public ITerminalWriter Stdout { get; }

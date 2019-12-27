@@ -90,8 +90,8 @@ namespace ITGlobal.CommandLine.Impl
             _originalStdErr = Console.Error;
             _originalStdOut = Console.Out;
 
-            Console.SetError(new AnsiTextWriter(Console.Error));
-            Console.SetOut(new AnsiTextWriter(Console.Out));
+            Console.SetError(new AnsiTextWriter(stderr, Console.Error.Encoding));
+            Console.SetOut(new AnsiTextWriter(stdout, Console.Out.Encoding));
 
             Stderr = stderr;
             Stdout = stdout;

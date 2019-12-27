@@ -6,6 +6,6 @@ namespace ITGlobal.CommandLine
     public interface ITerminalLiveText
     {
         void WipeAfter(bool enable = true);
-        void Write(params ColoredString[] strs);
+        void Write(params AnsiString[] strs);
     }
 }

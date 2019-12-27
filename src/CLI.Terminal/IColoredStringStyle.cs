@@ -1,11 +1,20 @@
-using JetBrains.Annotations;
+using System;
 
 namespace ITGlobal.CommandLine
 {
+    /// <summary>
+    ///     A style parameters for an <see cref="AnsiString"/>
+    /// </summary>
     public interface IColoredStringStyle
     {
-        ColoredString Apply([NotNull] string str);
-        ColoredString Apply(char c);
-        ColoredString Apply(ColoredString str);
+        /// <summary>
+        ///     Default foreground color
+        /// </summary>
+        ConsoleColor? ForegroundColor { get; }
+
+        /// <summary>
+        ///     Default background color
+        /// </summary>
+        ConsoleColor? BackgroundColor { get; }
     }
 }

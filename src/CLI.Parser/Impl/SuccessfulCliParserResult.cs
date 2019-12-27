@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-#if !NET40
 using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
-#endif
 
 namespace ITGlobal.CommandLine.Parsing.Impl
 {
@@ -27,7 +25,7 @@ namespace ITGlobal.CommandLine.Parsing.Impl
         {
             try
             {
-#if NET40 || NET45
+#if NET45
                 var exitCode = RunImpl();
 #else
                 var exitCode = RunAsync().GetAwaiter().GetResult();
@@ -37,17 +35,13 @@ namespace ITGlobal.CommandLine.Parsing.Impl
             }
             catch (AggregateException e) when (e.InnerException != null)
             {
-#if NET40
-                throw new Exception(e.InnerException.Message);
-#else
                 var ex = ExceptionDispatchInfo.Capture(e.InnerException);
                 ex.Throw();
                 throw;
-#endif
             }
         }
 
-#if NET40 || NET45
+#if NET45
         private int RunImpl()
         {
             if (!string.IsNullOrEmpty(_logo))

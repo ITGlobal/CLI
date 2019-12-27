@@ -7,7 +7,7 @@ namespace ITGlobal.CommandLine
     {
         public static void Write([NotNull] this ITerminalLiveText text, params string[] strs)
         {
-            text.Write(strs.Colored());
+            text.Write(AnsiString.Create(strs));
         }
     }
 }

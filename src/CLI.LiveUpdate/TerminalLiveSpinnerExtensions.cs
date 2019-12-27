@@ -1,4 +1,4 @@
-﻿using JetBrains.Annotations;
+using JetBrains.Annotations;
 
 namespace ITGlobal.CommandLine
 {
@@ -7,7 +7,7 @@ namespace ITGlobal.CommandLine
     {
         public static void Complete([NotNull] this ITerminalLiveSpinner text, params string[] strs)
         {
-            text.Complete(strs.Colored());
+            text.Complete(AnsiString.Create(strs));
         }
     }
 }

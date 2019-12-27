@@ -5,7 +5,7 @@ namespace ITGlobal.CommandLine
     [PublicAPI]
     public interface ITerminalLiveProgressBar : ITerminalLiveText
     {
-        void Write(int? value, ColoredString[] strs);
-        void Complete(params ColoredString[] strs);
+        void Write(int? value, AnsiString[] strs);
+        void Complete(params AnsiString[] strs);
     }
 }

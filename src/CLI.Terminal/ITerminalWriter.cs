@@ -9,9 +9,14 @@ namespace ITGlobal.CommandLine
     public interface ITerminalWriter
     {
         /// <summary>
+        ///     Writes a colored string chunk
+        /// </summary>
+        void Write(AnsiString.Chunk str);
+
+        /// <summary>
         ///     Writes a colored string
         /// </summary>
-        void Write(ColoredString str);
+        void Write(AnsiString str);
 
 #if !NET45
         /// <summary>
@@ -23,7 +28,7 @@ namespace ITGlobal.CommandLine
         /// <summary>
         ///     Writes a list of colored strings
         /// </summary>
-        void Write(params ColoredString[] strs);
+        void Write(params AnsiString[] strs);
 
 #if !NET45
         /// <summary>
@@ -35,12 +40,12 @@ namespace ITGlobal.CommandLine
         /// <summary>
         ///     Writes a colored string with a newline
         /// </summary>
-        void WriteLine(ColoredString str);
+        void WriteLine(AnsiString str);
 
         /// <summary>
         ///     Writes a list of colored strings with a newline
         /// </summary>
-        void WriteLine(params ColoredString[] strs);
+        void WriteLine(params AnsiString[] strs);
 
         /// <summary>
         ///     Writes a newline

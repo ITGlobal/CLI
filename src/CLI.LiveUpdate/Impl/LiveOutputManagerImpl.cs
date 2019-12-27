@@ -9,7 +9,7 @@ namespace ITGlobal.CommandLine.Impl
     {
         [SuppressMessage("ReSharper", "InconsistentNaming")]
         private const int ANIMATION_STEP_MS = 100;
-        
+
         private readonly ITerminalLock _terminal;
         private readonly object _syncRoot = new object();
 
@@ -41,7 +41,7 @@ namespace ITGlobal.CommandLine.Impl
             _cleanupAfter = enable;
         }
 
-        public ITerminalLiveText CreateText(params ColoredString[] str)
+        public ITerminalLiveText CreateText(params AnsiString[] str)
         {
             return Create(() =>
             {
@@ -51,7 +51,7 @@ namespace ITGlobal.CommandLine.Impl
             });
         }
 
-        public ITerminalLiveSpinner CreateSpinner(params ColoredString[] str)
+        public ITerminalLiveSpinner CreateSpinner(params AnsiString[] str)
         {
             return Create(() =>
             {
@@ -61,7 +61,7 @@ namespace ITGlobal.CommandLine.Impl
             });
         }
 
-        public ITerminalLiveProgressBar CreateProgressBar(int value, ColoredString[] str)
+        public ITerminalLiveProgressBar CreateProgressBar(int value, AnsiString[] str)
         {
             return Create(() =>
             {
@@ -116,15 +116,15 @@ namespace ITGlobal.CommandLine.Impl
             Clear();
         }
 
-        void ITerminalLockOwner.WriteOutput(char c, ConsoleColor? foregroundColor, ConsoleColor? backgroundColor)
+        void ITerminalLockOwner.WriteOutput(AnsiChar c)
         {
-            var str = new ColoredString(new string(c, 1), foregroundColor, backgroundColor);
+            var str = new AnsiString(new[] { c, });
             _terminal.Stdout.Write(str);
         }
 
-        void ITerminalLockOwner.WriteError(char c, ConsoleColor? foregroundColor, ConsoleColor? backgroundColor)
+        void ITerminalLockOwner.WriteError(AnsiChar c)
         {
-            var str = new ColoredString(new string(c, 1), foregroundColor, backgroundColor);
+            var str = new AnsiString(new[] { c });
             _terminal.Stderr.Write(str);
         }
 
@@ -149,7 +149,7 @@ namespace ITGlobal.CommandLine.Impl
                 for (var i = _items.Count - 1; i >= 0; i--)
                 {
                     var item = _items[i];
-                    
+
                     if (i != _items.Count - 1)
                     {
                         _terminal.MoveToLine(-1);

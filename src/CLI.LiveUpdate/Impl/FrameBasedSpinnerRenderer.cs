@@ -17,7 +17,7 @@ namespace ITGlobal.CommandLine.Impl
 
         protected abstract string[] Frames { get; }
 
-        public void Render(ITerminalLock terminal, ColoredString[] text, int time)
+        public void Render(ITerminalLock terminal, AnsiString text, int time)
         {
             if (_location == SpinnerLocation.Leading)
             {
@@ -29,10 +29,7 @@ namespace ITGlobal.CommandLine.Impl
                 }
             }
 
-            foreach (var s in text)
-            {
-                terminal.Stderr.Write(s);
-            }
+            terminal.Stderr.Write(text);
 
             if (_location == SpinnerLocation.Trailing)
             {

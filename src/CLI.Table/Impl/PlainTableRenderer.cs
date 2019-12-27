@@ -61,12 +61,31 @@ namespace ITGlobal.CommandLine.Table.Impl
                 var s = str;
                 if (_style.UppercaseHeaders)
                 {
-                    s = new ColoredString(s.Text.ToUpperInvariant(), s.ForegroundColor, s.BackgroundColor);
+                    s = s.ToUpperInvariant();
                 }
 
                 output.WriteLine(_style.TitleColors.Apply(s));
             }
             output.WriteLine();
+
+            if (_style.UnderlineTitle)
+            {
+                var doubleDash = _style.TitleColors.Apply("=");
+                for (var i = 0; i < row.Cells.Count; i++)
+                {
+                    for (var j = 0; j < row.Cells[i].Width; j++)
+                    {
+                        output.Write(doubleDash);
+                    }
+
+                    if (i != row.Cells.Count - 1)
+                    {
+                        output.Write(doubleDash);
+                    }
+                }
+
+                output.WriteLine();
+            }
         }
 
         private void DrawHeaders(TableRowLayout row, TextWriter output)
@@ -77,15 +96,14 @@ namespace ITGlobal.CommandLine.Table.Impl
             }
 
             var space = _style.HeaderColors.Apply(" ");
-            var dash = _style.HeaderColors.Apply("-");
-            var maxRowNum = row.Cells.Max(_ => _.Content.Length);
+            var maxRowNum = row.Cells.Max(_ => _.Content.Count);
 
             for (var rowNum = 0; rowNum < maxRowNum; rowNum++)
             {
-                for (var i = 0; i < row.Cells.Length; i++)
+                for (var i = 0; i < row.Cells.Count; i++)
                 {
                     DrawCell(row.Cells[i], rowNum);
-                    if (i != row.Cells.Length - 1)
+                    if (i != row.Cells.Count - 1)
                     {
                         output.Write(space);
                     }
@@ -96,14 +114,15 @@ namespace ITGlobal.CommandLine.Table.Impl
 
             if (_style.UnderlineHeaders)
             {
-                for (var i = 0; i < row.Cells.Length; i++)
+                var dash = _style.HeaderColors.Apply("-");
+                for (var i = 0; i < row.Cells.Count; i++)
                 {
                     for (var j = 0; j < row.Cells[i].Width; j++)
                     {
                         output.Write(dash);
                     }
 
-                    if (i != row.Cells.Length - 1)
+                    if (i != row.Cells.Count - 1)
                     {
                         output.Write(dash);
                     }
@@ -116,12 +135,12 @@ namespace ITGlobal.CommandLine.Table.Impl
             void DrawCell(TableCellLayout cell, int rowNum)
             {
                 var n = 0;
-                if (cell.Content.Length > rowNum)
+                if (cell.Content.Count > rowNum)
                 {
                     var s = cell.Content[rowNum];
                     if (_style.UppercaseHeaders)
                     {
-                        s = new ColoredString(s.Text.ToUpperInvariant(), s.ForegroundColor, s.BackgroundColor);
+                        s = s.ToUpperInvariant();
                     }
 
                     output.Write(_style.HeaderColors.Apply(s));
@@ -138,14 +157,14 @@ namespace ITGlobal.CommandLine.Table.Impl
         private void DrawBody(TableRowLayout row, TextWriter output)
         {
             var space = _style.BodyColors.Apply(" ");
-            var maxRowNum = row.Cells.Max(_ => _.Content.Length);
+            var maxRowNum = row.Cells.Max(_ => _.Content.Count);
 
             for (var rowNum = 0; rowNum < maxRowNum; rowNum++)
             {
-                for (var i = 0; i < row.Cells.Length; i++)
+                for (var i = 0; i < row.Cells.Count; i++)
                 {
                     DrawCell(row.Cells[i], rowNum);
-                    if (i != row.Cells.Length - 1)
+                    if (i != row.Cells.Count - 1)
                     {
                         output.Write(space);
                     }
@@ -157,13 +176,13 @@ namespace ITGlobal.CommandLine.Table.Impl
             void DrawCell(TableCellLayout cell, int rowNum)
             {
                 var n = 0;
-                if (cell.Content.Length > rowNum)
+                if (cell.Content.Count > rowNum)
                 {
                     var s = cell.Content[rowNum];
                     output.Write(_style.BodyColors.Apply(s));
                     n = s.Length;
                 }
-                
+
                 for (var i = n; i < cell.Width; i++)
                 {
                     output.Write(space);

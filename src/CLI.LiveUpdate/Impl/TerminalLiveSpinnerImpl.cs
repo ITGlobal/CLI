@@ -6,11 +6,7 @@ namespace ITGlobal.CommandLine.Impl
         private readonly ISpinnerRenderer _renderer;
 
         private readonly object _textLock = new object();
-#if !NET45
-        private ColoredString[] _text = System.Array.Empty<ColoredString>();
-#else
-        private ColoredString[] _text = new ColoredString[0];
-#endif
+        private AnsiString _text = AnsiString.Empty;
         private bool _needsRedraw = true;
         private bool _isCompleted;
         private bool? _wipeAfter;
@@ -26,13 +22,14 @@ namespace ITGlobal.CommandLine.Impl
             _wipeAfter = enable;
         }
 
-        public void Write(params ColoredString[] strs)
+        public void Write(params AnsiString[] strs)
         {
+            var s = AnsiString.Concat(strs);
             lock (_textLock)
             {
-                if (!ColoredStringHelper.AreEqual(_text, strs))
+                if (s != _text)
                 {
-                    _text = strs;
+                    _text = s;
                     _needsRedraw = true;
                 }
                 else
@@ -44,11 +41,12 @@ namespace ITGlobal.CommandLine.Impl
             _owner.RequestRedraw();
         }
 
-        public void Complete(params ColoredString[] strs)
+        public void Complete(params AnsiString[] strs)
         {
+            var s = AnsiString.Concat(strs);
             lock (_textLock)
             {
-                _text = strs;
+                _text = s;
                 _isCompleted = true;
             }
             _owner.RequestRedraw();
@@ -121,10 +119,7 @@ namespace ITGlobal.CommandLine.Impl
         {
             lock (_textLock)
             {
-                foreach (var s in _text)
-                {
-                    terminal.Stderr.Write(s);
-                }
+                terminal.Stderr.Write(_text);
 
                 _needsRedraw = false;
             }

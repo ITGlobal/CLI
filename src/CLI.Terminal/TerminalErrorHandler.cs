@@ -4,14 +4,21 @@ using JetBrains.Annotations;
 
 namespace ITGlobal.CommandLine
 {
+    /// <summary>
+    ///     A unified error handler for terminal application
+    /// </summary>
     [PublicAPI]
     public static class TerminalErrorHandler
     {
-        [NotNull]
-        public static string ErrorText { get; set; } = "Error!";
+        /// <summary>
+        ///     Error title text
+        /// </summary>
+        public static AnsiString ErrorText { get; set; } =  AnsiString.FromString("Error!");
 
-        [NotNull]
-        public static string InnerExceptionText { get; set; } = "--- Inner Exception ---";
+        /// <summary>
+        ///     Inner exception separator text
+        /// </summary>
+        public static AnsiString InnerExceptionText { get; set; } = AnsiString.FromString("--- Inner Exception ---");
 
         /// <summary>
         ///     Handles errors during execution of an action
@@ -44,21 +51,12 @@ namespace ITGlobal.CommandLine
             catch (CommandLineException e)
             {
                 PrintExceptionImpl(e);
-#if !NET40
                 return e.HResult;
-#else
-                return -1;        
-#endif
-                
             }
             catch (Exception e)
             {
                 PrintExceptionImpl(e);
-#if !NET40
                 return e.HResult;
-#else
-                return -1;        
-#endif
             }
         }
 
@@ -66,7 +64,6 @@ namespace ITGlobal.CommandLine
         ///     Handles errors during execution of an async action
         /// </summary>
         [PublicAPI]
-#if !NET40
         public static Task<int> HandleAsync([NotNull] Func<Task> action)
         {
             return HandleAsync(async () =>
@@ -75,21 +72,11 @@ namespace ITGlobal.CommandLine
                 return 0;
             });
         }
-#else
-        public static Task<int> HandleAsync([NotNull] Func<Task> action)
-        {
-            return HandleAsync(() =>
-            {
-                return action().ContinueWith(_=>0, TaskContinuationOptions.OnlyOnRanToCompletion);
-            });
-        }
-#endif
 
         /// <summary>
         ///     Handles errors during execution of an async action
         /// </summary>
         [PublicAPI]
-#if !NET40
         public static async Task<int> HandleAsync([NotNull] Func<Task<int>> action)
         {
             try
@@ -113,35 +100,6 @@ namespace ITGlobal.CommandLine
             }
         }
 
-#else
-        public static Task<int> HandleAsync([NotNull] Func<Task<int>> action)
-        {
-            return action().ContinueWith(task => {
-                if(task.IsCanceled)
-                {
-                    return -1;
-                }
-
-                if(task.IsFaulted)
-                {
-                    var commandLineException = task.Exception?.InnerException as CommandLineException;
-                    if(commandLineException != null)
-                    {
-                         PrintExceptionImpl(commandLineException);
-                    }
-                    else
-                    {
-                       PrintExceptionImpl(task.Exception?.InnerException);
-                    }
-                    
-                    return -1;
-                }
-
-                 return task.Result;
-            });
-        }
-#endif
-
         /// <summary>
         ///     Pretty-prints an exception into console
         /// </summary>
@@ -152,7 +110,10 @@ namespace ITGlobal.CommandLine
             {
                 if (e != exception)
                 {
-                    Console.Error.WriteLine(InnerExceptionText.Fg(ConsoleColor.DarkRed));
+                    if (!string.IsNullOrEmpty(InnerExceptionText))
+                    {
+                        Console.Error.WriteLine($"{InnerExceptionText}".WhiteOnDarkRed());
+                    }
                 }
 
                 switch (e)
@@ -166,9 +127,7 @@ namespace ITGlobal.CommandLine
 
                     default:
                         Console.Error.WriteLine($"[{e.GetType().FullName}] {e.Message}".WhiteOnDarkRed());
-
                         Console.Error.WriteLine(e.StackTrace.Red());
-
                         break;
                 }
 
@@ -183,10 +142,13 @@ namespace ITGlobal.CommandLine
 
         private static void PrintExceptionImpl(Exception e)
         {
-            Console.Error.WriteLine($"{ErrorText} [{e.GetType().FullName}]".WhiteOnDarkRed());
+            if (!string.IsNullOrEmpty(ErrorText))
+            {
+                Console.Error.Write($"{ErrorText} ".WhiteOnDarkRed());
+            }
 
+            Console.Error.WriteLine($"[{e.GetType().FullName}]".WhiteOnDarkRed());
             Console.Error.WriteLine(e.Message.WhiteOnDarkRed());
-
             Console.Error.WriteLine(e.StackTrace.Red());
         }
     }

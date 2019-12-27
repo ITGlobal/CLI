@@ -13,7 +13,7 @@ namespace ITGlobal.CommandLine.Impl
             _width = width;
         }
 
-        public void Render(ITerminalLock terminal, ColoredString[] text, int value, int time)
+        public void Render(ITerminalLock terminal, AnsiString text, int value, int time)
         {
             if (_location == ProgressBarLocation.Leading)
             {
@@ -21,10 +21,7 @@ namespace ITGlobal.CommandLine.Impl
                 terminal.Stderr.Write(' ');
             }
 
-            foreach (var s in text)
-            {
-                terminal.Stderr.Write(s);
-            }
+            terminal.Stderr.Write(text);
 
             if (_location == ProgressBarLocation.Trailing)
             {

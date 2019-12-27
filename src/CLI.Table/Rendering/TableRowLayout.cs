@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Diagnostics;
 using JetBrains.Annotations;
 
@@ -28,7 +29,7 @@ namespace ITGlobal.CommandLine.Table.Rendering
         ///     Cells
         /// </summary>
         [NotNull]
-        public TableCellLayout[] Cells { get; }
+        public IReadOnlyList<TableCellLayout> Cells { get; }
 
         private string DebuggerView
         {
@@ -42,7 +43,7 @@ namespace ITGlobal.CommandLine.Table.Rendering
                     case TableRowType.Separator:
                         return $"Type = {Type}";
                     default:
-                        return $"Type = {Type}, Cells = [{Cells.Length}]";
+                        return $"Type = {Type}, Cells = [{Cells.Count}]";
                 }
             }
         }

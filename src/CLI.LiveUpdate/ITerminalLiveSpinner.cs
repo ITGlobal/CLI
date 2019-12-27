@@ -5,6 +5,6 @@ namespace ITGlobal.CommandLine
     [PublicAPI]
     public interface ITerminalLiveSpinner : ITerminalLiveText
     {
-        void Complete(params ColoredString[] strs);
+        void Complete(params AnsiString[] strs);
     }
 }

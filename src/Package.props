@@ -14,14 +14,11 @@
         <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
         <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     </PropertyGroup>
-    <PropertyGroup Condition=" '$(TargetFramework)' == 'net40' ">
-        <DefineConstants>$(DefineConstants);NET40</DefineConstants>
-    </PropertyGroup>
     <PropertyGroup Condition=" '$(TargetFramework)' == 'net45' ">
         <DefineConstants>$(DefineConstants);NET45</DefineConstants>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
-        <DefineConstants>$(DefineConstants);NETSTANDARD_2_0</DefineConstants>
+        <DefineConstants>$(DefineConstants);NETSTANDARD2_0</DefineConstants>
     </PropertyGroup>
     <ItemGroup>
         <None Include="../../LICENSE" Pack="true" PackagePath=""/>

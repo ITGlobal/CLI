@@ -11,7 +11,7 @@ namespace ITGlobal.CommandLine
             params string[] strs
         )
         {
-            return manager.CreateText(strs.Colored());
+            return manager.CreateText(AnsiString.Create(strs));
         }
 
         [NotNull]
@@ -20,13 +20,13 @@ namespace ITGlobal.CommandLine
             params string[] strs
         )
         {
-            return manager.CreateSpinner(strs.Colored());
+            return manager.CreateSpinner(AnsiString.Create(strs));
         }
 
         [NotNull]
         public static ITerminalLiveProgressBar CreateProgressBar(
             [NotNull] this ILiveOutputManager manager,
-            params ColoredString[] strs
+            params AnsiString[] strs
         )
         {
             return manager.CreateProgressBar(0, strs);
@@ -38,7 +38,7 @@ namespace ITGlobal.CommandLine
             params string[] strs
         )
         {
-            return manager.CreateProgressBar(0, strs.Colored());
+            return manager.CreateProgressBar(0, AnsiString.Create(strs));
         }
     }
 }

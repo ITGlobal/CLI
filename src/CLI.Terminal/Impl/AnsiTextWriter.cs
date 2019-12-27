@@ -18,31 +18,27 @@ namespace ITGlobal.CommandLine.Impl
             public readonly ConsoleColor Fg;
             public readonly ConsoleColor Bg;
 
-            public void Deconstruct(out ConsoleColor fg, out ConsoleColor bg)
-            {
-                fg = Fg;
-                bg = Bg;
-            }
-
             public override string ToString() => $"{Fg}/{Bg}";
 
             public AnsiColors With(ConsoleColor? fg = null, ConsoleColor? bg = null) => new AnsiColors(fg ?? Fg, bg ?? Bg);
         }
 
-        private readonly TextWriter _writer;
+        private readonly ITerminalWriter _writer;
         private readonly AnsiSequenceDecoder _decoder;
         private readonly Stack<AnsiColors> _colorHistory = new Stack<AnsiColors>();
         private AnsiColors? _colors;
+        private readonly char[] _buffer = new char[1];
 
-        public AnsiTextWriter(TextWriter writer)
+        public AnsiTextWriter(ITerminalWriter writer, Encoding encoding)
         {
             _writer = writer;
+            Encoding = encoding;
             _decoder = new AnsiSequenceDecoder(this);
 
             PushColors();
         }
 
-        public override Encoding Encoding => _writer.Encoding;
+        public override Encoding Encoding { get; }
 
         public override void Write(char value)
         {
@@ -76,23 +72,15 @@ namespace ITGlobal.CommandLine.Impl
 
         protected virtual void WriteImpl(char c, ConsoleColor? fg, ConsoleColor? bg)
         {
-            _writer.Write(c);
+            _buffer[0] = c;
+            var chunk = new AnsiString.Chunk(_buffer, fg, bg);
+            _writer.Write(chunk);
         }
 
         private void PushColors(ConsoleColor? foreground = null, ConsoleColor? background = null)
         {
             var colors = new AnsiColors(Console.ForegroundColor, Console.BackgroundColor);
             _colorHistory.Push(colors);
-
-            if (foreground != null)
-            {
-                Console.ForegroundColor = foreground.Value;
-            }
-
-            if (background != null)
-            {
-                Console.BackgroundColor = background.Value;
-            }
 
             _colors = colors.With(foreground, background);
         }
@@ -102,10 +90,6 @@ namespace ITGlobal.CommandLine.Impl
             if (_colorHistory.Count > 0)
             {
                 var colors = _colorHistory.Pop();
-                var (fg, bg) = colors;
-                Console.ForegroundColor = fg;
-                Console.BackgroundColor = bg;
-
                 _colors = colors;
             }
             else

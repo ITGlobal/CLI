@@ -12,7 +12,7 @@ namespace ITGlobal.CommandLine.Impl
             _writer = writer;
         }
 
-        protected override void WriteImpl(ColoredString str)
+        public override void Write(AnsiString.Chunk str)
         {
             var fg = Console.ForegroundColor;
             var bg = Console.BackgroundColor;
@@ -22,7 +22,7 @@ namespace ITGlobal.CommandLine.Impl
                 Console.ForegroundColor = str.ForegroundColor ?? fg;
                 Console.BackgroundColor = str.BackgroundColor ?? bg;
 
-                _writer.Write(str.Text);
+                _writer.Write(str.Buffer);
             }
             finally
             {

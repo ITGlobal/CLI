@@ -9,7 +9,7 @@ namespace ITGlobal.CommandLine.Table.Impl
 
         public TableCellAlignment DefaultAlignment { get; set; }
 
-        public IFluentTableRowBuilder Add(ColoredString text, TableCellAlignment? alignment = null)
+        public IFluentTableRowBuilder Add(AnsiString text, TableCellAlignment? alignment = null)
         {
             _cells.Add(TableCellModel.Create(text, alignment ?? DefaultAlignment));
             return this;

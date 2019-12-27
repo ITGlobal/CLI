@@ -1,4 +1,4 @@
-﻿using JetBrains.Annotations;
+using JetBrains.Annotations;
 
 namespace ITGlobal.CommandLine
 {
@@ -7,22 +7,18 @@ namespace ITGlobal.CommandLine
     {
         public static void Write([NotNull] this ITerminalLiveProgressBar progressBar, params string[] strs)
         {
-            progressBar.Write(strs.Colored());
+            progressBar.Write(AnsiString.Create(strs));
         }
 
         public static void Complete([NotNull] this ITerminalLiveProgressBar progressBar, params string[] strs)
         {
-            progressBar.Complete(strs.Colored());
+            progressBar.Complete(AnsiString.Create(strs));
         }
 
         [PublicAPI]
-        public static void Write(
-            [NotNull] this ITerminalLiveProgressBar bar,
-            int value,
-            params string[] strs
-        )
+        public static void Write([NotNull] this ITerminalLiveProgressBar progressBar, int value, params string[] strs)
         {
-            bar.Write(value, strs.Colored());
+            progressBar.Write(value, AnsiString.Create(strs));
         }
     }
 }

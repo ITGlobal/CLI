@@ -8,23 +8,19 @@ namespace ITGlobal.CommandLine.Impl
     {
         private readonly struct ConsoleChar
         {
-            public ConsoleChar(StreamType stream, char c, ConsoleColor? foregroundColor, ConsoleColor? backgroundColor)
+            public ConsoleChar(StreamType stream, AnsiChar c)
             {
                 Stream = stream;
                 Char = c;
-                ForegroundColor = foregroundColor;
-                BackgroundColor = backgroundColor;
             }
 
             public readonly StreamType Stream;
-            public readonly char Char;
-            public readonly ConsoleColor? ForegroundColor;
-            public readonly ConsoleColor? BackgroundColor;
+            public readonly AnsiChar Char;
 
             public override string ToString()
             {
                 var stream = Stream == StreamType.Error ? "stderr" : "stdout";
-                return $"{stream} \"{Char}\" {ForegroundColor}/{BackgroundColor}";
+                return $"{stream} \"{Char.Char}\" {Char.ForegroundColor}/{Char.BackgroundColor}";
             }
         }
 
@@ -49,8 +45,8 @@ namespace ITGlobal.CommandLine.Impl
             _stdout = Console.Out;
             _stderr = Console.Error;
 
-            Console.SetOut(new RedirectedTextWriter(_stdout, this, StreamType.Output));
-            Console.SetError(new RedirectedTextWriter(_stderr, this, StreamType.Error));
+            Console.SetOut(new RedirectedTextWriter(terminal.Stdout, Console.Out.Encoding, this, StreamType.Output));
+            Console.SetError(new RedirectedTextWriter(terminal.Stderr, Console.Error.Encoding , this, StreamType.Error));
 
             _stdoutWriter = new RedirectedTerminalWriter(this, StreamType.Output);
             _stderrWriter = new RedirectedTerminalWriter(this, StreamType.Error);
@@ -80,7 +76,7 @@ namespace ITGlobal.CommandLine.Impl
                             continue;
                     }
 
-                    output.Write(new ColoredString(new string(x.Char, 1), x.ForegroundColor, x.BackgroundColor));
+                    output.Write(AnsiString.FromChar(x.Char));
                 }
             }
         }
@@ -115,7 +111,7 @@ namespace ITGlobal.CommandLine.Impl
                     return;
                 }
 
-                _chars.Add(new ConsoleChar(stream, c, fg, bg));
+                _chars.Add(new ConsoleChar(stream, new AnsiChar(c, fg, bg)));
 
                 if (c == '\n')
                 {
@@ -125,10 +121,10 @@ namespace ITGlobal.CommandLine.Impl
                         switch (x.Stream)
                         {
                             case StreamType.Output:
-                                _owner.WriteOutput(x.Char, x.ForegroundColor, x.BackgroundColor);
+                                _owner.WriteOutput(x.Char);
                                 break;
                             case StreamType.Error:
-                                _owner.WriteError(x.Char, x.ForegroundColor, x.BackgroundColor);
+                                _owner.WriteError(x.Char);
                                 break;
                         }
                     }

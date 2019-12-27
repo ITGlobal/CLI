@@ -1,4 +1,4 @@
-﻿namespace ITGlobal.CommandLine.Impl
+namespace ITGlobal.CommandLine.Impl
 {
     internal sealed class RedirectedTerminalWriter : TerminalWriterBase
     {
@@ -11,9 +11,9 @@
             _stream = stream;
         }
 
-        protected override void WriteImpl(ColoredString str)
+        public override void Write(AnsiString.Chunk str)
         {
-            foreach (var c in str.Text)
+            foreach (var c in str.Buffer)
             {
                 _output.Write(_stream, c, str.ForegroundColor, str.BackgroundColor);
             }

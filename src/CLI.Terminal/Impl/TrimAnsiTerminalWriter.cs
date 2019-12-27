@@ -9,9 +9,10 @@ namespace ITGlobal.CommandLine.Impl
             _writer = writer;
         }
 
-        protected override void WriteImpl(ColoredString str)
+        public override void Write(AnsiString.Chunk str)
         {
-            _writer.Write(str.Text.Colored());
+            str = new AnsiString.Chunk(str.Buffer, null, null);
+            _writer.Write(str);
         }
     }
 }

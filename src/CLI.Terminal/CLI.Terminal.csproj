@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <Import Project="../Package.props" />
     <Import Project="../Targeting.props" />
@@ -10,6 +10,11 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <None Include="AnsiStringFactory.Generated.cs">
+          <DesignTime>True</DesignTime>
+          <AutoGen>True</AutoGen>
+          <DependentUpon>AnsiStringFactory.tt</DependentUpon>
+        </None>
         <None Include="ColoredStringStyle.Generated.cs">
             <DesignTime>True</DesignTime>
             <AutoGen>True</AutoGen>
@@ -25,33 +30,24 @@
         <Reference Include="System.Core" />
     </ItemGroup>
 
+    <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
+        <PackageReference Include="System.Collections.Immutable" Version="1.7.0" />
+    </ItemGroup>
+
     <ItemGroup>
-        <None Update="ColoredString.tt">
-            <Generator>TextTemplatingFileGenerator</Generator>
-            <LastGenOutput>ColoredString.Generated.cs</LastGenOutput>
+        <None Update="AnsiStringFactory.tt">
+          <Generator>TextTemplatingFileGenerator</Generator>
+          <LastGenOutput>AnsiStringFactory.Generated.cs</LastGenOutput>
         </None>
-        <Compile Update="ColoredString.Generated.cs">
-            <DesignTime>True</DesignTime>
-            <AutoGen>True</AutoGen>
-            <DependentUpon>ColoredString.tt</DependentUpon>
+        <Compile Update="AnsiStringFactory.Generated.cs">
+          <DesignTime>True</DesignTime>
+          <AutoGen>True</AutoGen>
+          <DependentUpon>AnsiStringFactory.tt</DependentUpon>
         </Compile>
         <Compile Update="ColoredStringStyle.Generated.cs">
             <DesignTime>True</DesignTime>
             <AutoGen>True</AutoGen>
             <DependentUpon>ColoredStringStyle.tt</DependentUpon>
-        </Compile>
-    </ItemGroup>
-
-    <ItemGroup>
-
-        <None Update="ColoredStringFactory.tt">
-            <Generator>TextTemplatingFileGenerator</Generator>
-            <LastGenOutput>ColoredStringFactory.Generated.cs</LastGenOutput>
-        </None>
-        <Compile Update="ColoredStringFactory.Generated.cs">
-            <DesignTime>True</DesignTime>
-            <AutoGen>True</AutoGen>
-            <DependentUpon>ColoredStringFactory.tt</DependentUpon>
         </Compile>
     </ItemGroup>
 
@@ -69,6 +65,10 @@
             <AutoGen>True</AutoGen>
             <DependentUpon>Ansi.tt</DependentUpon>
         </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
     </ItemGroup>
 
 </Project>

@@ -33,7 +33,7 @@ namespace ITGlobal.CommandLine.Table.Impl
 
         private static void Measure(TableModel model, out int[] columnWidths)
         {
-            var columnCount = model.Rows.Max(_ => _.Cells.Length);
+            var columnCount = model.Rows.Max(_ => _.Cells.Count);
             columnWidths = new int[columnCount];
             foreach (var row in model.Rows)
             {
@@ -46,9 +46,9 @@ namespace ITGlobal.CommandLine.Table.Impl
                         continue;
                 }
 
-                if (row.Cells.Length == columnCount)
+                if (row.Cells.Count == columnCount)
                 {
-                    for (var i = 0; i < row.Cells.Length; i++)
+                    for (var i = 0; i < row.Cells.Count; i++)
                     {
                         var cell = row.Cells[i];
 
@@ -114,8 +114,8 @@ namespace ITGlobal.CommandLine.Table.Impl
 
         private TableLayout AdjustLayout(TableModel model, int[] columnWidths, int totalContentWidth, int totalTableWidth)
         {
-            var rows = new TableRowLayout[model.Rows.Length];
-            for (var i = 0; i < model.Rows.Length; i++)
+            var rows = new TableRowLayout[model.Rows.Count];
+            for (var i = 0; i < model.Rows.Count; i++)
             {
                 var row = model.Rows[i];
 
@@ -127,19 +127,19 @@ namespace ITGlobal.CommandLine.Table.Impl
 
         private TableRowLayout AdjustRowLayout(TableRowModel row, int[] columnWidths, int totalContentWidth)
         {
-            var cells = new TableCellLayout[row.Cells.Length];
-            for (var j = 0; j < row.Cells.Length; j++)
+            var cells = new TableCellLayout[row.Cells.Count];
+            for (var j = 0; j < row.Cells.Count; j++)
             {
                 var cell = row.Cells[j];
 
                 int width;
-                if (row.Cells.Length >= columnWidths.Length)
+                if (row.Cells.Count >= columnWidths.Length)
                 {
                     width = columnWidths[j];
                 }
-                else if (row.Cells.Length < columnWidths.Length)
+                else if (row.Cells.Count < columnWidths.Length)
                 {
-                    if (j == row.Cells.Length - 1)
+                    if (j == row.Cells.Count - 1)
                     {
                         width = CalcSpannedColumnWidth(columnWidths.Skip(j).ToArray());
                     }
@@ -171,7 +171,7 @@ namespace ITGlobal.CommandLine.Table.Impl
                 return AdjustCellLayout(cell.Content, cell.Alignment, width);
             }
 
-            var strs = new List<ColoredString>();
+            var strs = new List<AnsiString>();
             foreach (var str in cell.Content)
             {
                 var s = str;
@@ -191,29 +191,29 @@ namespace ITGlobal.CommandLine.Table.Impl
             return AdjustCellLayout(strs.ToArray(), cell.Alignment, width);
         }
 
-        private static TableCellLayout AdjustCellLayout(ColoredString[] strings, TableCellAlignment alignment, int width)
+        private static TableCellLayout AdjustCellLayout(IReadOnlyList<AnsiString> strings, TableCellAlignment alignment, int width)
         {
-            for (var i = 0; i < strings.Length; i++)
+            var content = new AnsiString[strings.Count];
+            for (var i = 0; i < strings.Count; i++)
             {
-                strings[i] = AdjustCellLayout(strings[i], alignment, width);
+                content[i] = AdjustCellLayout(strings[i], alignment, width);
             }
 
-            return new TableCellLayout(strings, alignment, width);
+            return new TableCellLayout(content, alignment, width);
         }
 
-        private static ColoredString AdjustCellLayout(ColoredString str, TableCellAlignment alignment, int width)
+        private static AnsiString AdjustCellLayout(AnsiString str, TableCellAlignment alignment, int width)
         {
-            var text = str.Text;
             switch (alignment)
             {
                 case TableCellAlignment.Left:
-                    text = text.PadRight(width);
+                    str = str.PadRight(width);
                     break;
                 case TableCellAlignment.Right:
-                    text = text.PadLeft(width);
+                    str = str.PadLeft(width);
                     break;
                 case TableCellAlignment.Middle:
-                    var totalPad = width - text.Length;
+                    var totalPad = width - str.Length;
                     if (totalPad > 0)
                     {
                         var leftPad = totalPad / 2;
@@ -221,12 +221,12 @@ namespace ITGlobal.CommandLine.Table.Impl
 
                         if (leftPad > 0)
                         {
-                            text = new string(' ', leftPad) + text;
+                            str = str.PadLeft(leftPad);
                         }
 
                         if (rightPad > 0)
                         {
-                            text = text + new string(' ', rightPad);
+                            str = str.PadRight(rightPad);
                         }
                     }
                     break;
@@ -234,7 +234,7 @@ namespace ITGlobal.CommandLine.Table.Impl
                     throw new ArgumentOutOfRangeException(nameof(alignment), alignment, null);
             }
 
-            return new ColoredString(text, str.ForegroundColor, str.BackgroundColor);
+            return str;
         }
     }
 }

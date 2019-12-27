@@ -37,7 +37,7 @@ namespace ITGlobal.CommandLine.Table
         ///     Add a table title
         /// </summary>
         [NotNull]
-        IDataDrivenGeneratedTableBuilder<T> Title(ColoredString text);
+        IDataDrivenGeneratedTableBuilder<T> Title(AnsiString text);
 
         /// <summary>
         ///     Defines a table column
@@ -60,7 +60,7 @@ namespace ITGlobal.CommandLine.Table
         [PublicAPI, NotNull]
         IDataDrivenGeneratedTableBuilder<T> Column(
             [NotNull] string title,
-            [NotNull] Func<T, ColoredString> property,
+            [NotNull] Func<T, AnsiString> property,
             Func<T, IColoredStringStyle> style = null,
             Func<T, TableCellAlignment?> align = null,
             int? maxWidth = null
@@ -70,6 +70,6 @@ namespace ITGlobal.CommandLine.Table
         ///     Add a table footer
         /// </summary>
         [NotNull]
-        IDataDrivenGeneratedTableBuilder<T> Footer(ColoredString text);
+        IDataDrivenGeneratedTableBuilder<T> Footer(AnsiString text);
     }
 }

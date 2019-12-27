@@ -16,13 +16,13 @@ namespace ITGlobal.CommandLine.Impl
             _hConsoleBuffer = hConsoleBuffer;
         }
 
-        protected override void WriteImpl(ColoredString str)
+        public override void Write(AnsiString.Chunk str)
         {
             if (str.Length == 0)
             {
                 return;
             }
-
+            
             if (!Win32.GetConsoleScreenBufferInfo(_hConsole, out var bufferInfo))
             {
                 Trace.WriteLine(
@@ -35,38 +35,20 @@ namespace ITGlobal.CommandLine.Impl
                 throw new Win32Exception();
             }
 
-            if (str.Text == "\n")
+            if (TryWriteSpecialString(in str, in bufferInfo))
             {
-                var cursor = new Win32.COORD
-                {
-                    X = 0,
-                    Y = (short)(bufferInfo.dwCursorPosition.Y + 1),
-                };
-                if (!Win32.SetConsoleCursorPosition(_hConsole, cursor))
-                {
-                    Trace.WriteLine(
-                        string.Format(
-                            "SetConsoleCursorPosition(h: 0x{0:X08}, {{ X: {1}, Y: {2} }}) -> 0x{3:X08}",
-                            _hConsole.ToInt32(),
-                            cursor.X,
-                            cursor.Y,
-                            Marshal.GetLastWin32Error()
-                        )
-                    );
-                    throw new Win32Exception();
-                }
                 return;
             }
 
-            var fg = str.ForegroundColor ?? Console.ForegroundColor;
-            var bg = str.BackgroundColor ?? Console.BackgroundColor;
+            var fg = str.ForegroundColor ?? Terminal.DefaultForegroundColor;
+            var bg = str.BackgroundColor ?? Terminal.DefaultBackgroundColor;
 
             var attrs = WindowsTerminalImplementation.GetCharAttributes(fg, bg);
 
             var chars = new Win32.CHAR_INFO[str.Length];
             for (var i = 0; i < str.Length; i++)
             {
-                chars[i].Char.UnicodeChar = str.Text[i];
+                chars[i].UnicodeChar = str.Buffer[i];
                 chars[i].Attributes = attrs;
             }
 
@@ -87,7 +69,7 @@ namespace ITGlobal.CommandLine.Impl
                 Left = bufferInfo.dwCursorPosition.X,
                 Right = (short)(bufferInfo.dwCursorPosition.X + dwBufferSize.X),
             };
-            if (!Win32.WriteConsoleOutput(_hConsoleBuffer, chars, dwBufferSize, dwBufferCoord, ref lpWriteRegion))
+            if (!Win32.WriteConsoleOutputW(_hConsoleBuffer, chars, dwBufferSize, dwBufferCoord, ref lpWriteRegion))
             {
                 Trace.WriteLine(
                     string.Format(
@@ -120,6 +102,57 @@ namespace ITGlobal.CommandLine.Impl
                 );
                 throw new Win32Exception();
             }
+        }
+
+        private bool TryWriteSpecialString(in AnsiString.Chunk str, in Win32.CONSOLE_SCREEN_BUFFER_INFO bufferInfo)
+        {
+            if (str.Buffer.Length != 1)
+            {
+                return false;
+            }
+
+            var lf = false;
+            var cr = false;
+
+            if (str.Buffer[0] == '\n')
+            {
+                lf = true;
+            }
+            else if (str.Buffer[0] == '\r')
+            {
+                cr = true;
+            }
+
+            if (!cr! && !lf)
+            {
+                return false;
+            }
+
+            var cursor = new Win32.COORD
+            {
+                X = 0,
+                Y = bufferInfo.dwCursorPosition.Y,
+            };
+            if (lf)
+            {
+                cursor.Y++;
+            }
+
+
+            if (!Win32.SetConsoleCursorPosition(_hConsole, cursor))
+            {
+                Trace.WriteLine(
+                    string.Format(
+                        "SetConsoleCursorPosition(h: 0x{0:X08}, {{ X: {1}, Y: {2} }}) -> 0x{3:X08}",
+                        _hConsole.ToInt32(),
+                        cursor.X,
+                        cursor.Y,
+                        Marshal.GetLastWin32Error()
+                    )
+                );
+                throw new Win32Exception();
+            }
+            return true;
         }
     }
 }

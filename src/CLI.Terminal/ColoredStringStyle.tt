@@ -17,6 +17,9 @@ namespace ITGlobal.CommandLine
 foreach (ConsoleColor color in Enum.GetValues(typeof(ConsoleColor)))
 {
 #>
+        /// <summary>
+        ///     A built-in style that sets default foreground color to <see cref="ConsoleColor.<#= color#>"/>
+        /// </summary>
         [NotNull]
         public static IColoredStringStyle <#= color#> { get; } = Create(ConsoleColor.<#= color #>, null);
 
@@ -31,6 +34,9 @@ foreach (ConsoleColor color in Enum.GetValues(typeof(ConsoleColor)))
 foreach (ConsoleColor color in Enum.GetValues(typeof(ConsoleColor)))
 {
 #>
+        /// <summary>
+        ///     A built-in style that sets default background color to <see cref="ConsoleColor.<#= color#>"/>
+        /// </summary>
         [NotNull]
         public static IColoredStringStyle On<#= color#> { get; } = Create(null, ConsoleColor.<#= color #>);
 
@@ -46,6 +52,10 @@ foreach (ConsoleColor foreground in Enum.GetValues(typeof(ConsoleColor)))
     foreach (ConsoleColor background in Enum.GetValues(typeof(ConsoleColor)))
     {
 #>
+        /// <summary>
+        ///     A built-in style that sets default foreground color to <see cref="ConsoleColor.<#= foreground#>"/>
+        ///     and default background color to <see cref="ConsoleColor.<#= background#>"/>
+        /// </summary>
         [NotNull]
         public static IColoredStringStyle <#= foreground#>On<#= background #> { get; } = Create(ConsoleColor.<#= foreground #>, ConsoleColor.<#= background #>);
 

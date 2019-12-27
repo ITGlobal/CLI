@@ -42,10 +42,10 @@ namespace ITGlobal.CommandLine.Table
         {
             return builder.Column(title, ValueProvider, style, align, maxWidth);
 
-            ColoredString ValueProvider(T dataItem)
+            AnsiString ValueProvider(T dataItem)
             {
                 var s = property(dataItem);
-                return (ColoredString)(s ?? string.Empty);
+                return (AnsiString)(s ?? string.Empty);
             }
         }
         /// <summary>
@@ -81,9 +81,9 @@ namespace ITGlobal.CommandLine.Table
         {
             return builder.Column(title, ValueProvider, style, align, maxWidth);
 
-            ColoredString ValueProvider(T dataItem)
+            AnsiString ValueProvider(T dataItem)
             {
-                return (ColoredString)(property(dataItem)?.ToString() ?? string.Empty);
+                return (AnsiString)(property(dataItem)?.ToString() ?? string.Empty);
             }
         }
     }

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using ITGlobal.CommandLine.Table.Rendering;
@@ -12,8 +13,7 @@ namespace ITGlobal.CommandLine.Table.Impl
         {
             _style = style;
         }
-
-
+        
         protected override int CalcTotalTableWidth(int[] columnWidths)
         {
             var totalContentWidth = columnWidths.Sum();
@@ -30,11 +30,11 @@ namespace ITGlobal.CommandLine.Table.Impl
         protected override void Render(TableLayout model, TextWriter output)
         {
             var lastRow = LastRowType.None;
-            for (var i = 0; i < model.Rows.Length; i++)
+            for (var i = 0; i < model.Rows.Count; i++)
             {
                 var row = model.Rows[i];
                 var isFirstRow = i == 0;
-                var isLastRow = i == model.Rows.Length - 1;
+                var isLastRow = i == model.Rows.Count - 1;
 
                 switch (row.Type)
                 {
@@ -52,8 +52,8 @@ namespace ITGlobal.CommandLine.Table.Impl
                                     model: model,
                                     isFirstRow: isFirstRow,
                                     isLastRow: false,
-                                    prevRowIsMultiCell: !isFirstRow && model.Rows[i - 1].Cells.Length == model.ColumnWidths.Length,
-                                    nextRowIsMultiCell: !isLastRow && model.Rows[i + 1].Cells.Length == model.ColumnWidths.Length
+                                    prevRowIsMultiCell: !isFirstRow && model.Rows[i - 1].Cells.Count == model.ColumnWidths.Count,
+                                    nextRowIsMultiCell: !isLastRow && model.Rows[i + 1].Cells.Count == model.ColumnWidths.Count
                                 );
                                 break;
                         }
@@ -70,8 +70,8 @@ namespace ITGlobal.CommandLine.Table.Impl
                                 model: model,
                                 isFirstRow: isFirstRow,
                                 isLastRow: false,
-                                prevRowIsMultiCell: !isFirstRow && model.Rows[i - 1].Cells.Length == model.ColumnWidths.Length,
-                                nextRowIsMultiCell: !isLastRow && model.Rows[i + 1].Cells.Length == model.ColumnWidths.Length
+                                prevRowIsMultiCell: !isFirstRow && model.Rows[i - 1].Cells.Count == model.ColumnWidths.Count,
+                                nextRowIsMultiCell: !isLastRow && model.Rows[i + 1].Cells.Count == model.ColumnWidths.Count
                             );
                         }
 
@@ -86,8 +86,8 @@ namespace ITGlobal.CommandLine.Table.Impl
                                 model: model,
                                 isFirstRow: isFirstRow,
                                 isLastRow: false,
-                                prevRowIsMultiCell: !isFirstRow && model.Rows[i - 1].Cells.Length == model.ColumnWidths.Length,
-                                nextRowIsMultiCell: !isLastRow && model.Rows[i + 1].Cells.Length == model.ColumnWidths.Length
+                                prevRowIsMultiCell: !isFirstRow && model.Rows[i - 1].Cells.Count == model.ColumnWidths.Count,
+                                nextRowIsMultiCell: !isLastRow && model.Rows[i + 1].Cells.Count == model.ColumnWidths.Count
                             );
                         }
 
@@ -108,8 +108,8 @@ namespace ITGlobal.CommandLine.Table.Impl
                                     model: model,
                                     isFirstRow: isFirstRow,
                                     isLastRow: false,
-                                    prevRowIsMultiCell: !isFirstRow && model.Rows[i - 1].Cells.Length == model.ColumnWidths.Length,
-                                    nextRowIsMultiCell: !isLastRow && model.Rows[i + 1].Cells.Length == model.ColumnWidths.Length
+                                    prevRowIsMultiCell: !isFirstRow && model.Rows[i - 1].Cells.Count == model.ColumnWidths.Count,
+                                    nextRowIsMultiCell: !isLastRow && model.Rows[i + 1].Cells.Count == model.ColumnWidths.Count
                                 );
                                 break;
                         }
@@ -130,8 +130,8 @@ namespace ITGlobal.CommandLine.Table.Impl
                                     model: model,
                                     isFirstRow: isFirstRow,
                                     isLastRow: false,
-                                    prevRowIsMultiCell: !isFirstRow && model.Rows[i - 1].Cells.Length == model.ColumnWidths.Length,
-                                    nextRowIsMultiCell: !isLastRow && model.Rows[i + 1].Cells.Length == model.ColumnWidths.Length
+                                    prevRowIsMultiCell: !isFirstRow && model.Rows[i - 1].Cells.Count == model.ColumnWidths.Count,
+                                    nextRowIsMultiCell: !isLastRow && model.Rows[i + 1].Cells.Count == model.ColumnWidths.Count
                                 );
                                 break;
                         }
@@ -155,7 +155,7 @@ namespace ITGlobal.CommandLine.Table.Impl
                         model: model,
                         isFirstRow: false,
                         isLastRow: true,
-                        prevRowIsMultiCell: model.Rows[model.Rows.Length - 1].Cells.Length == model.ColumnWidths.Length,
+                        prevRowIsMultiCell: model.Rows[model.Rows.Count - 1].Cells.Count == model.ColumnWidths.Count,
                         nextRowIsMultiCell: false
                     );
                     break;
@@ -200,7 +200,7 @@ namespace ITGlobal.CommandLine.Table.Impl
             bool nextRowIsMultiCell
             )
         {
-            for (var column = 0; column < model.ColumnWidths.Length; column++)
+            for (var column = 0; column < model.ColumnWidths.Count; column++)
             {
                 if (column == 0)
                 {
@@ -266,20 +266,20 @@ namespace ITGlobal.CommandLine.Table.Impl
             }
         }
 
-        private void DrawMultiCell(TextWriter output, TableCellLayout[] cells, IColoredStringStyle colors)
+        private void DrawMultiCell(TextWriter output, IReadOnlyList<TableCellLayout> cells, IColoredStringStyle colors)
         {
             var space = colors.Apply(" ");
-            var lines = cells.Max(_ => _.Content.Length);
+            var lines = cells.Max(_ => _.Content.Count);
 
             for (var line = 0; line < lines; line++)
             {
-                for (var column = 0; column < cells.Length; column++)
+                for (var column = 0; column < cells.Count; column++)
                 {
                     var cell = cells[column];
                     output.Write(_style.FrameColors.Apply(_style.BoxVertical));
                     output.Write(space);
                     var cellWidth = 0;
-                    if (line < cell.Content.Length)
+                    if (line < cell.Content.Count)
                     {
                         output.Write(colors.Apply(cell.Content[line]));
                         cellWidth = cell.Content[line].Length;

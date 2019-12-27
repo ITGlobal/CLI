@@ -38,18 +38,15 @@ namespace ITGlobal.CommandLine.Impl
             public COORD dwMaximumWindowSize;
         }
 
-        [StructLayout(LayoutKind.Explicit)]
-        public struct CHAR
-        {
-            [FieldOffset(0)] public char UnicodeChar;
-            [FieldOffset(0)] public byte AsciiChar;
-        }
-
-        [StructLayout(LayoutKind.Explicit)]
+        [StructLayout(LayoutKind.Explicit, CharSet = CharSet.Unicode)]
         public struct CHAR_INFO
         {
-            [FieldOffset(0)] public CHAR Char;
-            [FieldOffset(2)] public short Attributes;
+            [FieldOffset(0)]
+            public char UnicodeChar;
+            [FieldOffset(0)]
+            public byte AsciiChar;
+            [FieldOffset(2)]
+            public short Attributes;
         }
 
         public const int STD_OUTPUT_HANDLE = -11;
@@ -247,8 +244,8 @@ namespace ITGlobal.CommandLine.Impl
             COORD dwCursorPosition
         );
 
-        [DllImport("kernel32.dll", SetLastError = true)]
-        public static extern bool WriteConsoleOutput(
+        [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+        public static extern bool WriteConsoleOutputW(
             IntPtr hConsoleOutput,
             CHAR_INFO[] lpBuffer,
             COORD dwBufferSize,

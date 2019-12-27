@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Threading;
 
 namespace ITGlobal.CommandLine.Impl
 {
-    internal sealed class AnsiSplitter : IAnsiCommandHandler
+    internal sealed class AnsiStringParser : IAnsiCommandHandler
     {
         private readonly struct AnsiColors
         {
@@ -24,91 +24,68 @@ namespace ITGlobal.CommandLine.Impl
         private readonly Stack<AnsiColors> _colorHistory = new Stack<AnsiColors>();
         private AnsiColors _colors = new AnsiColors(null, null);
 
-        private readonly List<ColoredString> _results = new List<ColoredString>();
-        private readonly StringBuilder _sb = new StringBuilder();
+        private readonly List<AnsiChar> _chars = new List<AnsiChar>();
 
-        private static readonly ColoredString[] Empty = new[] {(ColoredString) ""};
-        private static readonly ColoredString[] LF = new[] {(ColoredString) "\n"};
-        private static readonly ColoredString[] CR = new[] {(ColoredString) "\r"};
+        private static readonly ThreadLocal<AnsiStringParser> InstanceLocal =
+            new ThreadLocal<AnsiStringParser>(() => new AnsiStringParser());
 
-        public AnsiSplitter()
+        private AnsiStringParser()
         {
             _decoder = new AnsiSequenceDecoder(this);
         }
 
-        public IList<ColoredString> Split(ColoredString input)
+        public static AnsiString Create(
+            string str,
+            ConsoleColor? defaultForegroundColor = null,
+            ConsoleColor? defaultBackgroundColor = null)
         {
-            switch (input.Text)
+            if (string.IsNullOrEmpty(str))
             {
-                case "\n":
-                    return LF;
-                case "\r":
-                    return CR;
-                case "":
-                    return Empty;
+                return AnsiString.Empty;
             }
 
-            _results.Clear();
-            _sb.Clear();
+            var instance = InstanceLocal.Value;
 
-            var str = input.ToString();
-            _decoder.Reset();
+            instance.PushColors(defaultForegroundColor, defaultBackgroundColor);
+
             foreach (var c in str)
             {
-                _decoder.Process(c);
+                instance._decoder.Process(c);
             }
 
-            TryEmitResult();
+            var chars = instance._chars.ToArray();
+            instance._chars.Clear();
+            instance._colorHistory.Clear();
+            instance._decoder.Reset();
 
-            return _results;
+            return new AnsiString(chars);
+
         }
 
         void IAnsiCommandHandler.SetForegroundColor(ConsoleColor color)
         {
-            TryEmitResult();
             PushColors(foreground: color);
         }
 
         void IAnsiCommandHandler.SetBackgroundColor(ConsoleColor color)
         {
-            TryEmitResult();
             PushColors(background: color);
         }
 
         void IAnsiCommandHandler.SetColors(ConsoleColor foreground, ConsoleColor background)
         {
-            TryEmitResult();
             PushColors(foreground, background);
         }
 
         void IAnsiCommandHandler.ResetColors()
         {
-            TryEmitResult();
             PopColors();
         }
 
         void IAnsiCommandHandler.Write(char c)
         {
-            if (c == '\n' || c == '\r')
-            {
-                TryEmitResult();
-            }
-            else
-            {
-                _sb.Append(c);
-            }
+            _chars.Add(new AnsiChar(c, _colors.Fg, _colors.Bg));
         }
-
-        private void TryEmitResult()
-        {
-            if (_sb.Length > 0)
-            {
-                _results.Add(_sb.ToString().Colored(_colors.Fg, _colors.Bg));
-
-                _sb.Clear();
-            }
-        }
-
 
         private void PushColors(ConsoleColor? foreground = null, ConsoleColor? background = null)
         {

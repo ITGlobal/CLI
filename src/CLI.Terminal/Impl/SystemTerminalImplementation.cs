@@ -10,14 +10,14 @@ namespace ITGlobal.CommandLine.Impl
         
         public SystemTerminalImplementation()
         {
-            Console.SetError(new AnsiTextWriter(Console.Error));
-            Console.SetOut(new AnsiTextWriter(Console.Out));
+            Stdout = new SystemTerminalWriter(Console.Out);
+            Stderr = new SystemTerminalWriter(Console.Error);
+
+            Console.SetOut(new AnsiTextWriter(Stdout, Console.Out.Encoding));
+            Console.SetError(new AnsiTextWriter(Stderr, Console.Error.Encoding));
 
             _stderr = Console.Error;
             _stdout = Console.Out;
-
-            Stdout = new SystemTerminalWriter(Console.Out);
-            Stderr = new SystemTerminalWriter(Console.Error);
         }
 
         public ITerminalWriter Stdout { get; }
