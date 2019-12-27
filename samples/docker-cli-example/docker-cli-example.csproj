@@ -5,6 +5,7 @@
         <TargetFramework>netcoreapp2.0</TargetFramework>
         <RootNamespace>ITGlobal.CommandLine.Example</RootNamespace>
         <IsPackable>false</IsPackable>
+        <LangVersion>preview</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>

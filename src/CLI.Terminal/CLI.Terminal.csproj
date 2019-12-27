@@ -7,13 +7,14 @@
         <PackageId>ITGlobal.CLI.Terminal</PackageId>
         <LangVersion>latest</LangVersion>
         <RootNamespace>ITGlobal.CommandLine</RootNamespace>
+        <LangVersion>preview</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
         <None Include="AnsiStringFactory.Generated.cs">
-          <DesignTime>True</DesignTime>
-          <AutoGen>True</AutoGen>
-          <DependentUpon>AnsiStringFactory.tt</DependentUpon>
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>AnsiStringFactory.tt</DependentUpon>
         </None>
         <None Include="ColoredStringStyle.Generated.cs">
             <DesignTime>True</DesignTime>
@@ -36,18 +37,13 @@
 
     <ItemGroup>
         <None Update="AnsiStringFactory.tt">
-          <Generator>TextTemplatingFileGenerator</Generator>
-          <LastGenOutput>AnsiStringFactory.Generated.cs</LastGenOutput>
+            <Generator>TextTemplatingFileGenerator</Generator>
+            <LastGenOutput>AnsiStringFactory.Generated.cs</LastGenOutput>
         </None>
         <Compile Update="AnsiStringFactory.Generated.cs">
-          <DesignTime>True</DesignTime>
-          <AutoGen>True</AutoGen>
-          <DependentUpon>AnsiStringFactory.tt</DependentUpon>
-        </Compile>
-        <Compile Update="ColoredStringStyle.Generated.cs">
             <DesignTime>True</DesignTime>
             <AutoGen>True</AutoGen>
-            <DependentUpon>ColoredStringStyle.tt</DependentUpon>
+            <DependentUpon>AnsiStringFactory.tt</DependentUpon>
         </Compile>
     </ItemGroup>
 
@@ -56,6 +52,14 @@
             <Generator>TextTemplatingFileGenerator</Generator>
             <LastGenOutput>ColoredStringStyle.Generated.cs</LastGenOutput>
         </None>
+        <Compile Update="ColoredStringStyle.Generated.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>ColoredStringStyle.tt</DependentUpon>
+        </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
         <None Update="Impl\Ansi.tt">
             <Generator>TextTemplatingFileGenerator</Generator>
             <LastGenOutput>Ansi.Generated.cs</LastGenOutput>
@@ -68,7 +72,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+        <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
     </ItemGroup>
 
 </Project>

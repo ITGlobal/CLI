@@ -7,6 +7,7 @@
     <PackageId>ITGlobal.CLI.LiveUpdate</PackageId>
     <LangVersion>latest</LangVersion>
     <RootNamespace>ITGlobal.CommandLine</RootNamespace>
+    <LangVersion>preview</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
