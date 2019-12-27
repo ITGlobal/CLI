@@ -157,6 +157,17 @@ namespace ITGlobal.CommandLine.Parsing
         {
             _displayOrder = displayOrder;
             return this;
+        } 
+        
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            if (!IsSet)
+            {
+                return string.Empty;
+            }
+
+            return Value.ToString();
         }
 
         #endregion

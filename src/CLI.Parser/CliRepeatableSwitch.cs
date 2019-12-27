@@ -79,6 +79,9 @@ namespace ITGlobal.CommandLine.Parsing
             return this;
         }
 
+        /// <inheritdoc />
+        public override string ToString() => !IsSet ? false.ToString() : RepeatCount.ToString();
+
         #endregion
 
         #region operators

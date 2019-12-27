@@ -152,6 +152,17 @@ namespace ITGlobal.CommandLine.Parsing
             return this;
         }
 
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            if (!IsSet)
+            {
+                return string.Empty;
+            }
+
+            return Value.ToString();
+        }
+
         #endregion
 
         #region operators

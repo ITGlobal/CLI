@@ -85,6 +85,9 @@ namespace ITGlobal.CommandLine.Parsing
             return this;
         }
 
+        /// <inheritdoc />
+        public override string ToString() => IsSet.ToString();
+
         #endregion
 
         #region operators
