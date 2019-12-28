@@ -1,9 +1,16 @@
 ---
 layout: default
 ---
-# Flags
+# Parser configuration options
 
-> [home](..) > [command line parser](README) > flags
+[Go back](../parser#home)
+
+---
+
+* [Supported flags ](#flags)
+* [Option styles ](#styles)
+* [POSIX notation ](#posit-notation)
+* [Windows/DOS notation ](#dos-notation)
 
 Command line parser's behavior may be altered with `CliParserFlags`:
 
@@ -14,20 +21,20 @@ var parser = CliParser.NewSimpleParser(flags: CliParserFlags.Default);
 parser.Flags(CliParserFlags.Default);
 ```
 
-## Supported flags
+## Supported flags {#flags}
 
-| Flag                          | Effect                                                        |
-|-------------------------------|---------------------------------------------------------------|
-| `IgnoreUnknownOptions`        | Parser will not fail on unknown options when flag is set      |
-| `AllowFreeArguments`          | Parser will not fail on unconsumed arguments when flag is set |
-| `PosixNotation`               | Enabled POSIX style parsing (see below)                       |
-| `WindowsNotation`             | Enabled Windows/DOS style parsing (see below)                 |
-| `ColonSeparatedValues`        | Enables color-separated options (see below)                   |
-| `EqualitySignSeparatedValues` | Enables equality sign-separated options (see below)           |
+| Flag                          | Value | Effect                                                        |
+|-------------------------------|-------|---------------------------------------------------------------|
+| `IgnoreUnknownOptions`        | 1     | Parser will not fail on unknown options when flag is set      |
+| `AllowFreeArguments`          | 2     | Parser will not fail on unconsumed arguments when flag is set |
+| `PosixNotation`               | 4     | Enabled POSIX style parsing (see below)                       |
+| `WindowsNotation`             | 8     | Enabled Windows/DOS style parsing (see below)                 |
+| `ColonSeparatedValues`        | 16    | Enables color-separated options (see below)                   |
+| `EqualitySignSeparatedValues` | 32    | Enables equality sign-separated options (see below)           |
 
 > By default, only `PosixNotation` and `EqualitySignSeparatedValues` flags are set.
 
-## Option styles
+## Option styles {#styles}
 
 Command line options have a name and an value. There are few ways to separate them.
 
@@ -35,7 +42,7 @@ Command line options have a name and an value. There are few ways to separate th
 
 Most general option style is space-separation option. This means that option name and option value are separated with a whitespace:
 
-```
+```shell
 --key value
 ```
 
@@ -45,7 +52,7 @@ Most general option style is space-separation option. This means that option nam
 
 You may use a color (`:`) sign to separate option's name from it's value:
 
-```
+```shell
 --key:value
 ```
 
@@ -53,17 +60,17 @@ You may use a color (`:`) sign to separate option's name from it's value:
 
 You may use an equality sign (`=`) sign to separate option's name from it's value:
 
-```
+```shell
 --key=value
 ```
 
-## POSIX notation
+## POSIX notation {#posit-notation}
 
 Parser supports POSIX notation with following features:
 
 * Options and switches with long (more than one char) names:
 
-  ```
+  ```shell
   --key value --switch --long-switch-name value
   ```
 
@@ -71,7 +78,7 @@ Parser supports POSIX notation with following features:
 
 * Options and switches with one-char names:
 
-  ```
+  ```shell
   -k value -s -l value
   ```
 
@@ -79,37 +86,37 @@ Parser supports POSIX notation with following features:
 
 * Switches with one-char names combined together:
 
-  ```
+  ```shell
   -vxs -dt
   ```
 
   This is basically a short form of:
 
-  ```
+  ```shell
   -v -x -s -d -t
   ```
 
 * Arguments separator `--` - everything after `--` token is forcibly consumed as arguments:
 
-  ```
+  ```shell
   -k value -v --key value -- foo bar -z --gamma value
   ```
 
   In this example only `-k`, `-v` and `--key` are options/switches, and `foo bar -z --gamma value` are free arguments.
 
-## Windows/DOS notation
+## Windows/DOS notation {#dos-notation}
 
 Parser supports Windows/DOS notation with following features:
 
 * Options and switches with long (more than one char) names:
 
-  ```
+  ```shell
   /key value /switch /long-switch-name value
   ```
 
 * Options and switches with one-char names:
 
-  ```
+  ```shell
   /k value /s /l value
   ```
 

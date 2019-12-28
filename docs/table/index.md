@@ -1,11 +1,13 @@
 ---
 layout: default
 ---
-# Tables
+# ASCII tables {#home}
 
-> [CLI](../) / Tables
+[Go back](..#home)
 
-`ITGlobal CLI` provides a handy way to render tables.
+---
+
+`ITGlobal CLI` provides a handy way to render ASCII tables.
 There are to ways to define table data:
 
 * [Data-driven tables](data-driven)
@@ -15,7 +17,7 @@ Table generator is also used internally in [command line parser](../parser) to p
 
 ## Output
 
-By default table builders renders table output to console.
+By default table builders renders table output to standard output.
 However, there are few helpers to customize output:
 
 * Add a `maxWidth` parameter to `Draw()` method to override table max allowed width:
@@ -64,7 +66,7 @@ var table = TerminalTable.CreateFluent(renderer: renderer);
 
 There are few built-in renderers:
 
-### `GRID` table renderer
+### Grid table renderer
 
 Grid-style table renderer is enabled by default and is designed to render a table with preudographic characters.
 It supports two rendering styles:
@@ -75,7 +77,7 @@ It supports two rendering styles:
   var renderer = TableRenderer.Grid(GridTableStyle.Pretty());
   ```
   
-  ![](grid-pretty.png)
+  ![](grid-pretty.gif)
 
   Note than `GridTableStyle.Pretty()` method has optional parameter to override table colors.
 
@@ -85,9 +87,9 @@ It supports two rendering styles:
   var renderer = TableRenderer.Grid(GridTableStyle.Sketch());
   ```
   
-  ![](grid-sketch.png)
+  ![](grid-sketch.gif)
 
-### `PIPE` table renderer
+### Pipe table renderer
 
 Pipe-style table renderer is designed to render a table using a markdown-style formatting.
 
@@ -95,9 +97,9 @@ Pipe-style table renderer is designed to render a table using a markdown-style f
 var renderer = TableRenderer.Pipe();
 ```
   
-![](pipe.png)
+![](pipe.gif)
 
-### `PLAIN` table renderer
+### Plain table renderer
 
 Plain table renderer is designed to render a table using a simpliest formatting possible.
 This renderer provides most compact output.
@@ -106,4 +108,4 @@ This renderer provides most compact output.
 var renderer = TableRenderer.Plain();
 ```
   
-![](plain.png)
+![](plain.gif)
