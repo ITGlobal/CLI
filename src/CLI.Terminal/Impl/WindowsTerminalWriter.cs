@@ -100,7 +100,7 @@ namespace ITGlobal.CommandLine.Impl
                         Marshal.GetLastWin32Error()
                     )
                 );
-                throw new Win32Exception();
+                //throw new Win32Exception();
             }
         }
 
@@ -150,7 +150,7 @@ namespace ITGlobal.CommandLine.Impl
                         Marshal.GetLastWin32Error()
                     )
                 );
-                throw new Win32Exception();
+                //throw new Win32Exception();
             }
             return true;
         }
