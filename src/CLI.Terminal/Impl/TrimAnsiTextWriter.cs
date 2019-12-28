@@ -38,5 +38,10 @@ namespace ITGlobal.CommandLine.Impl
         {
             _writer.Write(c);
         }
+
+        protected override void Dispose(bool disposing)
+        {
+            _writer.Dispose();
+        }
     }
 }

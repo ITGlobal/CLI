@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Text;
 using ITGlobal.CommandLine.Impl;
 using ITGlobal.CommandLine.Table.Impl;
@@ -34,10 +35,15 @@ namespace ITGlobal.CommandLine.Table
         ///     Draws table to specified writer
         /// </summary>
         [PublicAPI]
-        public static void Draw([NotNull] this ITableBuilderBase builder, [NotNull] Action<string> writer, int? maxWidth = null)
+        public static void Draw([NotNull] this ITableBuilderBase builder, [NotNull] Action<string> writer, int? maxWidth = null, bool trimAnsi = true)
         {
-            using (var callback = new CallbackTextWriter(writer))
-            using (var w = new TrimAnsiTextWriter(callback))
+            TextWriter w = new CallbackTextWriter(writer);
+            if (trimAnsi)
+            {
+                w = new TrimAnsiTextWriter(w);
+            }
+
+            using (w)
             {
                 builder.Draw(w, maxWidth);
             }
@@ -47,9 +53,9 @@ namespace ITGlobal.CommandLine.Table
         ///     Draws table to string
         /// </summary>
         [PublicAPI]
-        public static void Draw([NotNull] this ITableBuilderBase builder, [NotNull] StringBuilder stringBuilder, int? maxWidth = null)
+        public static void Draw([NotNull] this ITableBuilderBase builder, [NotNull] StringBuilder stringBuilder, int? maxWidth = null, bool trimAnsi = true)
         {
-            builder.Draw(str => stringBuilder.AppendLine(str), maxWidth);
+            builder.Draw(str => stringBuilder.AppendLine(str), maxWidth, trimAnsi);
         }
 
         /// <summary>
@@ -60,6 +66,17 @@ namespace ITGlobal.CommandLine.Table
         {
             var stringBuilder = new StringBuilder();
             builder.Draw(stringBuilder, maxWidth);
+            return stringBuilder.ToString();
+        }
+
+        /// <summary>
+        ///     Draws table to ANSI string
+        /// </summary>
+        [PublicAPI]
+        public static string DrawToAnsiString([NotNull] this ITableBuilderBase builder, int? maxWidth = null)
+        {
+            var stringBuilder = new StringBuilder();
+            builder.Draw(stringBuilder, maxWidth, trimAnsi: false);
             return stringBuilder.ToString();
         }
     }
