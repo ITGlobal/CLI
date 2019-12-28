@@ -139,14 +139,14 @@ namespace ITGlobal.CommandLine.Parsing
             bool hidden = false);
 
         /// <summary>
-        ///     Add a callback that will be executed before main handler
+        ///     Add a hook that will be executed before main handler
         /// </summary>
-        void BeforeExecute([NotNull] CliHandler handler);
+        void BeforeExecute([NotNull] CliHook hook);
 
         /// <summary>
-        ///     Add a callback that will be executed before main handler
+        ///     Add a hook that will be executed before main handler
         /// </summary>
-        void BeforeExecuteAsync([NotNull] CliAsyncHandler handler);
+        void BeforeExecuteAsync([NotNull] CliAsyncHook hook);
 
         /// <summary>
         ///     Add a execution callback

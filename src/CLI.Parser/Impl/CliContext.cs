@@ -1,6 +1,6 @@
-﻿namespace ITGlobal.CommandLine.Parsing.Impl
+namespace ITGlobal.CommandLine.Parsing.Impl
 {
-    internal sealed class CliContext : ICliContext
+    internal sealed class CliContext : IHookCliContext
     {
         private readonly string[] _arguments;
         private bool _isLogoSuppressed;
@@ -25,7 +25,7 @@
             _exitCode = exitCode;
         }
 
-        void ICliContext.SuppressLogo(bool suppress)
+        void IHookCliContext.SuppressLogo(bool suppress)
         {
             _isLogoSuppressed = suppress;
         }

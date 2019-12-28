@@ -20,7 +20,7 @@ namespace ITGlobal.CommandLine.Parsing
 
         private readonly List<ICliConsumer> _consumers = new List<ICliConsumer>();
         private readonly List<CliCommand> _commands = new List<CliCommand>();
-        private readonly List<CliAsyncHandler> _beforeExecuteHandlers = new List<CliAsyncHandler>();
+        private readonly List<CliAsyncHook> _beforeExecuteHandlers = new List<CliAsyncHook>();
         private readonly List<CliAsyncHandler> _executeHandlers = new List<CliAsyncHandler>();
 
         private string _helpText = "";
@@ -431,35 +431,35 @@ namespace ITGlobal.CommandLine.Parsing
         }
 
         /// <summary>
-        ///     Add a callback that will be executed before main handler
+        ///     Add a hook that will be executed before main handler
         /// </summary>
-        public void BeforeExecute(CliHandler handler)
+        public void BeforeExecute([NotNull] CliHook hook)
         {
-            if (handler == null)
+            if (hook == null)
             {
-                throw new ArgumentNullException(nameof(handler));
+                throw new ArgumentNullException(nameof(hook));
             }
 
-            _beforeExecuteHandlers.Add(handler.ToAsyncHandler());
+            _beforeExecuteHandlers.Add(hook.ToAsyncHook());
         }
 
         /// <summary>
-        ///     Add a callback that will be executed before main handler
+        ///     Add a hook that will be executed before main handler
         /// </summary>
-        public void BeforeExecuteAsync(CliAsyncHandler handler)
+        public void BeforeExecuteAsync([NotNull] CliAsyncHook hook)
         {
-            if (handler == null)
+            if (hook == null)
             {
-                throw new ArgumentNullException(nameof(handler));
+                throw new ArgumentNullException(nameof(hook));
             }
 
-            _beforeExecuteHandlers.Add(handler);
+            _beforeExecuteHandlers.Add(hook);
         }
 
         /// <summary>
         ///     Add a execution callback
         /// </summary>
-        public void OnExecute(CliHandler handler)
+        public void OnExecute([NotNull] CliHandler handler)
         {
             if (handler == null)
             {
@@ -472,7 +472,7 @@ namespace ITGlobal.CommandLine.Parsing
         /// <summary>
         ///     Add a execution callback
         /// </summary>
-        public void OnExecuteAsync(CliAsyncHandler handler)
+        public void OnExecuteAsync([NotNull] CliAsyncHandler handler)
         {
             if (handler == null)
             {
@@ -583,16 +583,16 @@ namespace ITGlobal.CommandLine.Parsing
             }
         }
 
-        IEnumerable<CliAsyncHandler> ICliCommand.EnumerateHooks()
+        IEnumerable<CliAsyncHook> ICliCommand.EnumerateHooks()
         {
-            foreach (var handler in _parent.EnumerateHooks())
+            foreach (var hook in _parent.EnumerateHooks())
             {
-                yield return handler;
+                yield return hook;
             }
 
-            foreach (var handler in _beforeExecuteHandlers)
+            foreach (var hook in _beforeExecuteHandlers)
             {
-                yield return handler;
+                yield return hook;
             }
         }
 

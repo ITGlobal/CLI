@@ -9,7 +9,7 @@ namespace ITGlobal.CommandLine.Parsing.Impl
         void Consume(RawCommandLine raw);
         IHelpUsage GetUsage();
 
-        IEnumerable<CliAsyncHandler> EnumerateHooks();
+        IEnumerable<CliAsyncHook> EnumerateHooks();
         IEnumerable<CliAsyncHandler> EnumerateHandlers();
     }
 }

@@ -12,7 +12,7 @@ namespace ITGlobal.CommandLine.Parsing.Impl
 
         private readonly List<ICliConsumer> _consumers = new List<ICliConsumer>();
         private readonly List<CliCommand> _commands = new List<CliCommand>();
-        private readonly List<CliAsyncHandler> _beforeExecuteHandlers = new List<CliAsyncHandler>();
+        private readonly List<CliAsyncHook> _beforeExecuteHandlers = new List<CliAsyncHook>();
         private readonly List<CliAsyncHandler> _executeHandlers = new List<CliAsyncHandler>();
 
         private int _argumentCount;
@@ -477,29 +477,29 @@ namespace ITGlobal.CommandLine.Parsing.Impl
         }
 
         /// <summary>
-        ///     Add a callback that will be executed before main handler
+        ///     Add a hook that will be executed before main handler
         /// </summary>
-        public void BeforeExecute(CliHandler handler)
+        public void BeforeExecute(CliHook hook)
         {
-            if (handler == null)
+            if (hook == null)
             {
-                throw new ArgumentNullException(nameof(handler));
+                throw new ArgumentNullException(nameof(hook));
             }
 
-            _beforeExecuteHandlers.Add(handler.ToAsyncHandler());
+            _beforeExecuteHandlers.Add(hook.ToAsyncHook());
         }
 
         /// <summary>
-        ///     Add a callback that will be executed before main handler
+        ///     Add a hook that will be executed before main handler
         /// </summary>
-        public void BeforeExecuteAsync(CliAsyncHandler handler)
+        public void BeforeExecuteAsync(CliAsyncHook hook)
         {
-            if (handler == null)
+            if (hook == null)
             {
-                throw new ArgumentNullException(nameof(handler));
+                throw new ArgumentNullException(nameof(hook));
             }
 
-            _beforeExecuteHandlers.Add(handler);
+            _beforeExecuteHandlers.Add(hook);
         }
 
         /// <summary>
@@ -676,11 +676,11 @@ namespace ITGlobal.CommandLine.Parsing.Impl
             }
         }
 
-        IEnumerable<CliAsyncHandler> ICliCommand.EnumerateHooks()
+        IEnumerable<CliAsyncHook> ICliCommand.EnumerateHooks()
         {
-            foreach (var handler in _beforeExecuteHandlers)
+            foreach (var hook in _beforeExecuteHandlers)
             {
-                yield return handler;
+                yield return hook;
             }
         }
 

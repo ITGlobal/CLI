@@ -1,4 +1,4 @@
-﻿using JetBrains.Annotations;
+using JetBrains.Annotations;
 
 namespace ITGlobal.CommandLine.Parsing
 {
@@ -24,10 +24,5 @@ namespace ITGlobal.CommandLine.Parsing
         ///     Breaks execution with specified exit code
         /// </summary>
         void Break(int exitCode = 0);
-
-        /// <summary>
-        ///     Suppress application logo
-        /// </summary>
-        void SuppressLogo(bool suppress = true);
     }
 }
