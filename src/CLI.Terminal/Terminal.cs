@@ -48,6 +48,7 @@ namespace ITGlobal.CommandLine
                         _defaultImplementation = new AnsiTerminalImplementation();
                     }
 
+                    _defaultImplementation.Initialize();
                     _windowWidth = _defaultImplementation.WindowWidth;
                 }
                 catch (Exception e)
@@ -55,6 +56,7 @@ namespace ITGlobal.CommandLine
                     _defaultImplementation?.Dispose();
 
                     _defaultImplementation = new SystemTerminalImplementation();
+                    _defaultImplementation.Initialize();
                     _windowWidth = _defaultImplementation.WindowWidth;
 
                     Debug.WriteLine($"CLI: unable to initialize terminal driver: {e}");
@@ -259,8 +261,10 @@ namespace ITGlobal.CommandLine
             lock (SyncRoot)
             {
                 var resetToImplementation = _implementation;
-                _implementation = implementation ?? _defaultImplementation;
 
+                _implementation = implementation ?? _defaultImplementation.Clone();
+                _implementation.Initialize();
+                
                 return new UseImplementationToken(resetToImplementation);
             }
         }
@@ -278,7 +282,9 @@ namespace ITGlobal.CommandLine
             {
                 lock (SyncRoot)
                 {
-                    _implementation = _resetToImplementation ?? _defaultImplementation;
+                    _implementation?.Dispose();
+                    _implementation = (_resetToImplementation ?? _defaultImplementation).Clone();
+                    _implementation.Initialize();
                 }
             }
         }

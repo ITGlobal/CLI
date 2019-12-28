@@ -12,10 +12,7 @@ namespace ITGlobal.CommandLine.Impl
         {
             Stdout = new SystemTerminalWriter(Console.Out);
             Stderr = new SystemTerminalWriter(Console.Error);
-
-            Console.SetOut(new AnsiTextWriter(Stdout, Console.Out.Encoding));
-            Console.SetError(new AnsiTextWriter(Stderr, Console.Error.Encoding));
-
+            
             _stderr = Console.Error;
             _stdout = Console.Out;
         }
@@ -43,6 +40,17 @@ namespace ITGlobal.CommandLine.Impl
                     return Terminal.DefaultWindowWidth;
                 }
             }
+        }
+
+        public ITerminalImplementation Clone()
+        {
+            return new SystemTerminalImplementation();
+        }
+
+        public void Initialize()
+        {
+            Console.SetOut(new AnsiTextWriter(Stdout, Console.Out.Encoding));
+            Console.SetError(new AnsiTextWriter(Stderr, Console.Error.Encoding));
         }
 
         public void MoveToLine(int offset)

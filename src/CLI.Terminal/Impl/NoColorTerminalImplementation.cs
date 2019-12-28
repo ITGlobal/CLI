@@ -19,15 +19,23 @@ namespace ITGlobal.CommandLine.Impl
 
             _originalStdErr = Console.Error;
             _originalStdOut = Console.Out;
-
-            Console.SetError(new TrimAnsiTextWriter(Console.Error));
-            Console.SetOut(new TrimAnsiTextWriter(Console.Out));
         }
 
         public ITerminalWriter Stdout { get; }
         public ITerminalWriter Stderr { get; }
         public string DriverName { get; }
         public int WindowWidth => _impl.WindowWidth;
+
+        public ITerminalImplementation Clone()
+        {
+           return new NoColorTerminalImplementation(_impl);
+        }
+
+        public void Initialize()
+        {
+            Console.SetError(new TrimAnsiTextWriter(Console.Error));
+            Console.SetOut(new TrimAnsiTextWriter(Console.Out));
+        }
 
         public void MoveToLine(int offset) => _impl.MoveToLine(offset);
 

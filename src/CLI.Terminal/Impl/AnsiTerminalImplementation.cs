@@ -34,6 +34,13 @@ namespace ITGlobal.CommandLine.Impl
             }
         }
 
+        public ITerminalImplementation Clone()
+        {
+            return new AnsiTerminalImplementation();
+        }
+
+        public void Initialize()  { }
+
         public void MoveToLine(int offset)
         {
             string cmd;

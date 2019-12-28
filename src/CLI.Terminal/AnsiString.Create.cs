@@ -52,7 +52,7 @@ namespace ITGlobal.CommandLine
         ///     Creates an <see cref="AnsiString"/> from an ordinary string
         ///     without ANSI escape codes processing
         /// </summary>
-        public static AnsiString FromString([NotNull] string str)
+        internal static AnsiString FromString([NotNull] string str)
         {
             return new AnsiString(str.Select(c => new AnsiChar(c)).ToArray());
         }

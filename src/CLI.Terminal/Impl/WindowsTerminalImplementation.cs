@@ -22,14 +22,49 @@ namespace ITGlobal.CommandLine.Impl
             public void Dispose() => SetConsoleMode(_hConsoleBuffer, _lpMode);
         }
 
-        private readonly IntPtr _hStdErr;
-        private readonly IntPtr _hStdOut;
-        private readonly IntPtr _hConsoleBuffer;
+        private IntPtr _hStdErr;
+        private IntPtr _hStdOut;
+        private IntPtr _hConsoleBuffer;
 
-        private readonly TextWriter _originalStdErr;
-        private readonly TextWriter _originalStdOut;
+        private TextWriter _originalStdErr;
+        private TextWriter _originalStdOut;
 
         public WindowsTerminalImplementation()
+        {
+            _originalStdErr = Console.Error;
+            _originalStdOut = Console.Out;
+        }
+
+        public ITerminalWriter Stdout { get; private set; }
+
+        public ITerminalWriter Stderr { get; private set; }
+
+        public string DriverName => "Win32";
+
+        public int WindowWidth
+        {
+            get
+            {
+                if (!Win32.GetConsoleScreenBufferInfo(_hStdErr, out var bufferInfo))
+                {
+                    Trace.WriteLine(
+                        $"GetConsoleScreenBufferInfo(0x{_hStdErr.ToInt32():X08}) -> 0x{Marshal.GetLastWin32Error():X08}"
+                    );
+
+                    throw new Win32Exception();
+                }
+
+                var width = bufferInfo.srWindow.Right - bufferInfo.srWindow.Left + 1;
+                return width;
+            }
+        }
+
+        public ITerminalImplementation Clone()
+        {
+            return new WindowsTerminalImplementation();
+        }
+
+        public void Initialize()
         {
             _hStdErr = Win32.GetStdHandle(Win32.STD_ERROR_HANDLE);
             if (_hStdErr == Win32.INVALID_HANDLE_VALUE)
@@ -87,38 +122,11 @@ namespace ITGlobal.CommandLine.Impl
             var stderr = new WindowsTerminalWriter(_hStdErr, _hConsoleBuffer);
             var stdout = new WindowsTerminalWriter(_hStdOut, _hConsoleBuffer);
 
-            _originalStdErr = Console.Error;
-            _originalStdOut = Console.Out;
-
             Console.SetError(new AnsiTextWriter(stderr, Console.Error.Encoding));
             Console.SetOut(new AnsiTextWriter(stdout, Console.Out.Encoding));
 
             Stderr = stderr;
             Stdout = stdout;
-        }
-
-        public ITerminalWriter Stdout { get; }
-
-        public ITerminalWriter Stderr { get; }
-
-        public string DriverName => "Win32";
-
-        public int WindowWidth
-        {
-            get
-            {
-                if (!Win32.GetConsoleScreenBufferInfo(_hStdErr, out var bufferInfo))
-                {
-                    Trace.WriteLine(
-                        $"GetConsoleScreenBufferInfo(0x{_hStdErr.ToInt32():X08}) -> 0x{Marshal.GetLastWin32Error():X08}"
-                    );
-
-                    throw new Win32Exception();
-                }
-
-                var width = bufferInfo.srWindow.Right - bufferInfo.srWindow.Left + 1;
-                return width;
-            }
         }
 
         public void MoveToLine(int offset)
@@ -224,9 +232,9 @@ namespace ITGlobal.CommandLine.Impl
             {
                 return null;
             }
-            
+
             // Disable auto line wraps. Tables won't be able to print properly otherwise.
-            var newMode = originalMode & ~(uint) Win32.ConsoleOutputModes.ENABLE_WRAP_AT_EOL_OUTPUT;
+            var newMode = originalMode & ~(uint)Win32.ConsoleOutputModes.ENABLE_WRAP_AT_EOL_OUTPUT;
             SetConsoleMode(_hConsoleBuffer, newMode);
 
             return new RestoreWrapAtEolOutputToken(_hConsoleBuffer, newMode);

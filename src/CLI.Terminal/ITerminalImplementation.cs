@@ -32,6 +32,17 @@ namespace ITGlobal.CommandLine
         int WindowWidth { get; }
 
         /// <summary>
+        ///     Creates a copy of terminal driver
+        /// </summary>
+        [NotNull]
+        ITerminalImplementation Clone();
+
+        /// <summary>
+        ///     Initializes a terminal driver
+        /// </summary>
+        void Initialize();
+
+        /// <summary>
         ///     Moves cursor to the beginning of specified line (relative to current)
         /// </summary>
         void MoveToLine(int offset);

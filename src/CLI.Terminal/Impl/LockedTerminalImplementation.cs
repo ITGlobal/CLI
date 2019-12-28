@@ -45,9 +45,6 @@ namespace ITGlobal.CommandLine.Impl
             _stdout = Console.Out;
             _stderr = Console.Error;
 
-            Console.SetOut(new RedirectedTextWriter(terminal.Stdout, Console.Out.Encoding, this, StreamType.Output));
-            Console.SetError(new RedirectedTextWriter(terminal.Stderr, Console.Error.Encoding , this, StreamType.Error));
-
             _stdoutWriter = new RedirectedTerminalWriter(this, StreamType.Output);
             _stderrWriter = new RedirectedTerminalWriter(this, StreamType.Error);
         }
@@ -85,6 +82,17 @@ namespace ITGlobal.CommandLine.Impl
         ITerminalWriter ITerminalLock.Stderr => _terminal.Stderr;
         string ITerminalImplementation.DriverName => _terminal.DriverName;
         int ITerminalImplementation.WindowWidth => _terminal.WindowWidth;
+
+        public ITerminalImplementation Clone()
+        {
+            return new LockedTerminalImplementation(_terminal, _owner);
+        }
+
+        public void Initialize()
+        {
+            Console.SetOut(new RedirectedTextWriter(_terminal.Stdout, Console.Out.Encoding, this, StreamType.Output));
+            Console.SetError(new RedirectedTextWriter(_terminal.Stderr, Console.Error.Encoding , this, StreamType.Error));
+        }
 
         public void MoveToLine(int offset) => _terminal.MoveToLine(offset);
 
