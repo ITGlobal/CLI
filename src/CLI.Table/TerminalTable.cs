@@ -17,6 +17,8 @@ namespace ITGlobal.CommandLine.Table
         [NotNull]
         public static IFluentTableBuilder CreateFluent(ITableRenderer renderer = null)
         {
+            Terminal.Initialize();
+
             return new FluentTableBuilderImpl(renderer ?? TableRenderer.Default);
         }
 
@@ -26,6 +28,8 @@ namespace ITGlobal.CommandLine.Table
         [NotNull]
         public static IDataDrivenGeneratedTableBuilder<T> Create<T>([NotNull] IEnumerable<T> rows, ITableRenderer renderer = null)
         {
+            Terminal.Initialize();
+
             return new DataDrivenGeneratedTableBuilderImpl<T>(rows, renderer ?? TableRenderer.Default);
         }
     }

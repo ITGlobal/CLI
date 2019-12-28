@@ -22,6 +22,8 @@ namespace ITGlobal.CommandLine.Parsing
             bool disableHelpSwitch = false
         )
         {
+            Terminal.Initialize();
+
             ISimpleCliParser parser = new SimpleCliParser();
             
             if (executableName != null)
@@ -67,6 +69,8 @@ namespace ITGlobal.CommandLine.Parsing
             bool disableHelpSwitch = false,
             bool disableImplicitHelp = false)
         {
+            Terminal.Initialize();
+
             ITreeCliParser parser = new TreeCliParser();
 
             if (executableName != null)

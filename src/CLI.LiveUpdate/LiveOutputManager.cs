@@ -1,4 +1,4 @@
-﻿using ITGlobal.CommandLine.Impl;
+using ITGlobal.CommandLine.Impl;
 using JetBrains.Annotations;
 
 namespace ITGlobal.CommandLine
@@ -11,6 +11,8 @@ namespace ITGlobal.CommandLine
             ISpinnerRenderer spinnerRenderer = null, 
             IProgressBarRenderer progressBarRenderer = null)
         {
+            Terminal.Initialize();
+
             return new LiveOutputManagerImpl(
                 spinnerRenderer ?? SpinnerRenderer.Default,
                 progressBarRenderer ?? ProgressBarRenderer.Default
