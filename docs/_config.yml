@@ -17,7 +17,7 @@ title: IT Global CLI
 description: ITGlobal.CLI is a powerful library to build used-friendly command-line applications..
 
 markdown: kramdown
-theme: jekyll-theme-cayman
+theme: jekyll-theme-slate
 
 repository: ITGlobal/CLI
 plugins:
@@ -26,3 +26,6 @@ plugins:
 - jekyll-redirect-from
 - jekyll-sitemap
 - jemoji
+exclude:
+  - preview.ps1
+  - preview.sh
