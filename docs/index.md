@@ -10,7 +10,7 @@ layout: default
 
 ## Features
 
-* Cross-platform
+### Cross-platform
 
   `ITGlobal CLI` supports:
 
@@ -19,26 +19,37 @@ layout: default
 
   It runs on Windows, Linux or MacOS.
 
-* [Core features](core)
-  * [Colored console output](core#colors)
-  * [Ctrl+C/SIGINT interceptor](core#ctrl-c)
-  * [Unified error handling](core#errors)
-  * [No-Colors mode](core#no-colors)
-* [Command line parser](parser)
-  * [Switches](parser/switches)
-  * [Options](parser/options)
-  * [Positional arguments](parser/arguments)  
-  * [Commands (including nested commands)](parser/commands)
-  * [Value parsers](parser/values)
-  * [Built-in help](parser/help)
-  * [Parser configuration options](parser/config)
-* [ASCII tables](table)
-  * [Data-driven tables](table/data-driven)
-  * [Free-format (fluent) tables](table/fluent)
-* [Terminal live output](live)
-  * [Live text](live#live-text)
-  * [Spinner](live#spinner)
-  * [Progress bar](live#progress-bar)
+### [Core features](core)
+
+![](core/colors.gif)
+* [Colored console output](core#colors)
+* [Ctrl+C/SIGINT interceptor](core#ctrl-c)
+* [Unified error handling](core#errors)
+* [No-Colors mode](core#no-colors)
+
+### [Command line parser](parser)
+
+![](parser/root-help.gif)
+* [Switches](parser/switches)
+* [Options](parser/options)
+* [Positional arguments](parser/arguments)  
+* [Commands (including nested commands)](parser/commands)
+* [Value parsers](parser/values)
+* [Built-in help](parser/help)
+* [Parser configuration options](parser/config)
+
+### [ASCII tables](table)
+
+![](table/example-fluent.gif)
+* [Data-driven tables](table/data-driven)
+* [Free-format (fluent) tables](table/fluent)
+
+### [Terminal live output](live)
+
+![](live/progress-bars.gif)
+* [Live text](live#live-text)
+* [Spinner](live#spinner)
+* [Progress bar](live#progress-bar)
 
 ## Installing
 
