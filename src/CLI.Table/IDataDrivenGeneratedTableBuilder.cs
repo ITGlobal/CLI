@@ -59,7 +59,7 @@ namespace ITGlobal.CommandLine.Table
         /// </param>
         [PublicAPI, NotNull]
         IDataDrivenGeneratedTableBuilder<T> Column(
-            [NotNull] string title,
+            AnsiString title,
             [NotNull] Func<T, AnsiString> property,
             Func<T, IColoredStringStyle> style = null,
             Func<T, TableCellAlignment?> align = null,

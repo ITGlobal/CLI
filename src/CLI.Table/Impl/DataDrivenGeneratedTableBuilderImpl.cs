@@ -16,7 +16,7 @@ namespace ITGlobal.CommandLine.Table.Impl
             private readonly int? _maxWidth;
 
             public ColumnGenerator(
-                string title,
+                AnsiString title,
                 Func<T, AnsiString> property,
                 Func<T, IColoredStringStyle> style,
                 Func<T, TableCellAlignment?> align,
@@ -29,7 +29,7 @@ namespace ITGlobal.CommandLine.Table.Impl
                 _maxWidth = maxWidth;
             }
 
-            public string Title { get; }
+            public AnsiString Title { get; }
 
             public TableCellModel Generate(
                 T dataItem,
@@ -97,7 +97,7 @@ namespace ITGlobal.CommandLine.Table.Impl
         }
 
         public IDataDrivenGeneratedTableBuilder<T> Column(
-            string title,
+            AnsiString title,
             Func<T, AnsiString> property,
             Func<T, IColoredStringStyle> style = null,
             Func<T, TableCellAlignment?> align = null,
@@ -121,7 +121,7 @@ namespace ITGlobal.CommandLine.Table.Impl
                 rows.Add(TableRowModel.Title(_title.Value));
             }
 
-            rows.Add(TableRowModel.Header(_columns.Select(c => c.Title.Colored()).ToArray()));
+            rows.Add(TableRowModel.Header(_columns.Select(c => c.Title).ToArray()));
 
 
             foreach (var dataItem in _dataItems)

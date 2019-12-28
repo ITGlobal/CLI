@@ -15,7 +15,7 @@ namespace ITGlobal.CommandLine
         ///     Implicit conversion from a string value
         /// </summary>
         [Pure]
-        public static explicit operator AnsiString(string value) => FromString(value);
+        public static implicit operator AnsiString(string value) => Create(value);
 
         /// <summary>
         ///     Implicit conversion from a boolean value

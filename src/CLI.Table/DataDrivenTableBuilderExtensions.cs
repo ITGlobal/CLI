@@ -33,7 +33,7 @@ namespace ITGlobal.CommandLine.Table
         [PublicAPI, NotNull]
         public static IDataDrivenGeneratedTableBuilder<T> Column<T>(
             [NotNull] this IDataDrivenGeneratedTableBuilder<T> builder,
-            [NotNull] string title,
+            AnsiString title,
             [NotNull] Func<T, string> property,
             Func<T, IColoredStringStyle> style = null,
             Func<T, TableCellAlignment?> align = null,
@@ -45,7 +45,7 @@ namespace ITGlobal.CommandLine.Table
             AnsiString ValueProvider(T dataItem)
             {
                 var s = property(dataItem);
-                return (AnsiString)(s ?? string.Empty);
+                return s ?? string.Empty;
             }
         }
         /// <summary>
@@ -72,7 +72,7 @@ namespace ITGlobal.CommandLine.Table
         [PublicAPI, NotNull]
         public static IDataDrivenGeneratedTableBuilder<T> Column<T, TProperty>(
             [NotNull] this IDataDrivenGeneratedTableBuilder<T> builder,
-            [NotNull] string title,
+            AnsiString title,
             [NotNull] Func<T, TProperty> property,
             Func<T, IColoredStringStyle> style = null,
             Func<T, TableCellAlignment?> align = null,
@@ -83,7 +83,7 @@ namespace ITGlobal.CommandLine.Table
 
             AnsiString ValueProvider(T dataItem)
             {
-                return (AnsiString)(property(dataItem)?.ToString() ?? string.Empty);
+                return property(dataItem)?.ToString() ?? string.Empty;
             }
         }
     }
