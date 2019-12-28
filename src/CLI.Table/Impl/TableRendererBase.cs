@@ -216,18 +216,10 @@ namespace ITGlobal.CommandLine.Table.Impl
                     var totalPad = width - str.Length;
                     if (totalPad > 0)
                     {
-                        var leftPad = totalPad / 2;
-                        var rightPad = totalPad - leftPad;
+                        var leftPad = totalPad / 2 + str.Length;
 
-                        if (leftPad > 0)
-                        {
-                            str = str.PadLeft(leftPad);
-                        }
-
-                        if (rightPad > 0)
-                        {
-                            str = str.PadRight(rightPad);
-                        }
+                        str = str.PadLeft(leftPad);
+                        str = str.PadRight(width);
                     }
                     break;
                 default:
