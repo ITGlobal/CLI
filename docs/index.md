@@ -36,6 +36,9 @@ layout: default
   * [Data-driven tables](table/data-driven)
   * [Free-format (fluent) tables](table/fluent)
 * [Terminal live output](live)
+  * [Live text](live#live-text)
+  * [Spinner](live#spinner)
+  * [Progress bar](live#progress-bar)
 
 ## Installing
 

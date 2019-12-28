@@ -24,6 +24,9 @@
   * [Data-driven tables](docs/table/data-driven.md)
   * [Free-format (fluent) tables](docs/table/fluent.md)
 * [Terminal live output](docs/live/index.md)
+  * [Live text](docs/live/index.md#live-text)
+  * [Spinner](docs/live/index.md#spinner)
+  * [Progress bar](docs/live/index.md#progress-bar)
 
 ## Cross-platform
 

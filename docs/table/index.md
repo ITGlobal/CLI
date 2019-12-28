@@ -55,16 +55,16 @@ However, there are few helpers to customize output:
 
 ## Customized rendering
 
-You may alter table rendering algorithm using `renderer` parameter of `TerminalTable.Create<T>()`/`TerminalTable.CreateFluent()` methods:
+Table rendering is configured via `TableRenderer` which is passed
+to `TerminalTable.Create<T>()`/`TerminalTable.CreateFluent()` methods.
 
-```csharp
-ITableRenderer renderer = CreateTableRenderer();
-var table = TerminalTable.Create(tableData, renderer: renderer);
-// or
-var table = TerminalTable.CreateFluent(renderer: renderer);
-```
+By default a `TableRenderer.Default` renderer is used,
+which is a `Grid` renderer with `Sketch` style unless overriden.
+The following built-in table renderers are available:
 
-There are few built-in renderers:
+* `TableRenderer.Grid()`
+* `TableRenderer.Pipe()`
+* `TableRenderer.Plain()`
 
 ### Grid table renderer
 
