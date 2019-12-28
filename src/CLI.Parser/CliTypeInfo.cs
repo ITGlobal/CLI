@@ -25,12 +25,12 @@ namespace ITGlobal.CommandLine.Parsing
         public static StringCliTypeInfo String { get; } = new StringCliTypeInfo();
 
         [NotNull]
-        public static EnumCliTypeInfo Enum(string typeName, params string[] validValues)
+        public static EnumCliTypeInfo Enum(string typeName, string[] validValues)
             => new EnumCliTypeInfo(typeName,  validValues);
 
         [NotNull]
-        public static EnumCliTypeInfo Enum(Type type)
-            => Enum("enum", ValueParser.GetEnumInfo(type).KnownValues);
+        public static EnumCliTypeInfo Enum(string[] validValues)
+            => Enum("enum",  validValues);
 
         [NotNull]
         public static ArrayCliTypeInfo Array(CliTypeInfo elementType)

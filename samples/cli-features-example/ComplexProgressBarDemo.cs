@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using ITGlobal.CommandLine.Parsing;
 
 namespace ITGlobal.CommandLine.Example
 {
@@ -10,9 +11,17 @@ namespace ITGlobal.CommandLine.Example
     {
         public enum Type
         {
+            [CliParserMember("arrow")]
             Arrow,
+
+            [CliParserMember("hash")]
+            [CliParserMember("hash-sign")]
             HashSign,
+
+            [CliParserMember("legacy")]
             Legacy,
+
+            [CliParserMember("shades")]
             Shades,
         }
         
@@ -42,6 +51,7 @@ namespace ITGlobal.CommandLine.Example
             {
                 Console.WriteLine("Will wipe out progress bar when completed");
             }
+
             using (var liveOutput = LiveOutputManager.Create(progressBarRenderer: progressBarRenderer))
             {
                 liveOutput.WipeAfter(wipe);
