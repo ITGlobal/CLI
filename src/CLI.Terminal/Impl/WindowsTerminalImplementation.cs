@@ -26,8 +26,8 @@ namespace ITGlobal.CommandLine.Impl
         private IntPtr _hStdOut;
         private IntPtr _hConsoleBuffer;
 
-        private TextWriter _originalStdErr;
-        private TextWriter _originalStdOut;
+        private readonly TextWriter _originalStdErr;
+        private readonly TextWriter _originalStdOut;
 
         public WindowsTerminalImplementation()
         {
@@ -95,7 +95,7 @@ namespace ITGlobal.CommandLine.Impl
 
                 throw new Win32Exception();
             }
-
+            
             _hConsoleBuffer = Win32.CreateFile(
                 lpFileName: "CONOUT$",
                 dwDesiredAccess: Win32.FileAccess.GenericRead | Win32.FileAccess.GenericWrite,
@@ -119,14 +119,33 @@ namespace ITGlobal.CommandLine.Impl
                 throw new Win32Exception();
             }
 
-            var stderr = new WindowsTerminalWriter(_hStdErr, _hConsoleBuffer);
-            var stdout = new WindowsTerminalWriter(_hStdOut, _hConsoleBuffer);
+            var isStdErrRedirected = IsRedirected(_hStdErr);
+            if (!isStdErrRedirected)
+            {
+                var stderr = new WindowsTerminalWriter(_hStdErr, _hConsoleBuffer);
+                Console.SetError(new AnsiTextWriter(stderr, Console.Error.Encoding));
+                Stderr = stderr;
+            }
+            else
+            {
+                // StdErr is redirected, won't use WindowsTerminalWriter
+                Stderr = new SystemTerminalWriter(Console.Error);
+                Trace.WriteLine("StdErr is redirected");
+            }
 
-            Console.SetError(new AnsiTextWriter(stderr, Console.Error.Encoding));
-            Console.SetOut(new AnsiTextWriter(stdout, Console.Out.Encoding));
-
-            Stderr = stderr;
-            Stdout = stdout;
+            var isStdOutRedirected = IsRedirected(_hStdOut);
+            if (!isStdOutRedirected)
+            {
+                var stdout = new WindowsTerminalWriter(_hStdOut, _hConsoleBuffer);
+                Console.SetOut(new AnsiTextWriter(stdout, Console.Out.Encoding));
+                Stdout = stdout;
+            }
+            else
+            {
+                // StdOut is redirected, won't use WindowsTerminalWriter
+                Stderr = new SystemTerminalWriter(Console.Out);
+                Trace.WriteLine("StdOut is redirected");
+            }
         }
 
         public void MoveToLine(int offset)
@@ -269,6 +288,21 @@ namespace ITGlobal.CommandLine.Impl
             Trace.WriteLine(
                 $"SetConsoleMode(0x{hConsole.ToInt32():X08},  0x{lpMode:X08}) -> OK"
             );
+        }
+
+        private static bool IsRedirected(IntPtr hConsole)
+        {
+            if (!TryGetConsoleMode(hConsole, out var lpMode))
+            {
+                return true;
+            }
+
+            if (lpMode == 0)
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }

@@ -24,6 +24,12 @@ namespace ITGlobal.CommandLine.Example
                     var cmd = command.Command("info", helpText: "Test for https://github.com/ITGlobal/CLI/issues/17");
                     cmd.OnExecute(_ => { Info(); });
                 }
+
+                // sample streams
+                {
+                    var cmd = command.Command("streams", helpText: "Test output into StdErr/StdOut");
+                    cmd.OnExecute(_ => { Streams(); });
+                }
             }
         }
 
@@ -62,6 +68,14 @@ namespace ITGlobal.CommandLine.Example
             Console.WriteLine($"WindowWidth (Terminal): {Terminal.WindowWidth}");
             Console.WriteLine($"DefaultForegroundColor: {Terminal.DefaultForegroundColor}");
             Console.WriteLine($"DefaultBackgroundColor: {Terminal.DefaultBackgroundColor}");
+        }
+
+        private static void Streams()
+        {
+            Console.Out.WriteLine($"Write to StdOut");
+            Console.Out.WriteLine($"Write to StdOut (colored)".Cyan());
+            Console.Error.WriteLine($"Write to StdErr");
+            Console.Error.WriteLine($"Write to StdErr (colored)".Cyan());
         }
     }
 }

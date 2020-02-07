@@ -289,6 +289,5 @@ namespace ITGlobal.CommandLine.Impl
 
         [DllImport("kernel32.dll", SetLastError = true)]
         public static extern bool SetConsoleMode(IntPtr hConsoleHandle, uint dwMode);
-
     }
 }
