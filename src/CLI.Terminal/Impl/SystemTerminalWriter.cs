@@ -22,7 +22,7 @@ namespace ITGlobal.CommandLine.Impl
                 Console.ForegroundColor = str.ForegroundColor ?? fg;
                 Console.BackgroundColor = str.BackgroundColor ?? bg;
 
-                _writer.Write(str.Buffer);
+                _writer.Write(str.Buffer, str.Offset, str.Length);
             }
             finally
             {

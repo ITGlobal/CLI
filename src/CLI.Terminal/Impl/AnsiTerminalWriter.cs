@@ -20,7 +20,7 @@ namespace ITGlobal.CommandLine.Impl
                 _writer.Write(sgr);
             }
 
-            _writer.Write(str.Buffer);
+            _writer.Write(str.Buffer, str.Offset, str.Length);
 
             if (hasSgr)
             {

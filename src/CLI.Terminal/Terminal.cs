@@ -222,6 +222,7 @@ namespace ITGlobal.CommandLine
                 {
                     _implementation = lockedTerminal;
                 }
+                lockedTerminal.Initialize();
 
                 return lockedTerminal;
             }

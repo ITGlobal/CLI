@@ -8,18 +8,18 @@ namespace ITGlobal.CommandLine.Impl
 {
     internal sealed class WindowsTerminalImplementation : ITerminalImplementation
     {
-        private sealed class RestoreWrapAtEolOutputToken : IDisposable
+        public readonly struct ChangeConsoleModeToken : IDisposable
         {
-            private readonly IntPtr _hConsoleBuffer;
+            private readonly WindowsTerminalImplementation _impl;
             private readonly uint _lpMode;
 
-            public RestoreWrapAtEolOutputToken(IntPtr hConsoleBuffer, uint lpMode)
+            public ChangeConsoleModeToken(WindowsTerminalImplementation impl, uint lpMode)
             {
-                _hConsoleBuffer = hConsoleBuffer;
+                _impl = impl;
                 _lpMode = lpMode;
             }
 
-            public void Dispose() => SetConsoleMode(_hConsoleBuffer, _lpMode);
+            public void Dispose() => _impl.SetConsoleMode(_lpMode);
         }
 
         private IntPtr _hStdErr;
@@ -119,10 +119,15 @@ namespace ITGlobal.CommandLine.Impl
                 throw new Win32Exception();
             }
 
+            if (TryGetConsoleMode(_hConsoleBuffer, out var mode))
+            {
+                IsWrapAtEolOutputEnabled = (mode & (uint) Win32.ConsoleOutputModes.ENABLE_WRAP_AT_EOL_OUTPUT) != 0;
+            }
+
             var isStdErrRedirected = IsRedirected(_hStdErr);
             if (!isStdErrRedirected)
             {
-                var stderr = new WindowsTerminalWriter(_hStdErr, _hConsoleBuffer);
+                var stderr = new WindowsTerminalWriter(this, _hStdErr, _hConsoleBuffer);
                 Console.SetError(new AnsiTextWriter(stderr, Console.Error.Encoding));
                 Stderr = stderr;
             }
@@ -136,7 +141,7 @@ namespace ITGlobal.CommandLine.Impl
             var isStdOutRedirected = IsRedirected(_hStdOut);
             if (!isStdOutRedirected)
             {
-                var stdout = new WindowsTerminalWriter(_hStdOut, _hConsoleBuffer);
+                var stdout = new WindowsTerminalWriter(this, _hStdOut, _hConsoleBuffer);
                 Console.SetOut(new AnsiTextWriter(stdout, Console.Out.Encoding));
                 Stdout = stdout;
             }
@@ -153,6 +158,7 @@ namespace ITGlobal.CommandLine.Impl
             var cursorTop = Console.CursorTop;
             cursorTop += offset;
             Console.CursorTop = cursorTop > 0 ? cursorTop : 0;
+            Console.CursorLeft = 0;
         }
 
         public void ClearLine()
@@ -245,7 +251,9 @@ namespace ITGlobal.CommandLine.Impl
             Win32.CloseHandle(_hConsoleBuffer);
         }
 
-        public IDisposable DisableWrapAtEolOutput()
+        public bool IsWrapAtEolOutputEnabled { get; private set; }
+
+        public ChangeConsoleModeToken? DisableWrapAtEolOutput()
         {
             if (!TryGetConsoleMode(_hConsoleBuffer, out var originalMode))
             {
@@ -254,11 +262,11 @@ namespace ITGlobal.CommandLine.Impl
 
             // Disable auto line wraps. Tables won't be able to print properly otherwise.
             var newMode = originalMode & ~(uint)Win32.ConsoleOutputModes.ENABLE_WRAP_AT_EOL_OUTPUT;
-            SetConsoleMode(_hConsoleBuffer, newMode);
+            SetConsoleMode(newMode);
 
-            return new RestoreWrapAtEolOutputToken(_hConsoleBuffer, newMode);
+            return new ChangeConsoleModeToken(this, originalMode);
         }
-
+        
         private static bool TryGetConsoleMode(IntPtr hConsole, out uint lpMode)
         {
             if (!Win32.GetConsoleMode(hConsole, out lpMode))
@@ -273,6 +281,12 @@ namespace ITGlobal.CommandLine.Impl
                 $"GetConsoleMode(0x{hConsole.ToInt32():X08}) -> 0x{lpMode:X08}"
             );
             return true;
+        }
+
+        private void SetConsoleMode(uint mode)
+        {
+            IsWrapAtEolOutputEnabled = (mode & (uint) Win32.ConsoleOutputModes.ENABLE_WRAP_AT_EOL_OUTPUT) != 0;
+            SetConsoleMode(_hConsoleBuffer, mode);
         }
 
         private static void SetConsoleMode(IntPtr hConsole, uint lpMode)

@@ -17,8 +17,17 @@ namespace ITGlobal.CommandLine
             ///     .ctor
             /// </summary>
             public Chunk(char[] buffer, ConsoleColor? foregroundColor, ConsoleColor? backgroundColor)
+                : this(buffer, 0, buffer.Length, foregroundColor, backgroundColor)
+            { }
+
+            /// <summary>
+            ///     .ctor
+            /// </summary>
+            private Chunk(char[] buffer, int offset, int length, ConsoleColor? foregroundColor, ConsoleColor? backgroundColor)
             {
                 Buffer = buffer;
+                Offset = offset;
+                Length = length;
                 ForegroundColor = foregroundColor;
                 BackgroundColor = backgroundColor;
             }
@@ -32,16 +41,62 @@ namespace ITGlobal.CommandLine
             ///     Foreground color
             /// </summary>
             public readonly ConsoleColor? ForegroundColor;
-            
+
             /// <summary>
             ///     Background color
             /// </summary>
             public readonly ConsoleColor? BackgroundColor;
 
             /// <summary>
+            ///     Offset in <see cref="Buffer"/>
+            /// </summary>
+            public int Offset { get; }
+
+            /// <summary>
+            ///     Length of a chunk
+            /// </summary>
+            public int Length { get; }
+
+            /// <summary>
             ///     Length of <see cref="Buffer"/>
             /// </summary>
-            public int Length => Buffer.Length;
+            public int Capacity => Buffer.Length;
+
+            /// <summary>
+            ///     Get a char by an index
+            /// </summary>
+            public char this[int index] => Buffer[Offset + index];
+
+            /// <summary>
+            ///     Slice current chunk, selecting [<paramref name="offset"/>...<paramref name="offset"/> + <paramref name="length"/>] buffer.
+            /// </summary>
+            [Pure]
+            public Chunk Slice(int offset, int length)
+            {
+                if (offset < 0 || offset >= Length)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(offset));
+                }
+
+                if (offset + length > Length)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(length));
+                }
+
+                return new Chunk(
+                    buffer: Buffer,
+                    offset: offset + Offset,
+                    length: length,
+                    foregroundColor: ForegroundColor,
+                    backgroundColor: BackgroundColor
+                );
+            }
+
+            /// <summary>
+            ///     Slice current chunk, selecting [<paramref name="offset"/>...<see cref="Length"/>] buffer.
+            /// </summary>
+            [Pure]
+            public Chunk Slice(int offset) => Slice(offset, Length - offset);
 
             [Pure]
             private string DebuggerView()
@@ -49,12 +104,12 @@ namespace ITGlobal.CommandLine
                 var fgName = ForegroundColor != null ? ForegroundColor.Value.ToString() : "Default";
                 var bgName = BackgroundColor != null ? BackgroundColor.Value.ToString() : "Default";
 
-                var str = $"\"{new string(Buffer)}\" {fgName} on {bgName}";
+                var str = $"\"{ToString()}\" {fgName} on {bgName}";
                 return str;
             }
 
             /// <inheritdoc />
-            public override string ToString() => new string(Buffer);
+            public override string ToString() => new string(Buffer, Offset, Length);
         }
 
         /// <summary>

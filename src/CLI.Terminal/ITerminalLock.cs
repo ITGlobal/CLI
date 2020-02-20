@@ -20,7 +20,7 @@ namespace ITGlobal.CommandLine
         /// </summary>
         [NotNull]
         ITerminalWriter Stderr { get; }
-
+        
         /// <summary>
         ///     Moves cursor to the beginning of specified line (relative to current)
         /// </summary>

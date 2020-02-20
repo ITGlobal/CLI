@@ -64,6 +64,10 @@
       "commandName": "Project",
       "commandLineArgs": "sample streams"
     },
+    "sample long-text": {
+      "commandName": "Project",
+      "commandLineArgs": "sample long-text"
+    },
     "nested-help-output": {
       "commandName": "Project",
       "commandLineArgs": "nested-help-output"

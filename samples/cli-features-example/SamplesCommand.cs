@@ -1,6 +1,5 @@
 using System;
 using ITGlobal.CommandLine.Parsing;
-using ITGlobal.CommandLine.Table;
 
 namespace ITGlobal.CommandLine.Example
 {
@@ -29,6 +28,12 @@ namespace ITGlobal.CommandLine.Example
                 {
                     var cmd = command.Command("streams", helpText: "Test output into StdErr/StdOut");
                     cmd.OnExecute(_ => { Streams(); });
+                }
+
+                // sample long-text
+                {
+                    var cmd = command.Command("long-text", helpText: "Test long text wrapping/clipping");
+                    cmd.OnExecute(_ => { LongTextWrapping(); });
                 }
             }
         }
@@ -76,6 +81,33 @@ namespace ITGlobal.CommandLine.Example
             Console.Out.WriteLine($"Write to StdOut (colored)".Cyan());
             Console.Error.WriteLine($"Write to StdErr");
             Console.Error.WriteLine($"Write to StdErr (colored)".Cyan());
+        }
+
+        private static void LongTextWrapping()
+        {
+            const string text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, " +
+                                "sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. " +
+                                "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris " +
+                                "nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in " +
+                                "reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. " +
+                                "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia " +
+                                "deserunt mollit anim id est laborum.";
+
+
+            // First try to write a long text into terminal using direct access to ITerminalWriter
+            Terminal.Stdout.Write("............");
+            var str = AnsiString.Create(text);
+            var chunks = str.SplitIntoChunks();
+            foreach (var c in chunks)
+            {
+                Terminal.Stdout.Write(c);
+            }
+            Terminal.Stdout.WriteLine();
+
+            // Then try again using a Console class
+            Console.Out.WriteLine();
+            Console.Out.Write("............");
+            Console.Out.WriteLine(text);
         }
     }
 }

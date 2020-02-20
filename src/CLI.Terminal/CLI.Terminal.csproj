@@ -8,6 +8,7 @@
         <LangVersion>latest</LangVersion>
         <RootNamespace>ITGlobal.CommandLine</RootNamespace>
         <LangVersion>preview</LangVersion>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
 
     <ItemGroup>

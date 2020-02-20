@@ -60,6 +60,7 @@ namespace ITGlobal.CommandLine.Impl
                 var cursorTop = Console.CursorTop;
                 cursorTop += offset;
                 Console.CursorTop = cursorTop > 0 ? cursorTop : 0;
+                Console.CursorLeft = 0;
             }
             catch (IOException) { }
         }

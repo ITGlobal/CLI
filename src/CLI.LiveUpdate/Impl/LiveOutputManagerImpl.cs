@@ -106,6 +106,9 @@ namespace ITGlobal.CommandLine.Impl
                     }
                 }
             }
+            
+            // Move cursor to the beginning of current line
+            _terminal.MoveToLine(0);
 
             _terminal.Dispose();
         }
@@ -130,6 +133,9 @@ namespace ITGlobal.CommandLine.Impl
 
         void ITerminalLockOwner.End()
         {
+            // Move cursor to the beginning of current line
+            _terminal.MoveToLine(0);
+
             Draw();
             Monitor.Exit(_syncRoot);
         }

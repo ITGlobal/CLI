@@ -13,8 +13,9 @@ namespace ITGlobal.CommandLine.Impl
 
         public override void Write(AnsiString.Chunk str)
         {
-            foreach (var c in str.Buffer)
+            for (var index = str.Offset; index < str.Length; index++)
             {
+                var c = str.Buffer[index];
                 _output.Write(_stream, c, str.ForegroundColor, str.BackgroundColor);
             }
         }

@@ -11,7 +11,7 @@ namespace ITGlobal.CommandLine.Impl
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     [SuppressMessage("ReSharper", "FieldCanBeMadeReadOnly.Global")]
     [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
-    internal static class Win32
+    internal static unsafe class Win32
     {
         [StructLayout(LayoutKind.Sequential)]
         public struct COORD
@@ -247,7 +247,7 @@ namespace ITGlobal.CommandLine.Impl
         [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
         public static extern bool WriteConsoleOutputW(
             IntPtr hConsoleOutput,
-            CHAR_INFO[] lpBuffer,
+            CHAR_INFO* lpBuffer,
             COORD dwBufferSize,
             COORD dwBufferCoord,
             ref SMALL_RECT lpWriteRegion
