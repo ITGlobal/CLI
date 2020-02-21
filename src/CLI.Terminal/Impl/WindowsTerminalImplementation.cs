@@ -262,11 +262,15 @@ namespace ITGlobal.CommandLine.Impl
 
             // Disable auto line wraps. Tables won't be able to print properly otherwise.
             var newMode = originalMode & ~(uint)Win32.ConsoleOutputModes.ENABLE_WRAP_AT_EOL_OUTPUT;
-            SetConsoleMode(newMode);
+            if (newMode == originalMode)
+            {
+                return null;
+            }
 
+            SetConsoleMode(newMode);
             return new ChangeConsoleModeToken(this, originalMode);
         }
-        
+
         private static bool TryGetConsoleMode(IntPtr hConsole, out uint lpMode)
         {
             if (!Win32.GetConsoleMode(hConsole, out lpMode))

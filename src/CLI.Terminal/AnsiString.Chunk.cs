@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
+using System.Runtime.InteropServices;
 
 namespace ITGlobal.CommandLine
 {
@@ -13,6 +14,16 @@ namespace ITGlobal.CommandLine
         [DebuggerDisplay("{" + nameof(DebuggerView) + "()}")]
         public readonly struct Chunk
         {
+            /// <summary>
+            ///     TAB chunk
+            /// </summary>
+            public static readonly Chunk TAB = new Chunk(new [] {' ', ' ', ' ', ' '}, null, null);
+           
+            /// <summary>
+            ///     Empty chunk
+            /// </summary>
+            public static readonly Chunk EMPTY = new Chunk(new char[0], null, null);
+
             /// <summary>
             ///     .ctor
             /// </summary>
@@ -73,14 +84,29 @@ namespace ITGlobal.CommandLine
             [Pure]
             public Chunk Slice(int offset, int length)
             {
-                if (offset < 0 || offset >= Length)
+                if (offset < 0)
                 {
                     throw new ArgumentOutOfRangeException(nameof(offset));
                 }
 
+                if (offset >= Length)
+                {
+                    offset = Length - 1;
+                }
+
+                if (length < 0)
+                {
+                    length = 0;
+                }
+
                 if (offset + length > Length)
                 {
-                    throw new ArgumentOutOfRangeException(nameof(length));
+                    length = Length - offset;
+                }
+
+                if (length == 0)
+                {
+                    return EMPTY;
                 }
 
                 return new Chunk(
@@ -98,6 +124,21 @@ namespace ITGlobal.CommandLine
             [Pure]
             public Chunk Slice(int offset) => Slice(offset, Length - offset);
 
+            /// <summary>
+            ///     Create a copy of current chunk with different colors
+            /// </summary>
+            [Pure]
+            public Chunk WithColors(ConsoleColor? foregroundColor, ConsoleColor? backgroundColor)
+            {
+                return new Chunk(
+                    buffer: Buffer,
+                    offset: Offset,
+                    length: Length,
+                    foregroundColor: foregroundColor,
+                    backgroundColor: backgroundColor
+                );
+            }
+
             [Pure]
             private string DebuggerView()
             {
@@ -109,7 +150,7 @@ namespace ITGlobal.CommandLine
             }
 
             /// <inheritdoc />
-            public override string ToString() => new string(Buffer, Offset, Length);
+            public override string ToString() => Length > 0 ? new string(Buffer, Offset, Length) : string.Empty;
         }
 
         /// <summary>

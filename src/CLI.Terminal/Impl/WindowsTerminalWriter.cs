@@ -86,6 +86,23 @@ namespace ITGlobal.CommandLine.Impl
                 return;
             }
 
+            for (var i = 0; i < str.Length; i++)
+            {
+                if (str[i] == '\t')
+                {
+                    // Special handling for TAB
+
+                    var left = str.Slice(0, i - 1);
+                    var middle = AnsiString.Chunk.TAB.WithColors(str.ForegroundColor, str.BackgroundColor);
+                    var right = str.Slice(i + 1);
+
+                    WriteImpl(left, ref bufferInfo, attrs, width);
+                    WriteImpl(middle, ref bufferInfo, attrs, width);
+                    WriteImpl(right, ref bufferInfo, attrs, width);
+                    return;
+                }
+            }
+
             Win32.CHAR_INFO* chars = stackalloc Win32.CHAR_INFO[str.Length];
 
             for (var i = 0; i < str.Length; i++)
