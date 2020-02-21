@@ -154,7 +154,7 @@ namespace ITGlobal.CommandLine.Impl
                 return false;
             }
 
-            WriteSpecialString(ref bufferInfo, cr, lf);
+            WriteSpecialString(ref bufferInfo, true, lf);
             return true;
 
         }
