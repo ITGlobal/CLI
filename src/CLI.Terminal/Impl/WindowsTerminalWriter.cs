@@ -36,13 +36,14 @@ namespace ITGlobal.CommandLine.Impl
             var bg = str.BackgroundColor ?? Terminal.DefaultBackgroundColor;
             var attrs = WindowsTerminalImplementation.GetCharAttributes(fg, bg);
 
+            var wrapAtEolOutput = _impl.IsWrapAtEolOutputEnabled;
             using var _ = _impl.DisableWrapAtEolOutput();
             while (true)
             {
                 var windowWidth = _impl.WindowWidth;
                 if (!_impl.IsWrapAtEolOutputEnabled)
                 {
-                    windowWidth++;
+                   // windowWidth++;
                 }
 
                 var remainingWidth = windowWidth - bufferInfo.dwCursorPosition.X;
@@ -61,20 +62,26 @@ namespace ITGlobal.CommandLine.Impl
 
                     var left = str.Slice(0, remainingWidth);
                     var right = str.Slice(remainingWidth);
-                    WriteImpl(left, ref bufferInfo, attrs, windowWidth);
+                    WriteImpl(left, ref bufferInfo, attrs, windowWidth, wrapAtEolOutput, forceNewLine: true);
 
                     str = right;
                 }
                 else
                 {
                     // Chunk fits into terminal as is
-                    WriteImpl(str, ref bufferInfo, attrs, windowWidth);
+                    WriteImpl(str, ref bufferInfo, attrs, windowWidth, wrapAtEolOutput);
                     break;
                 }
             }
         }
 
-        private unsafe void WriteImpl(AnsiString.Chunk str, ref Win32.CONSOLE_SCREEN_BUFFER_INFO bufferInfo, short attrs, int width)
+        private unsafe void WriteImpl(
+            AnsiString.Chunk str, 
+            ref Win32.CONSOLE_SCREEN_BUFFER_INFO bufferInfo, 
+            short attrs, 
+            int width,
+            bool wrapAtEolOutput,
+            bool forceNewLine = false)
         {
             if (str.Length == 0)
             {
@@ -96,9 +103,9 @@ namespace ITGlobal.CommandLine.Impl
                     var middle = AnsiString.Chunk.TAB.WithColors(str.ForegroundColor, str.BackgroundColor);
                     var right = str.Slice(i + 1);
 
-                    WriteImpl(left, ref bufferInfo, attrs, width);
-                    WriteImpl(middle, ref bufferInfo, attrs, width);
-                    WriteImpl(right, ref bufferInfo, attrs, width);
+                    WriteImpl(left, ref bufferInfo, attrs, width, wrapAtEolOutput);
+                    WriteImpl(middle, ref bufferInfo, attrs, width, wrapAtEolOutput);
+                    WriteImpl(right, ref bufferInfo, attrs, width, wrapAtEolOutput, forceNewLine);
                     return;
                 }
             }
@@ -136,7 +143,7 @@ namespace ITGlobal.CommandLine.Impl
                 Y = bufferInfo.dwCursorPosition.Y,
             };
 
-            if (dwCoord.X >= width && _impl.IsWrapAtEolOutputEnabled)
+            if (dwCoord.X >= width && wrapAtEolOutput || forceNewLine)
             {
                 // Advance to a new line
                 dwCoord.Y++;
