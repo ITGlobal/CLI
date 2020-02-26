@@ -54,7 +54,7 @@ namespace ITGlobal.CommandLine.Impl
                     throw new Win32Exception();
                 }
 
-                var width = bufferInfo.srWindow.Right - bufferInfo.srWindow.Left + 1;
+                var width = bufferInfo.srWindow.Right - bufferInfo.srWindow.Left ;
                 return width;
             }
         }
@@ -95,7 +95,7 @@ namespace ITGlobal.CommandLine.Impl
 
                 throw new Win32Exception();
             }
-            
+
             _hConsoleBuffer = Win32.CreateFile(
                 lpFileName: "CONOUT$",
                 dwDesiredAccess: Win32.FileAccess.GenericRead | Win32.FileAccess.GenericWrite,
@@ -121,14 +121,14 @@ namespace ITGlobal.CommandLine.Impl
 
             if (TryGetConsoleMode(_hConsoleBuffer, out var mode))
             {
-                IsWrapAtEolOutputEnabled = (mode & (uint) Win32.ConsoleOutputModes.ENABLE_WRAP_AT_EOL_OUTPUT) != 0;
+                IsWrapAtEolOutputEnabled = (mode & (uint)Win32.ConsoleOutputModes.ENABLE_WRAP_AT_EOL_OUTPUT) != 0;
             }
 
             var isStdErrRedirected = IsRedirected(_hStdErr);
             if (!isStdErrRedirected)
             {
                 var stderr = new WindowsTerminalWriter(this, _hStdErr, _hConsoleBuffer);
-                Console.SetError(new AnsiTextWriter(stderr, Console.Error.Encoding));
+                Console.SetError(new BufferedAnsiTextWriter(stderr, Console.Error.Encoding));
                 Stderr = stderr;
             }
             else
@@ -142,7 +142,7 @@ namespace ITGlobal.CommandLine.Impl
             if (!isStdOutRedirected)
             {
                 var stdout = new WindowsTerminalWriter(this, _hStdOut, _hConsoleBuffer);
-                Console.SetOut(new AnsiTextWriter(stdout, Console.Out.Encoding));
+                Console.SetOut(new BufferedAnsiTextWriter(stdout, Console.Out.Encoding));
                 Stdout = stdout;
             }
             else
@@ -281,15 +281,12 @@ namespace ITGlobal.CommandLine.Impl
                 return false;
             }
 
-            Trace.WriteLine(
-                $"GetConsoleMode(0x{hConsole.ToInt32():X08}) -> 0x{lpMode:X08}"
-            );
             return true;
         }
 
         private void SetConsoleMode(uint mode)
         {
-            IsWrapAtEolOutputEnabled = (mode & (uint) Win32.ConsoleOutputModes.ENABLE_WRAP_AT_EOL_OUTPUT) != 0;
+            IsWrapAtEolOutputEnabled = (mode & (uint)Win32.ConsoleOutputModes.ENABLE_WRAP_AT_EOL_OUTPUT) != 0;
             SetConsoleMode(_hConsoleBuffer, mode);
         }
 
@@ -302,10 +299,6 @@ namespace ITGlobal.CommandLine.Impl
                 );
                 return;
             }
-
-            Trace.WriteLine(
-                $"SetConsoleMode(0x{hConsole.ToInt32():X08},  0x{lpMode:X08}) -> OK"
-            );
         }
 
         private static bool IsRedirected(IntPtr hConsole)

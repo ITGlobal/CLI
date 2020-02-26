@@ -281,7 +281,8 @@ namespace ITGlobal.CommandLine.Table.Impl
                     var cellWidth = 0;
                     if (line < cell.Content.Count)
                     {
-                        output.Write(colors.Apply(cell.Content[line]));
+                        var colored = colors.Apply(cell.Content[line]);
+                        output.Write(colored);
                         cellWidth = cell.Content[line].Length;
                     }
 

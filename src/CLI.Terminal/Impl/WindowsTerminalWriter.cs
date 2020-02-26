@@ -38,20 +38,37 @@ namespace ITGlobal.CommandLine.Impl
 
             var wrapAtEolOutput = _impl.IsWrapAtEolOutputEnabled;
             using var _ = _impl.DisableWrapAtEolOutput();
+            WriteLoop(str, ref bufferInfo, attrs, wrapAtEolOutput);
+        }
+
+        private void WriteLoop(
+            AnsiString.Chunk str,
+            ref Win32.CONSOLE_SCREEN_BUFFER_INFO bufferInfo,
+            short attrs,
+            bool wrapAtEolOutput)
+        {
             while (true)
             {
                 var windowWidth = _impl.WindowWidth;
-                if (!_impl.IsWrapAtEolOutputEnabled)
-                {
-                   // windowWidth++;
-                }
 
                 var remainingWidth = windowWidth - bufferInfo.dwCursorPosition.X;
+                
+                // Special handling for CR/LF (short strings)
+                if (TryWriteSpecialString(in str, ref bufferInfo))
+                {
+                    return;
+                }
 
-                if (remainingWidth <= 0)
+                if (wrapAtEolOutput && remainingWidth <= 0 || remainingWidth < 0)
                 {
                     WriteSpecialString(ref bufferInfo);
                     continue;
+                }
+
+                // Special handling for TAB/CR/LF
+                if (TryWriteSpecialString(str, ref bufferInfo, attrs, wrapAtEolOutput))
+                {
+                    return;
                 }
 
                 if (str.Length > remainingWidth)
@@ -60,27 +77,64 @@ namespace ITGlobal.CommandLine.Impl
                     // - left part has exactly NWidth characters so it'll fit into terminal
                     // - right part is whatever remains to be written
 
-                    var left = str.Slice(0, remainingWidth);
+                    var left  = str.Slice(0, remainingWidth);
+                    var middle = AnsiString.Chunk.CRLF.WithColors(str.ForegroundColor, str.BackgroundColor);
                     var right = str.Slice(remainingWidth);
-                    WriteImpl(left, ref bufferInfo, attrs, windowWidth, wrapAtEolOutput, forceNewLine: true);
+                    WriteLoop(left, ref bufferInfo, attrs, wrapAtEolOutput);
+                    WriteLoop(middle, ref bufferInfo, attrs, wrapAtEolOutput);
 
                     str = right;
                 }
                 else
                 {
                     // Chunk fits into terminal as is
-                    WriteImpl(str, ref bufferInfo, attrs, windowWidth, wrapAtEolOutput);
-                    break;
+                    WriteImpl(str, ref bufferInfo, attrs);
+                    return;
                 }
             }
         }
 
+        private bool TryWriteSpecialString(AnsiString.Chunk str, ref Win32.CONSOLE_SCREEN_BUFFER_INFO bufferInfo, short attrs, bool wrapAtEolOutput)
+        {
+            var i = str.IndexOfAny('\t', '\r', '\n');
+            if (i >= 0)
+            {
+                // Special handling for TAB/CR/LF
+                AnsiString.Chunk middle;
+                switch (str[i])
+                {
+                    case '\t':
+                        middle = AnsiString.Chunk.TAB;
+                        break;
+                    case '\r':
+                        middle = AnsiString.Chunk.CR;
+                        break;
+                    case '\n':
+                        middle = AnsiString.Chunk.LF;
+                        break;
+                    default:
+                        middle = AnsiString.Chunk.TAB;
+                        break;
+                }
+
+                var left = str.Slice(0, i);
+                middle = middle.WithColors(str.ForegroundColor, str.BackgroundColor);
+                var right = str.Slice(i + 1);
+
+                WriteLoop(left, ref bufferInfo, attrs, wrapAtEolOutput);
+                WriteLoop(middle, ref bufferInfo, attrs, wrapAtEolOutput);
+                WriteLoop(right, ref bufferInfo, attrs, wrapAtEolOutput);
+
+                return true;
+            }
+
+            return false;
+        }
+
         private unsafe void WriteImpl(
-            AnsiString.Chunk str, 
-            ref Win32.CONSOLE_SCREEN_BUFFER_INFO bufferInfo, 
-            short attrs, 
-            int width,
-            bool wrapAtEolOutput,
+            AnsiString.Chunk str,
+            ref Win32.CONSOLE_SCREEN_BUFFER_INFO bufferInfo,
+            short attrs,
             bool forceNewLine = false)
         {
             if (str.Length == 0)
@@ -92,24 +146,7 @@ namespace ITGlobal.CommandLine.Impl
             {
                 return;
             }
-
-            for (var i = 0; i < str.Length; i++)
-            {
-                if (str[i] == '\t')
-                {
-                    // Special handling for TAB
-
-                    var left = str.Slice(0, i - 1);
-                    var middle = AnsiString.Chunk.TAB.WithColors(str.ForegroundColor, str.BackgroundColor);
-                    var right = str.Slice(i + 1);
-
-                    WriteImpl(left, ref bufferInfo, attrs, width, wrapAtEolOutput);
-                    WriteImpl(middle, ref bufferInfo, attrs, width, wrapAtEolOutput);
-                    WriteImpl(right, ref bufferInfo, attrs, width, wrapAtEolOutput, forceNewLine);
-                    return;
-                }
-            }
-
+            
             Win32.CHAR_INFO* chars = stackalloc Win32.CHAR_INFO[str.Length];
 
             for (var i = 0; i < str.Length; i++)
@@ -143,7 +180,7 @@ namespace ITGlobal.CommandLine.Impl
                 Y = bufferInfo.dwCursorPosition.Y,
             };
 
-            if (dwCoord.X >= width && wrapAtEolOutput || forceNewLine)
+            if (forceNewLine)
             {
                 // Advance to a new line
                 dwCoord.Y++;
@@ -156,31 +193,37 @@ namespace ITGlobal.CommandLine.Impl
 
         private bool TryWriteSpecialString(in AnsiString.Chunk str, ref Win32.CONSOLE_SCREEN_BUFFER_INFO bufferInfo)
         {
-            if (str.Length != 1)
+            switch (str.Length)
             {
-                return false;
+                case 1:
+                    {
+                        if (str[0] == '\n')
+                        {
+                            WriteSpecialString(ref bufferInfo, cr: true, lf: true);
+                            return true;
+                        }
+
+                        if (str[0] == '\r')
+                        {
+                            WriteSpecialString(ref bufferInfo, cr: true, lf: false);
+                            return true;
+                        }
+
+                        return false;
+                    }
+
+                case 2:
+                    if (str[0] == '\r' && str[1] == '\n')
+                    {
+                        WriteSpecialString(ref bufferInfo, cr: true, lf: true);
+                        return true;
+                    }
+
+                    return false;
+
+                default:
+                    return false;
             }
-
-            var lf = false;
-            var cr = false;
-
-            if (str[0] == '\n')
-            {
-                lf = true;
-            }
-            else if (str[0] == '\r')
-            {
-                cr = true;
-            }
-
-            if (!cr! && !lf)
-            {
-                return false;
-            }
-
-            WriteSpecialString(ref bufferInfo, true, lf);
-            return true;
-
         }
 
         private void WriteSpecialString(ref Win32.CONSOLE_SCREEN_BUFFER_INFO bufferInfo, bool cr = true, bool lf = true)

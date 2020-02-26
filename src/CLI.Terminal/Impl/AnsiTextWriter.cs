@@ -25,6 +25,7 @@ namespace ITGlobal.CommandLine.Impl
 
         private readonly ITerminalWriter _writer;
         private readonly AnsiSequenceDecoder _decoder;
+        private readonly object _syncRoot = new object();
         private readonly Stack<AnsiColors> _colorHistory = new Stack<AnsiColors>();
         private AnsiColors? _colors;
         private readonly char[] _buffer = new char[1];
@@ -67,35 +68,53 @@ namespace ITGlobal.CommandLine.Impl
 
         void IAnsiCommandHandler.Write(char c)
         {
-            WriteImpl(c, _colors?.Fg, _colors?.Bg);
+            ConsoleColor? fg;
+            ConsoleColor? bg;
+            
+            lock (_syncRoot)
+            {
+                fg = _colors?.Fg;
+                bg = _colors?.Bg;
+            }
+
+            WriteImpl(c, fg, bg);
         }
 
         protected virtual void WriteImpl(char c, ConsoleColor? fg, ConsoleColor? bg)
         {
             _buffer[0] = c;
-            var chunk = new AnsiString.Chunk(_buffer, fg, bg);
-            _writer.Write(chunk);
+            lock (_syncRoot)
+            {
+                var chunk = new AnsiString.Chunk(_buffer, fg, bg);
+                _writer.Write(chunk);
+            }
         }
 
         private void PushColors(ConsoleColor? foreground = null, ConsoleColor? background = null)
         {
             var colors = new AnsiColors(Console.ForegroundColor, Console.BackgroundColor);
-            _colorHistory.Push(colors);
 
-            _colors = colors.With(foreground, background);
+            lock (_syncRoot)
+            {
+                _colorHistory.Push(colors);
+                _colors = colors.With(foreground, background);
+            }
         }
 
         private void PopColors()
         {
-            if (_colorHistory.Count > 0)
+            lock (_syncRoot)
             {
-                var colors = _colorHistory.Pop();
-                _colors = colors;
-            }
-            else
-            {
-                Console.ResetColor();
-                _colors = null;
+                if (_colorHistory.Count > 0)
+                {
+                    var colors = _colorHistory.Pop();
+                    _colors = colors;
+                }
+                else
+                {
+                    Console.ResetColor();
+                    _colors = null;
+                }
             }
         }
     }

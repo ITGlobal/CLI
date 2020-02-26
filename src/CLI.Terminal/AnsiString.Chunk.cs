@@ -17,12 +17,27 @@ namespace ITGlobal.CommandLine
             /// <summary>
             ///     TAB chunk
             /// </summary>
-            public static readonly Chunk TAB = new Chunk(new [] {' ', ' ', ' ', ' '}, null, null);
+            internal static readonly Chunk TAB = new Chunk(new [] {' ', ' ', ' ', ' '}, null, null);
+
+            /// <summary>
+            ///     CR chunk
+            /// </summary>
+            internal static readonly Chunk CR = new Chunk(new [] {'\r'}, null, null);
+
+            /// <summary>
+            ///     LF chunk
+            /// </summary>
+            internal static readonly Chunk LF = new Chunk(new [] {'\n'}, null, null);
+
+            /// <summary>
+            ///     CRLF chunk
+            /// </summary>
+            internal static readonly Chunk CRLF = new Chunk(new [] {'\r', '\n'}, null, null);
            
             /// <summary>
             ///     Empty chunk
             /// </summary>
-            public static readonly Chunk EMPTY = new Chunk(new char[0], null, null);
+            internal static readonly Chunk EMPTY = new Chunk(new char[0], null, null);
 
             /// <summary>
             ///     .ctor
@@ -34,7 +49,7 @@ namespace ITGlobal.CommandLine
             /// <summary>
             ///     .ctor
             /// </summary>
-            private Chunk(char[] buffer, int offset, int length, ConsoleColor? foregroundColor, ConsoleColor? backgroundColor)
+            internal Chunk(char[] buffer, int offset, int length, ConsoleColor? foregroundColor, ConsoleColor? backgroundColor)
             {
                 Buffer = buffer;
                 Offset = offset;
@@ -139,13 +154,51 @@ namespace ITGlobal.CommandLine
                 );
             }
 
+            /// <summary>
+            ///     Search for a character
+            /// </summary>
+            [Pure]
+            internal int IndexOf(char ch)
+            {
+                for (var i = 0; i < Length; i++)
+                {
+                    if (this[i] == ch)
+                    {
+                        return i;
+                    }
+                }
+
+                return -1;
+            }
+
+            /// <summary>
+            ///     Search for aтy of characters
+            /// </summary>
+            [Pure]
+            internal int IndexOfAny(char ch1, char ch2, char ch3)
+            {
+                for (var i = 0; i < Length; i++)
+                {
+                    var c = this[i];
+
+                    if (c == ch1 ||
+                        c == ch2 ||
+                        c == ch3)
+                    {
+                        return i;
+                    }
+                }
+
+                return -1;
+            }
+
             [Pure]
             private string DebuggerView()
             {
                 var fgName = ForegroundColor != null ? ForegroundColor.Value.ToString() : "Default";
                 var bgName = BackgroundColor != null ? BackgroundColor.Value.ToString() : "Default";
 
-                var str = $"\"{ToString()}\" {fgName} on {bgName}";
+                var str = $"{fgName} on {bgName} \"{ToString()}\"";
                 return str;
             }
 
