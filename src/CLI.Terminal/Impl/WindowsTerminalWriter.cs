@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
@@ -10,6 +11,7 @@ namespace ITGlobal.CommandLine.Impl
         private readonly WindowsTerminalImplementation _impl;
         private readonly IntPtr _hConsole;
         private readonly IntPtr _hConsoleBuffer;
+        private readonly Queue<AnsiString.Chunk> _writeQueue = new Queue<AnsiString.Chunk>();
 
         public WindowsTerminalWriter(WindowsTerminalImplementation impl, IntPtr hConsole, IntPtr hConsoleBuffer)
         {
@@ -38,25 +40,27 @@ namespace ITGlobal.CommandLine.Impl
 
             var wrapAtEolOutput = _impl.IsWrapAtEolOutputEnabled;
             using var _ = _impl.DisableWrapAtEolOutput();
-            WriteLoop(str, ref bufferInfo, attrs, wrapAtEolOutput);
+            _writeQueue.Enqueue(str);
+
+            WriteLoop(ref bufferInfo, attrs, wrapAtEolOutput);
         }
 
         private void WriteLoop(
-            AnsiString.Chunk str,
             ref Win32.CONSOLE_SCREEN_BUFFER_INFO bufferInfo,
             short attrs,
             bool wrapAtEolOutput)
         {
-            while (true)
+            while (_writeQueue.Count > 0)
             {
-                var windowWidth = _impl.WindowWidth;
+                var str = _writeQueue.Dequeue();
 
+                var windowWidth = _impl.WindowWidth;
                 var remainingWidth = windowWidth - bufferInfo.dwCursorPosition.X;
-                
+
                 // Special handling for CR/LF (short strings)
                 if (TryWriteSpecialString(in str, ref bufferInfo))
                 {
-                    return;
+                    continue;
                 }
 
                 if (wrapAtEolOutput && remainingWidth <= 0 || remainingWidth < 0)
@@ -64,43 +68,45 @@ namespace ITGlobal.CommandLine.Impl
                     WriteSpecialString(ref bufferInfo);
                     continue;
                 }
-
+                
                 // Special handling for TAB/CR/LF
-                if (TryWriteSpecialString(str, ref bufferInfo, attrs, wrapAtEolOutput))
+                if (TryWriteSplitBySpecialString(str, out var left, out var middle, out var right))
                 {
-                    return;
+                    _writeQueue.Enqueue(left);
+                    _writeQueue.Enqueue(middle);
+                    _writeQueue.Enqueue(right);
+                    continue;
                 }
-
-                if (str.Length > remainingWidth)
+                
+                if (TryWriteSplitByWidth(str, remainingWidth, out left, out middle, out right))
                 {
                     // Chunk is too long, will split it into two parts:
                     // - left part has exactly NWidth characters so it'll fit into terminal
                     // - right part is whatever remains to be written
+                    
+                    _writeQueue.Enqueue(left);
+                    _writeQueue.Enqueue(middle);
+                    _writeQueue.Enqueue(right);
 
-                    var left  = str.Slice(0, remainingWidth);
-                    var middle = AnsiString.Chunk.CRLF.WithColors(str.ForegroundColor, str.BackgroundColor);
-                    var right = str.Slice(remainingWidth);
-                    WriteLoop(left, ref bufferInfo, attrs, wrapAtEolOutput);
-                    WriteLoop(middle, ref bufferInfo, attrs, wrapAtEolOutput);
+                    continue;
+                }
 
-                    str = right;
-                }
-                else
-                {
-                    // Chunk fits into terminal as is
-                    WriteImpl(str, ref bufferInfo, attrs);
-                    return;
-                }
+                // Chunk fits into terminal as is
+                WriteImpl(str, ref bufferInfo, attrs);
             }
         }
 
-        private bool TryWriteSpecialString(AnsiString.Chunk str, ref Win32.CONSOLE_SCREEN_BUFFER_INFO bufferInfo, short attrs, bool wrapAtEolOutput)
+        private static bool TryWriteSplitBySpecialString(
+            AnsiString.Chunk str,
+            out AnsiString.Chunk left,
+            out AnsiString.Chunk middle,
+            out AnsiString.Chunk right
+            )
         {
             var i = str.IndexOfAny('\t', '\r', '\n');
             if (i >= 0)
             {
                 // Special handling for TAB/CR/LF
-                AnsiString.Chunk middle;
                 switch (str[i])
                 {
                     case '\t':
@@ -117,16 +123,43 @@ namespace ITGlobal.CommandLine.Impl
                         break;
                 }
 
-                var left = str.Slice(0, i);
+                left = str.Slice(0, i);
                 middle = middle.WithColors(str.ForegroundColor, str.BackgroundColor);
-                var right = str.Slice(i + 1);
-
-                WriteLoop(left, ref bufferInfo, attrs, wrapAtEolOutput);
-                WriteLoop(middle, ref bufferInfo, attrs, wrapAtEolOutput);
-                WriteLoop(right, ref bufferInfo, attrs, wrapAtEolOutput);
+                right = str.Slice(i + 1);
 
                 return true;
             }
+
+            left = default;
+            middle = default;
+            right = default;
+            return false;
+        }
+
+        private static bool TryWriteSplitByWidth(
+            AnsiString.Chunk str,
+            int remainingWidth,
+            out AnsiString.Chunk left,
+            out AnsiString.Chunk middle,
+            out AnsiString.Chunk right
+            )
+        {
+            if (str.Length > remainingWidth)
+            {
+                // Chunk is too long, will split it into two parts:
+                // - left part has exactly NWidth characters so it'll fit into terminal
+                // - right part is whatever remains to be written
+
+                left = str.Slice(0, remainingWidth);
+                middle = AnsiString.Chunk.CRLF.WithColors(str.ForegroundColor, str.BackgroundColor);
+                right = str.Slice(remainingWidth);
+
+                return true;
+            }
+
+            left = default;
+            middle = default;
+            right = default;
 
             return false;
         }
@@ -146,7 +179,7 @@ namespace ITGlobal.CommandLine.Impl
             {
                 return;
             }
-            
+
             Win32.CHAR_INFO* chars = stackalloc Win32.CHAR_INFO[str.Length];
 
             for (var i = 0; i < str.Length; i++)
