@@ -90,8 +90,8 @@ namespace ITGlobal.CommandLine.Impl
 
         public void Initialize()
         {
-            Console.SetOut(new RedirectedTextWriter(_terminal.Stdout, Console.Out.Encoding, this, StreamType.Output));
-            Console.SetError(new RedirectedTextWriter(_terminal.Stderr, Console.Error.Encoding , this, StreamType.Error));
+            Console.SetOut(new RedirectedTextWriter(Console.Out.Encoding, this, StreamType.Output));
+            Console.SetError(new RedirectedTextWriter(Console.Error.Encoding , this, StreamType.Error));
         }
 
         public void MoveToLine(int offset) => _terminal.MoveToLine(offset);

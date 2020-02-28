@@ -3,13 +3,13 @@ using System.Text;
 
 namespace ITGlobal.CommandLine.Impl
 {
-    internal sealed class RedirectedTextWriter : AnsiTextWriter
+    internal sealed class RedirectedTextWriter : AnsiTextWriterBase
     {
         private readonly LockedTerminalImplementation _output;
         private readonly StreamType _stream;
 
-        public RedirectedTextWriter(ITerminalWriter writer, Encoding encoding, LockedTerminalImplementation output, StreamType stream)
-            : base(writer, encoding)
+        public RedirectedTextWriter(Encoding encoding, LockedTerminalImplementation output, StreamType stream)
+            : base(encoding)
         {
             _output = output;
             _stream = stream;

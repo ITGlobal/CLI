@@ -28,7 +28,7 @@ namespace ITGlobal.CommandLine.Table
         [PublicAPI]
         public static void Draw([NotNull] this ITableBuilderBase builder, [NotNull] ITerminalWriter writer, int? maxWidth = null)
         {
-            builder.Draw(str => writer.WriteLine((AnsiString)str), maxWidth);
+            builder.Draw(str => writer.WriteLine(str), maxWidth);
         }
 
         /// <summary>

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ITGlobal.CommandLine.Impl
 {
-    internal class BufferedAnsiTextWriter : AnsiTextWriter
+    internal class BufferedAnsiTextWriter : AnsiTextWriterBase
     {
         private readonly struct QueuedChar
         {
@@ -38,7 +38,7 @@ namespace ITGlobal.CommandLine.Impl
         private long _iteration;
 
         public BufferedAnsiTextWriter(ITerminalWriter writer, Encoding encoding)
-            : base(writer, encoding)
+            : base(encoding)
         {
             _writer = writer;
             _flushTask = Task.Factory.StartNew(FlushThread, TaskCreationOptions.LongRunning);
