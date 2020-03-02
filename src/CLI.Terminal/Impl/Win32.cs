@@ -221,6 +221,12 @@ namespace ITGlobal.CommandLine.Impl
         );
 
         [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern bool SetConsoleScreenBufferSize(
+            IntPtr hConsoleOutput,
+            COORD dwSize
+        );
+
+        [DllImport("kernel32.dll", SetLastError = true)]
         public static extern bool FillConsoleOutputAttribute(
             IntPtr hConsoleOutput,
             ushort wAttribute,
@@ -251,6 +257,15 @@ namespace ITGlobal.CommandLine.Impl
             COORD dwBufferSize,
             COORD dwBufferCoord,
             ref SMALL_RECT lpWriteRegion
+        );
+
+        [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+        public static extern bool ScrollConsoleScreenBuffer(
+            IntPtr hConsoleOutput,
+            SMALL_RECT* lpScrollRectangle,
+            SMALL_RECT* lpClipRectangle,
+            COORD dwDestinationOrigin,
+            CHAR_INFO* lpFill
         );
 
         [DllImport("kernel32.dll", SetLastError = true)]

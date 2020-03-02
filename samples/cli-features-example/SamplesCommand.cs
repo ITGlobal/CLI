@@ -1,4 +1,9 @@
 using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Linq;
+using ITGlobal.CommandLine.Impl;
 using ITGlobal.CommandLine.Parsing;
 
 namespace ITGlobal.CommandLine.Example
@@ -34,6 +39,12 @@ namespace ITGlobal.CommandLine.Example
                 {
                     var cmd = command.Command("long-text", helpText: "Test long text wrapping/clipping");
                     cmd.OnExecute(_ => { LongTextWrapping(); });
+                }
+
+                // sample win32-buffer-scroll
+                {
+                    var cmd = command.Command("win32-buffer-scroll", helpText: "Test Win32 buffer scrolling");
+                    cmd.OnExecute(_ => { Win32BufferScroll(); });
                 }
             }
         }
@@ -108,6 +119,57 @@ namespace ITGlobal.CommandLine.Example
             Console.Out.WriteLine();
             Console.Out.Write("............");
             Console.Out.WriteLine(text);
+        }
+
+        private static void Win32BufferScroll()
+        {
+            // First, try to resize console buffer
+            var hConsole = Win32.GetStdHandle(Win32.STD_OUTPUT_HANDLE);
+            if (!Win32.GetConsoleScreenBufferInfo(hConsole, out var bufferInfo))
+            {
+                throw new Win32Exception();
+            }
+
+            var dwSize = new Win32.COORD
+            {
+                X = bufferInfo.dwMaximumWindowSize.X,
+                Y = bufferInfo.dwMaximumWindowSize.Y,
+            };
+            if (!Win32.SetConsoleScreenBufferSize(hConsole, dwSize))
+            {
+                throw new Win32Exception();
+            }
+
+            Console.WriteLine($"// Will print {dwSize.Y + 10} lines");
+            Console.WriteLine($"// Press <Enter> to continue");
+            Console.ReadLine();
+
+            // Then, print enough lines to fill console buffer to make it scroll
+            var i = 0;
+            foreach (var c in EnumerateChars().Take(dwSize.Y + 10))
+            {
+                var str = new string(c, 24);
+
+                Console.Out.Write($"#{i + 1,4} ");
+                Console.Out.WriteLine(str);
+                i++;
+            }
+
+            static IEnumerable<char> EnumerateChars()
+            {
+                while (true)
+                {
+                    for (var c = '0'; c < '9'; c++)
+                    {
+                        yield return c;
+                    }
+
+                    for (var c = 'A'; c < 'Z'; c++)
+                    {
+                        yield return c;
+                    }
+                }
+            }
         }
     }
 }

@@ -68,7 +68,7 @@ namespace ITGlobal.CommandLine.Impl
                     WriteSpecialString(ref bufferInfo);
                     continue;
                 }
-                
+
                 // Special handling for TAB/CR/LF
                 if (TryWriteSplitBySpecialString(str, out var left, out var middle, out var right))
                 {
@@ -77,13 +77,13 @@ namespace ITGlobal.CommandLine.Impl
                     _writeQueue.Enqueue(right);
                     continue;
                 }
-                
+
                 if (TryWriteSplitByWidth(str, remainingWidth, out left, out middle, out right))
                 {
                     // Chunk is too long, will split it into two parts:
                     // - left part has exactly NWidth characters so it'll fit into terminal
                     // - right part is whatever remains to be written
-                    
+
                     _writeQueue.Enqueue(left);
                     _writeQueue.Enqueue(middle);
                     _writeQueue.Enqueue(right);
@@ -218,6 +218,22 @@ namespace ITGlobal.CommandLine.Impl
                 // Advance to a new line
                 dwCoord.Y++;
                 dwCoord.X = 0;
+                
+                if (dwCoord.Y >= bufferInfo.dwSize.Y)
+                {
+                    // If console output buffer is full, then we should scroll it
+                    ScrollConsoleScreenBuffer(ref bufferInfo, bufferInfo.dwSize.Y - dwCoord.Y - 1);
+
+                    // Then we move cursor to the beginning of the last buffer line
+                    dwCoord = new Win32.COORD
+                    {
+                        X = 0,
+                        Y = bufferInfo.dwCursorPosition.Y,
+                    };
+                    SetConsoleCursorPosition(in dwCoord);
+                    GetConsoleScreenBufferInfo(out bufferInfo);
+                    return;
+                }
             }
 
             SetConsoleCursorPosition(in dwCoord);
@@ -273,6 +289,22 @@ namespace ITGlobal.CommandLine.Impl
             if (lf)
             {
                 cursor.Y++;
+
+                if (cursor.Y >= bufferInfo.dwSize.Y)
+                {
+                    // If console output buffer is full, then we should scroll it
+                    ScrollConsoleScreenBuffer(ref bufferInfo, bufferInfo.dwSize.Y - cursor.Y - 1);
+
+                    // Then we move cursor to the beginning of the last buffer line
+                    var dwCoord = new Win32.COORD
+                    {
+                        X = 0,
+                        Y = bufferInfo.dwCursorPosition.Y,
+                    };
+                    SetConsoleCursorPosition(in dwCoord);
+                    GetConsoleScreenBufferInfo(out bufferInfo);
+                    return;
+                }
             }
 
             SetConsoleCursorPosition(in cursor);
@@ -283,7 +315,8 @@ namespace ITGlobal.CommandLine.Impl
 
         private void GetConsoleScreenBufferInfo(out Win32.CONSOLE_SCREEN_BUFFER_INFO bufferInfo)
         {
-            if (!Win32.GetConsoleScreenBufferInfo(_hConsole, out bufferInfo))
+            var result = Win32.GetConsoleScreenBufferInfo(_hConsole, out bufferInfo);
+            if (!result)
             {
                 Trace.WriteLine(
                     string.Format(
@@ -337,6 +370,46 @@ namespace ITGlobal.CommandLine.Impl
                 );
                 throw new Win32Exception();
             }
+        }
+
+        private unsafe void ScrollConsoleScreenBuffer(ref Win32.CONSOLE_SCREEN_BUFFER_INFO bufferInfo, int offset)
+        {
+            var scrollRectangle = bufferInfo.srWindow;
+
+            var destinationOrigin = new Win32.COORD
+            {
+                X = 0,
+                Y = (short)(bufferInfo.srWindow.Top+offset),
+            };
+
+            var fillChar = new Win32.CHAR_INFO
+            {
+                UnicodeChar = (char)0,
+                Attributes = 0
+            };
+            
+
+            var ok = Win32.ScrollConsoleScreenBuffer(
+                hConsoleOutput: _hConsoleBuffer,
+                lpScrollRectangle: &scrollRectangle,
+                lpClipRectangle: &scrollRectangle,
+                dwDestinationOrigin: destinationOrigin,
+                lpFill: &fillChar
+            );
+            if (!ok)
+            {
+                Trace.WriteLine(
+                    string.Format(
+                        "ScrollConsoleScreenBuffer(h: 0x{0:X08}, ...) -> 0x{1:X08} {2}",
+                        _hConsoleBuffer.ToInt32(),
+                        Marshal.GetLastWin32Error(),
+                        new Win32Exception(Marshal.GetLastWin32Error()).Message
+                    )
+                );
+                throw new Win32Exception();
+            }
+
+            GetConsoleScreenBufferInfo(out bufferInfo);
         }
 
         #endregion

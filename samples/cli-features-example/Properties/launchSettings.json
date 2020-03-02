@@ -68,6 +68,10 @@
       "commandName": "Project",
       "commandLineArgs": "sample long-text"
     },
+    "sample win32-buffer-scroll": {
+      "commandName": "Project",
+      "commandLineArgs": "sample win32-buffer-scroll"
+    },
     "nested-help-output": {
       "commandName": "Project",
       "commandLineArgs": "nested-help-output"
