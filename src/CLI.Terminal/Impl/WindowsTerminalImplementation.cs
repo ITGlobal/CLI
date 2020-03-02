@@ -137,6 +137,7 @@ namespace ITGlobal.CommandLine.Impl
             {
                 // StdErr is redirected, won't use WindowsTerminalWriter
                 Stderr = new SystemTerminalWriter(Console.Error);
+                Console.SetError(new TrimAnsiTextWriter(Console.Error));
                 Trace.WriteLine("StdErr is redirected");
             }
 
@@ -151,6 +152,7 @@ namespace ITGlobal.CommandLine.Impl
             {
                 // StdOut is redirected, won't use WindowsTerminalWriter
                 Stderr = new SystemTerminalWriter(Console.Out);
+                Console.SetOut(new TrimAnsiTextWriter(Console.Out));
                 Trace.WriteLine("StdOut is redirected");
             }
         }
