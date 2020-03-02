@@ -124,10 +124,12 @@ namespace ITGlobal.CommandLine.Impl
                 IsWrapAtEolOutputEnabled = (mode & (uint)Win32.ConsoleOutputModes.ENABLE_WRAP_AT_EOL_OUTPUT) != 0;
             }
 
+            var consoleOutputLock = new object();
+
             var isStdErrRedirected = IsRedirected(_hStdErr);
             if (!isStdErrRedirected)
             {
-                var stderr = new WindowsTerminalWriter(this, _hStdErr, _hConsoleBuffer);
+                var stderr = new WindowsTerminalWriter(_hStdErr, consoleOutputLock);
                 Console.SetError(new BufferedAnsiTextWriter(stderr, Console.Error.Encoding));
                 Stderr = stderr;
             }
@@ -141,7 +143,7 @@ namespace ITGlobal.CommandLine.Impl
             var isStdOutRedirected = IsRedirected(_hStdOut);
             if (!isStdOutRedirected)
             {
-                var stdout = new WindowsTerminalWriter(this, _hStdOut, _hConsoleBuffer);
+                var stdout = new WindowsTerminalWriter(_hStdOut, consoleOutputLock);
                 Console.SetOut(new BufferedAnsiTextWriter(stdout, Console.Out.Encoding));
                 Stdout = stdout;
             }

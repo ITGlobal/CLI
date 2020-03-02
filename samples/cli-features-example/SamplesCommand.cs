@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
 using ITGlobal.CommandLine.Impl;
 using ITGlobal.CommandLine.Parsing;
@@ -45,6 +44,12 @@ namespace ITGlobal.CommandLine.Example
                 {
                     var cmd = command.Command("win32-buffer-scroll", helpText: "Test Win32 buffer scrolling");
                     cmd.OnExecute(_ => { Win32BufferScroll(); });
+                }
+
+                // sample unicode
+                {
+                    var cmd = command.Command("unicode", helpText: "Test Win32 unicode output");
+                    cmd.OnExecute(_ => { Unicode(); });
                 }
             }
         }
@@ -170,6 +175,16 @@ namespace ITGlobal.CommandLine.Example
                     }
                 }
             }
+        }
+
+        private static void Unicode()
+        {
+            const string text = "Lorem ipsum dolor sit amet, id eum impedit suavitate, iriure\n" + // latin
+                                "Лорем ипсум долор сит амет, цу про утинам лабитур персеяуерис\n" + // cyrrilic translit
+                                "गटकउसि विभाजन किएलोग जनित सक्षम संपुर्ण केन्द्रित प्राधिकरन पहोच। जनित\n" + // hindi
+                                "غير الدمج بوابة الشمال كل. سقطت لمحاكم البشريةً دنو مع"; // arabic
+
+            Console.Out.WriteLine(text);
         }
     }
 }

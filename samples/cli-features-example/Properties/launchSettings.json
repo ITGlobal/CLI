@@ -72,6 +72,10 @@
       "commandName": "Project",
       "commandLineArgs": "sample win32-buffer-scroll"
     },
+    "sample unicode": {
+      "commandName": "Project",
+      "commandLineArgs": "sample unicode"
+    },
     "nested-help-output": {
       "commandName": "Project",
       "commandLineArgs": "nested-help-output"

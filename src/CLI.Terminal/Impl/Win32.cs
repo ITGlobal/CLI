@@ -250,24 +250,21 @@ namespace ITGlobal.CommandLine.Impl
             COORD dwCursorPosition
         );
 
-        [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
-        public static extern bool WriteConsoleOutputW(
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern bool SetConsoleTextAttribute(
             IntPtr hConsoleOutput,
-            CHAR_INFO* lpBuffer,
-            COORD dwBufferSize,
-            COORD dwBufferCoord,
-            ref SMALL_RECT lpWriteRegion
+            short wAttributes
         );
 
         [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
-        public static extern bool ScrollConsoleScreenBuffer(
+        public static extern bool WriteConsole(
             IntPtr hConsoleOutput,
-            SMALL_RECT* lpScrollRectangle,
-            SMALL_RECT* lpClipRectangle,
-            COORD dwDestinationOrigin,
-            CHAR_INFO* lpFill
+            void* lpBuffer,
+            int nNumberOfCharsToWrite,
+            int* lpNumberOfCharsWritten,
+            void* lpReserved
         );
-
+        
         [DllImport("kernel32.dll", SetLastError = true)]
         [ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)]
         [SuppressUnmanagedCodeSecurity]
