@@ -61,6 +61,11 @@ namespace ITGlobal.CommandLine
 
         private string ToPlainString()
         {
+            if (_chars == null || _chars.Length == 0)
+            {
+                return string.Empty;
+            }
+
             var sb = new StringBuilder();
 
             foreach (var (c, _, _) in _chars)

@@ -43,6 +43,7 @@ namespace ITGlobal.CommandLine.Table.Impl
                         DrawBody(row, output);
                         break;
                     case TableRowType.Separator:
+                        DrawSeparator(model, output);
                         break;
                     case TableRowType.Footer:
                         DrawFooter(row, output);
@@ -148,6 +149,24 @@ namespace ITGlobal.CommandLine.Table.Impl
 
                 output.Write(_style.FrameColors.Apply(" |"));
             }
+        }
+
+        private void DrawSeparator(TableLayout model, TextWriter output)
+        {
+            var space = _style.BodyColors.Apply(" ");
+            output.Write(_style.FrameColors.Apply("|"));
+            for (var i = 0; i < model.ColumnWidths.Count; i++)
+            {
+                var width = model.ColumnWidths[i];
+                for (var j = 0; j < width + 2; j++)
+                {
+                    output.Write(space);
+                }
+
+                output.Write(_style.FrameColors.Apply("|"));
+            }
+
+            output.WriteLine();
         }
 
         private void DrawFooter(TableRowLayout row, TextWriter output)

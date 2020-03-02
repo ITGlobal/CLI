@@ -22,16 +22,18 @@ namespace ITGlobal.CommandLine
         /// </summary>
 #if !NET45
         public System.Collections.Immutable.ImmutableArray<AnsiChar> Chars
-            => System.Collections.Immutable.ImmutableArray.Create(_chars);
+            => System.Collections.Immutable.ImmutableArray.Create(_chars ?? System.Array.Empty<AnsiChar>());
 #else
-        public System.Collections.Generic.IReadOnlyList<AnsiChar> Chars => _chars;
+        private static readonly AnsiChar[] EmptyArray = new AnsiChar[0];
+
+        public System.Collections.Generic.IReadOnlyList<AnsiChar> Chars => _chars ?? EmptyArray;
 #endif
 
         /// <summary>
         ///     String length
         /// </summary>
         [Pure]
-        public int Length => _chars.Length;
+        public int Length => _chars?.Length ?? 0;
 
         /// <summary>
         ///     Plain-text string (without color attributes)
