@@ -5,15 +5,6 @@
 
 `ITGlobal.CLI` is a powerful library to build used-friendly command-line applications.
 
-<div style="display: flex; flex-flow: row;">
-  <div style="width: 50%; display: flex; flex-flow: column;">
-    <img src="docs/parser/root-help.gif" />
-  </div>
-  <div style="width: 50%; display: flex; flex-flow: column;">
-    <img src="docs/table/example-fluent.gif" />
-  </div>
-</div>
-
 ## Features
 
 * [Core features](docs/core/index.md)
