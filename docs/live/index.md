@@ -3,12 +3,12 @@ layout: default
 ---
 # Terminal live output
 
-[Go back](..#home)
+[Go back](..)
 
 ---
 
 * [Quickstart](#quickstart)
-* [Feature details](#features)
+* [Feature details](#feature-details)
 * [Live text](#live-text)
 * [Spinner](#spinner)
 * [Progress bar](#progress-bar)
@@ -21,7 +21,7 @@ layout: default
 
 and to update them in-place.
 
-## Quickstart {#quickstart}
+## Quickstart
 
 1. At first you need to create an instance of `ILiveOutputManager`.
    This object is responsible for creating and maitaining all live items.
@@ -65,7 +65,7 @@ and to update them in-place.
    All live output objects are thread-safe and can be updated from another thread.
 
    While a live output is on, you still may write anything to console using standard `System.Console` class.
-   This will not break live output behaviour since ILiveOutputManager` handles conflicting 
+   This will not break live output behaviour since ILiveOutputManager` handles conflicting
    output gracefully.
 
 4. When you don't need live output items anymore, you may destroy all of them by dispoing an `ILiveOutputManager`:
@@ -76,9 +76,9 @@ and to update them in-place.
 
    It's strongly recommended to use `using()` or `try-finally` operators.
 
-## Feature details {#features}
+## Feature details
 
-### Live text {#live-text}
+### Live text
 
 Live text is a most simple live output item - it's just a line of colored text
 that can be updated in place.
@@ -109,9 +109,9 @@ using (var liveOutput = LiveOutputManager.Create())
 Console.WriteLine("Processing is completed");
 ```
 
-![](text.gif)
+![text](text.gif)
 
-## Spinner {#spinner}
+## Spinner
 
 Spinner is a more complicated version of live text item - it's a line of colored text
 that can be updated in place plus an animated spinner.
@@ -142,7 +142,7 @@ using (var liveOutput = LiveOutputManager.Create())
 Console.WriteLine("Processing is completed");
 ```
 
-![](spinner.gif)
+![spinner](spinner.gif)
 
 Spinner rendering is configured via `SpinnerRenderer` which is passed to `LiveOutputManager.Create()` method.
 
@@ -160,9 +160,9 @@ All of them are configurable - you may override:
 * spinner location (at the end of line or in beginning of it)
 * a whitespace between spinner and text
 
-![](spinners.gif)
+![spinners](spinners.gif)
 
-## Progress bar {#progress-bar}
+## Progress bar
 
 Progress bar is a line of colored text that can be updated in place plus a bar that displays progress.
 
@@ -201,7 +201,7 @@ using (var liveOutput = LiveOutputManager.Create())
 Console.WriteLine("Processing is completed");
 ```
 
-![](progress-bar.gif)
+![progress-bar](progress-bar.gif)
 
 Progress bar rendering is configured via `ProgressBarRenderer` which is passed to `LiveOutputManager.Create()` method.
 
@@ -220,4 +220,4 @@ All of them are configurable - you may override:
 * progress bar size
 * a whitespace between spinner and text
 
-![](progress-bars.gif)
+![progress-bars](progress-bars.gif)

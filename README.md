@@ -5,13 +5,22 @@
 
 `ITGlobal.CLI` is a powerful library to build used-friendly command-line applications.
 
+<div style="display: flex; flex-flow: row;">
+  <div style="width: 50%; display: flex; flex-flow: column;">
+    <img src="docs/parser/root-help.gif" />
+  </div>
+  <div style="width: 50%; display: flex; flex-flow: column;">
+    <img src="docs/table/example-fluent.gif" />
+  </div>
+</div>
+
 ## Features
 
 * [Core features](docs/core/index.md)
-  * [Colored console output](docs/core/index.md#colors)
-  * [Ctrl+C/SIGINT interceptor](docs/core/index.md#ctrl-c)
-  * [Unified error handling](docs/core/index.md#errors)
-  * [No-Colors mode](docs/core/index.md#no-colors)
+  * [Colored console output](docs/core/index.md#colored-console-output)
+  * [Ctrl+C/SIGINT interceptor](docs/core/index.md#ctrlcsigint-interceptor)
+  * [Unified error handling](docs/core/index.md#unified-error-handling)
+  * [No-Colors mode](docs/core/index.md#no-colors-mode)
 * [Command line parser](docs/parser/index.md)
   * [Switches](docs/parser/switches.md)
   * [Options](docs/parser/options.md)

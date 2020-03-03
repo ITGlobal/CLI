@@ -3,7 +3,7 @@ layout: default
 ---
 # Commands
 
-[Go back](../parser#home)
+[Go back](../parser)
 
 ---
 
@@ -57,11 +57,11 @@ nestedCommand1.Switch("foo");
 An API of a `CliCommand` is similar to an API of `ITreeCliParser`:
 
 * `Switch()` method allows creation of [switches](switches)
-* `RepeatableSwitch()` method allows creation of [repeatable switches](switches#repeat)
+* `RepeatableSwitch()` method allows creation of [repeatable switches](switches#repeatable-switch)
 * `Option()` method allows creation of [options](options)
-* `RepeatableOption()` method allows creation of [repeatable options](options#repeat)
+* `RepeatableOption()` method allows creation of [repeatable options](options#repeatable-option)
 * `Argument()` method allows creation of [arguments](arguments)
-* `RepeatableArgument()` method allows creation of [repeatable arguments](arguments#repeat)
+* `RepeatableArgument()` method allows creation of [repeatable arguments](arguments#repeatable-argument)
 * `Command()` method allows creation of nested commands
 * `BeforeExecute()` method adds an execution hook
 * `BeforeExecuteAsync()` method adds an async execution hook

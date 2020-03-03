@@ -3,17 +3,17 @@ layout: default
 ---
 # Data-driven tables
 
-[Go back](../table#home)
+[Go back](../table)
 
 ---
 
 * [Quickstart](#quickstart)
-* [Column parameters](#column-params)
-* [Table parameters](#table-params)
+* [Column parameters](#column-parameters)
+* [Table parameters](#table-parameters)
 
 `ITGlobal CLI` offers a way to generate a pretty-formatted tables from a list of objects.
 
-## Quickstart {#quickstart}
+## Quickstart
 
 1. First, prepare source data:
 
@@ -51,9 +51,9 @@ layout: default
    table.Draw();
    ```
 
-   ![](example-data-driven.gif)
+   ![example-data-driven](example-data-driven.gif)
 
-## Column parameters {#column-params}
+## Column parameters
 
 For every column you you may define the following parameters:
 
@@ -69,7 +69,7 @@ For every column you you may define the following parameters:
 Note that both header text and body cell text are `AnsiString`s, not an ordinary string.
 Thus you may use any custom colorization in them.
 
-## Table parameters {#table-params}
+## Table parameters
 
 There are few method to define table-wide parameters:
 

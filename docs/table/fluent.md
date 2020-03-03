@@ -3,7 +3,7 @@ layout: default
 ---
 # Free-format (fluent) tables
 
-[Go back](../table#home)
+[Go back](../table)
 
 ---
 
@@ -59,7 +59,7 @@ layout: default
       ```csharp
       table.Separator();
       ```
- 
+
    * **Table footer row**:
 
      ```csharp
@@ -72,4 +72,4 @@ layout: default
    table.Draw();
    ```
 
-   ![](example-fluent.gif)
+   ![example-fluent](example-fluent.gif)

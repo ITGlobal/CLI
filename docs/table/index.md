@@ -1,9 +1,9 @@
 ---
 layout: default
 ---
-# ASCII tables {#home}
+# ASCII tables
 
-[Go back](..#home)
+[Go back](..)
 
 ---
 
@@ -77,7 +77,7 @@ It supports two rendering styles:
   var renderer = TableRenderer.Grid(GridTableStyle.Pretty());
   ```
   
-  ![](grid-pretty.gif)
+  ![grid-pretty](grid-pretty.gif)
 
   Note than `GridTableStyle.Pretty()` method has optional parameter to override table colors.
 
@@ -87,7 +87,7 @@ It supports two rendering styles:
   var renderer = TableRenderer.Grid(GridTableStyle.Sketch());
   ```
   
-  ![](grid-sketch.gif)
+  ![grid-sketch](grid-sketch.gif)
 
 ### Pipe table renderer
 
@@ -97,7 +97,7 @@ Pipe-style table renderer is designed to render a table using a markdown-style f
 var renderer = TableRenderer.Pipe();
 ```
   
-![](pipe.gif)
+![pipe](pipe.gif)
 
 ### Plain table renderer
 
@@ -108,4 +108,4 @@ This renderer provides most compact output.
 var renderer = TableRenderer.Plain();
 ```
   
-![](plain.gif)
+![plain](plain.gif)

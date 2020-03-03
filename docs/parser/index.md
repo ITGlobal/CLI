@@ -1,9 +1,9 @@
 ---
 layout: default
 ---
-# Command line parser {#home}
+# Command line parser
 
-[Go back](..#home)
+[Go back](..)
 
 ---
 

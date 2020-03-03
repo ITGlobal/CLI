@@ -3,17 +3,17 @@ layout: default
 ---
 # Built-in help
 
-[Go back](../parser#home)
+[Go back](../parser)
 
 ---
 
-* [Using an auto-generated help ](#usage)
-* [Programmatic usage access ](#programmatic)
-* [Disabling built-in help ](#disable)
+* [Using an auto-generated help](#using-an-auto-generated-help)
+* [Programmatic usage access](#programmatic-usage-access)
+* [Disabling built-in help](#disabling-built-in-help)
 
 `ITGlobal.CLI` command line parser contains a built-in support for auto-generated help.
 
-## Using an auto-generated help {#usage}
+## Using an auto-generated help
 
 Parser supports two ways to display auto-generated help:
 
@@ -25,20 +25,20 @@ Parser supports two ways to display auto-generated help:
 
   So, you should type `my-app --help` to get help on root command and global options.
 
-  ![](root-help.gif)
+  ![root-help](root-help.gif)
 
   Typing `my-app my command name --help` will give you a help on specific command.
 
-  ![](command-help.gif)
+  ![command-help](command-help.gif)
 
 * **Using an implicit help**
 
   If you're using a `CliParser.NewTreeParser()` and you run your application
   without any command line arguments, an implicit help on root commands will be displayed
 
-  ![](implicit-help.gif)
+  ![implicit-help](implicit-help.gif)
 
-## Programmatic usage access {#programmatic}
+## Programmatic usage access
 
 Parser provides a programmatic access to auto-generated help:
 
@@ -57,7 +57,7 @@ var commandUsage = command.GetUsage();
 
 You may use this data for various purposes, e.g. auto generating MAN pages or text manuals.
 
-## Disabling built-in help {#disable}
+## Disabling built-in help
 
 In some cases you might need to opt-out built-in help feature.
 

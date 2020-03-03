@@ -3,14 +3,14 @@ layout: default
 ---
 # Parser configuration options
 
-[Go back](../parser#home)
+[Go back](../parser)
 
 ---
 
-* [Supported flags ](#flags)
-* [Option styles ](#styles)
-* [POSIX notation ](#posit-notation)
-* [Windows/DOS notation ](#dos-notation)
+* [Supported flags](#supported-flags)
+* [Option styles](#option-styles)
+* [POSIX notation](#posix-notation)
+* [Windows/DOS notation](#windowsdos-notation)
 
 Command line parser's behavior may be altered with `CliParserFlags`:
 
@@ -21,7 +21,7 @@ var parser = CliParser.NewSimpleParser(flags: CliParserFlags.Default);
 parser.Flags(CliParserFlags.Default);
 ```
 
-## Supported flags {#flags}
+## Supported flags
 
 | Flag                          | Value | Effect                                                        |
 |-------------------------------|-------|---------------------------------------------------------------|
@@ -34,7 +34,7 @@ parser.Flags(CliParserFlags.Default);
 
 > By default, only `PosixNotation` and `EqualitySignSeparatedValues` flags are set.
 
-## Option styles {#styles}
+## Option styles
 
 Command line options have a name and an value. There are few ways to separate them.
 
@@ -64,7 +64,7 @@ You may use an equality sign (`=`) sign to separate option's name from it's valu
 --key=value
 ```
 
-## POSIX notation {#posit-notation}
+## POSIX notation
 
 Parser supports POSIX notation with following features:
 
@@ -104,7 +104,7 @@ Parser supports POSIX notation with following features:
 
   In this example only `-k`, `-v` and `--key` are options/switches, and `foo bar -z --gamma value` are free arguments.
 
-## Windows/DOS notation {#dos-notation}
+## Windows/DOS notation
 
 Parser supports Windows/DOS notation with following features:
 

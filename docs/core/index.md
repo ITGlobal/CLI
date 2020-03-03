@@ -3,19 +3,19 @@ layout: default
 ---
 # Core features
 
-[Go back](..#home)
+[Go back](..)
 
 ---
 
 `ITGlobal.CLI`'s core features are located in [`ITGlobal.CLI.Terminal`](https://www.nuget.org/packages/ITGlobal.CLI.Terminal/) Nuget package
 and provide the following abilities:
 
-* [Colored console output](#colors)
-* [Ctrl+C/SIGINT interceptor](#ctrl-c)
-* [Unified error handling](#errors)
-* [No-Colors mode](#no-colors)
+* [Colored console output](#colored-console-output)
+* [Ctrl+C/SIGINT interceptor](#ctrlcsigint-interceptor)
+* [Unified error handling](#unified-error-handling)
+* [No-Colors mode](#no-colors-mode)
 
-## Initialization {#init}
+## Initialization
 
 Before you may use any of `ITGlobal.CLI`'s features, you need to initialize terminal driver:
 
@@ -25,7 +25,7 @@ Terminal.Initialize();
 
 You may call this method multiple times, it will run initialization only one anyway.
 
-## Colored console output {#colors}
+## Colored console output
 
 `ITGlobal.CLI` provides (and uses internally) a unified wrapper for standart input, output and error streams - an `AnsiString` struct.
 This is basically an array for characters combined with color attributes.
@@ -120,9 +120,9 @@ Console.WriteLine("RED on DEFAULT".Red());
 
 Here's an output of this code sample:
 
-![](colors.gif)
+![colors](colors.gif)
 
-## Ctrl+C/SIGINT interceptor {#ctrl-c}
+## Ctrl+C/SIGINT interceptor
 
 You can easily intercept a `Ctrl-C`/`SIGINT` event and convert it into a `CancellationToken`:
 
@@ -139,9 +139,9 @@ using(var ctrlC = Terminal.OnCtrlC())
 }
 ```
 
-![](ctrl-c.gif)
+![ctrl-c](ctrl-c.gif)
 
-## Unified error handling {#errors}
+## Unified error handling
 
 `ITGlobal CLI` offers an easy way to pretty-print exceptions in a command line application:
 
@@ -152,7 +152,7 @@ TerminalErrorHandler.Handle(() =>
 });
 ```
 
-![](error.gif)
+![error](error.gif)
 
 Note that `CommandLineException`s are handled differently, allowing you to create a nice error message:
 
@@ -165,7 +165,7 @@ TerminalErrorHandler.Handle(() =>
 });
 ```
 
-![](cli-error.gif)
+![cli-error](cli-error.gif)
 
 Async functions are supported too:
 
@@ -177,7 +177,7 @@ await TerminalErrorHandler.HandleAsync(async () =>
 });
 ```
 
-## No-Colors mode {#no-colors}
+## No-Colors mode
 
 `ITGlobal.CLI` allows you to (temporarily) disable console output colorization.
 This might come in handy when you need to keep your console output clean of ANSI escape sequences.
@@ -193,4 +193,4 @@ using (Terminal.DisableColors())
 Console.WriteLine("This text will be printed in color".Green());
 ```
 
-![](no-color.gif)
+![no-color](no-color.gif)

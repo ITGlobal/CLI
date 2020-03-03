@@ -3,12 +3,12 @@ layout: default
 ---
 # Value parser
 
-[Go back](../parser#home)
+[Go back](../parser)
 
 ---
 
-* [Built-in types](#built-in)
-* [Enum types](#enum)
+* [Built-in types](#built-in-types)
+* [Enum types](#enum-types)
 
 Since raw command line is a string, a parsing is needed to populate options and arguments with non-string values.
 
@@ -22,7 +22,7 @@ var option2 = parser.Option<MyCustomType>("option")
                     .UseParser(new MyCustomTypeValueParser());
 ```
 
-## Built-in types {#built-in}
+## Built-in types
 
 You don't need to set custom value parser if your option have one of the following value types:
 
@@ -41,10 +41,10 @@ You don't need to set custom value parser if your option have one of the followi
 * `double`
 * `decimal`
 * `DateTime`
-* any of enum types (see [more below](#enum))
+* any of enum types (see [more below](#enum-types))
 * array of any of types above (comma-separated)
 
-## Enum types {#enum}
+## Enum types
 
 Built-in enum value parser supports few ways to configure parsing.
 
