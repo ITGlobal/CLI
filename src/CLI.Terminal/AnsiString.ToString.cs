@@ -21,7 +21,7 @@ namespace ITGlobal.CommandLine
 
             var sb = new StringBuilder();
 
-            var ansiAttributesEverApplied = false;
+            var shouldResetAnsiAttributes = false;
 
             foreach (var (c, fg, bg) in _chars)
             {
@@ -43,15 +43,21 @@ namespace ITGlobal.CommandLine
                     {
                         var sgr = Ansi.SGR(foregroundColor ?? defaultForegroundColor, backgroundColor ?? defaultBackgroundColor);
                         sb.Append(sgr);
-                    }
 
-                    ansiAttributesEverApplied = true;
+                        shouldResetAnsiAttributes = true;
+                    }
+                    else
+                    {
+                        sb.Append(Ansi.SGR_DEFAULT);
+
+                        shouldResetAnsiAttributes = false;
+                    }
                 }
 
                 sb.Append(c);
             }
 
-            if (ansiAttributesEverApplied)
+            if (shouldResetAnsiAttributes)
             {
                 sb.Append(Ansi.SGR_DEFAULT);
             }
