@@ -10,7 +10,7 @@ namespace ITGlobal.CommandLine.Parsing
     ///     Command line command
     /// </summary>
     [PublicAPI]
-    public sealed class CliCommand : ICliCommandRoot, ICliCommand
+    public sealed class CliCommand : ICliCommandRoot, ICliArgumentRoot, ICliOptionRoot, ICliSwitchRoot, ICliCommand
     {
         #region fields
 
@@ -148,7 +148,7 @@ namespace ITGlobal.CommandLine.Parsing
         }
 
         /// <summary>
-        ///     Add a command line repeteable switch
+        ///     Add a command line repeatable switch
         /// </summary>
         public CliRepeatableSwitch RepeatableSwitch(
             char shortName,
@@ -180,7 +180,7 @@ namespace ITGlobal.CommandLine.Parsing
         }
 
         /// <summary>
-        ///     Add a command line repeteable switch
+        ///     Add a command line repeatable switch
         /// </summary>
         public CliRepeatableSwitch RepeatableSwitch(
             string longName,

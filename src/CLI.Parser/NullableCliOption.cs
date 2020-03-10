@@ -1,4 +1,4 @@
-﻿using JetBrains.Annotations;
+using JetBrains.Annotations;
 
 namespace ITGlobal.CommandLine.Parsing
 {
@@ -27,18 +27,18 @@ namespace ITGlobal.CommandLine.Parsing
         #region properties
 
         /// <summary>
-        ///     Gets a value indicating whether an argument was present in command line
+        ///     Gets a value indicating whether an option was present in command line
         /// </summary>
         public bool IsSet => _option.IsSet;
 
         /// <summary>
-        ///     Gets an argument value
+        ///     Gets an option value
         /// </summary>
         [PublicAPI]
         public T? Value => _option.IsSet ? _option.Value : (T?)null;
 
         /// <summary>
-        ///     Argument name
+        ///     option name
         /// </summary>
         [NotNull]
         internal string Name => _option.Name;
@@ -48,12 +48,12 @@ namespace ITGlobal.CommandLine.Parsing
         #region operators
 
         /// <summary>
-        ///     Implicit convertion to boolean
+        ///     Implicit conversion to boolean
         /// </summary>
         public static implicit operator bool(NullableCliOption<T> option) => option.IsSet;
 
         /// <summary>
-        ///     Implicit convertion to T?
+        ///     Implicit conversion to T?
         /// </summary>
         public static implicit operator T? (NullableCliOption<T> option) => option.Value;
 

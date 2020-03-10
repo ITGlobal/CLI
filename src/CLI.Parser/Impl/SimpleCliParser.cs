@@ -191,7 +191,7 @@ namespace ITGlobal.CommandLine.Parsing.Impl
         }
 
         /// <summary>
-        ///     Add a command line repeteable switch
+        ///     Add a command line repeatable switch
         /// </summary>
         public CliRepeatableSwitch RepeatableSwitch(
             char shortName,
@@ -223,7 +223,7 @@ namespace ITGlobal.CommandLine.Parsing.Impl
         }
 
         /// <summary>
-        ///     Add a command line repeteable switch
+        ///     Add a command line repeatable switch
         /// </summary>
         public CliRepeatableSwitch RepeatableSwitch(
             string longName,
@@ -552,24 +552,7 @@ namespace ITGlobal.CommandLine.Parsing.Impl
                 ctx: ctx
             );
         }
-
-        /// <summary>
-        ///     Get autocompletion results
-        /// </summary>
-        public AutoCompletionItem[] Autocomplete(string[] args, int? position = null)
-        {
-            foreach (var consumer in _consumers)
-            {
-                consumer.CheckConfiguration();
-            }
-
-            var tokens = CommandLineTokenizer.Tokenize(Flags, args);
-            var raw = new RawCommandLine(tokens);
-
-
-            throw new NotImplementedException();
-        }
-
+        
         /// <summary>
         ///     Get usage info
         /// </summary>

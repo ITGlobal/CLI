@@ -5,7 +5,7 @@ using JetBrains.Annotations;
 namespace ITGlobal.CommandLine.Parsing
 {
     /// <summary>
-    ///     Command line repeteable switch
+    ///     Command line repeatable switch
     /// </summary>
     [PublicAPI]
     public sealed class CliRepeatableSwitch : ICliConsumer
@@ -87,12 +87,12 @@ namespace ITGlobal.CommandLine.Parsing
         #region operators
 
         /// <summary>
-        ///     Implicit convertion to boolean
+        ///     Implicit conversion to boolean
         /// </summary>
         public static implicit operator bool(CliRepeatableSwitch option) => option.IsSet;
 
         /// <summary>
-        ///     Implicit convertion to int
+        ///     Implicit conversion to int
         /// </summary>
         public static implicit operator int(CliRepeatableSwitch option) => option.RepeatCount;
 

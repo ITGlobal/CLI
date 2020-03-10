@@ -1,5 +1,6 @@
-﻿using JetBrains.Annotations;
+using JetBrains.Annotations;
 using System;
+using System.IO;
 
 namespace ITGlobal.CommandLine.Parsing
 {
@@ -61,5 +62,129 @@ namespace ITGlobal.CommandLine.Parsing
         {
             return option.IsSet ? option.Value : (T?)null;
         }
+
+        #region FileOption
+
+        /// <summary>
+        ///     Add a command line option that is parsed as <see cref="System.IO.FileInfo"/>
+        /// </summary>
+        public static FileInfoCliOption FileOption(
+            this ICliOptionRoot root,
+            char shortName,
+            string longName = null,
+            string helpText = null,
+            bool hidden = false)
+        {
+            var argument = root.Option<FileInfo>(shortName, longName, helpText, hidden);
+            argument.UseParser(ValueParser.FileInfo);
+            return new FileInfoCliOption(argument);
+        }
+
+        /// <summary>
+        ///     Add a command line option that is parsed as <see cref="System.IO.FileInfo"/>
+        /// </summary>
+        public static FileInfoCliOption FileOption(
+            this ICliOptionRoot root,
+            string longName,
+            string helpText = null,
+            bool hidden = false)
+        {
+            var argument = root.Option<FileInfo>(longName, helpText, hidden);
+            argument.UseParser(ValueParser.FileInfo);
+            return new FileInfoCliOption(argument);
+        }
+
+        /// <summary>
+        ///     Add a command line repeatable option that is parsed as <see cref="System.IO.FileInfo"/>
+        /// </summary>
+        public static FileInfoCliRepeatableOption RepeatableFileOption(
+            this ICliOptionRoot root,
+            char shortName,
+            string longName = null,
+            string helpText = null,
+            bool hidden = false)
+        {
+            var argument = root.RepeatableOption<FileInfo>(shortName, longName, helpText, hidden);
+            argument.UseParser(ValueParser.FileInfo);
+            return new FileInfoCliRepeatableOption(argument);
+        }
+
+        /// <summary>
+        ///     Add a command line repeatable option that is parsed as <see cref="System.IO.FileInfo"/>
+        /// </summary>
+        public static FileInfoCliRepeatableOption RepeatableFileOption(
+            this ICliOptionRoot root,
+            string longName = null,
+            string helpText = null,
+            bool hidden = false)
+        {
+            var argument = root.RepeatableOption<FileInfo>(longName, helpText, hidden);
+            argument.UseParser(ValueParser.FileInfo);
+            return new FileInfoCliRepeatableOption(argument);
+        }
+
+        #endregion
+
+        #region FileOption
+
+        /// <summary>
+        ///     Add a command line option that is parsed as <see cref="System.IO.DirectoryInfo"/>
+        /// </summary>
+        public static DirectoryInfoCliOption DirectoryOption(
+            this ICliOptionRoot root,
+            char shortName,
+            string longName = null,
+            string helpText = null,
+            bool hidden = false)
+        {
+            var argument = root.Option<DirectoryInfo>(shortName, longName, helpText, hidden);
+            argument.UseParser(ValueParser.DirectoryInfo);
+            return new DirectoryInfoCliOption(argument);
+        }
+
+        /// <summary>
+        ///     Add a command line option that is parsed as <see cref="System.IO.DirectoryInfo"/>
+        /// </summary>
+        public static DirectoryInfoCliOption DirectoryOption(
+            this ICliOptionRoot root,
+            string longName,
+            string helpText = null,
+            bool hidden = false)
+        {
+            var argument = root.Option<DirectoryInfo>(longName, helpText, hidden);
+            argument.UseParser(ValueParser.DirectoryInfo);
+            return new DirectoryInfoCliOption(argument);
+        }
+
+        /// <summary>
+        ///     Add a command line repeatable option that is parsed as <see cref="System.IO.DirectoryInfo"/>
+        /// </summary>
+        public static DirectoryInfoCliRepeatableOption RepeatableDirectoryOption(
+            this ICliOptionRoot root,
+            char shortName,
+            string longName = null,
+            string helpText = null,
+            bool hidden = false)
+        {
+            var argument = root.RepeatableOption<DirectoryInfo>(shortName, longName, helpText, hidden);
+            argument.UseParser(ValueParser.DirectoryInfo);
+            return new DirectoryInfoCliRepeatableOption(argument);
+        }
+
+        /// <summary>
+        ///     Add a command line repeatable option that is parsed as <see cref="System.IO.DirectoryInfo"/>
+        /// </summary>
+        public static DirectoryInfoCliRepeatableOption RepeatableDirectoryOption(
+            this ICliOptionRoot root,
+            string longName = null,
+            string helpText = null,
+            bool hidden = false)
+        {
+            var argument = root.RepeatableOption<DirectoryInfo>(longName, helpText, hidden);
+            argument.UseParser(ValueParser.DirectoryInfo);
+            return new DirectoryInfoCliRepeatableOption(argument);
+        }
+
+        #endregion
     }
 }

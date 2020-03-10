@@ -1,5 +1,6 @@
 using System;
 using System.Globalization;
+using System.IO;
 using System.Reflection;
 using ITGlobal.CommandLine.Parsing.Impl.ValueParsers;
 using JetBrains.Annotations;
@@ -97,6 +98,18 @@ namespace ITGlobal.CommandLine.Parsing
         public static IValueParser<string> String { get; } = new StringValueParserImpl();
 
         /// <summary>
+        ///     Value parser for <see cref="FileInfo"/> values
+        /// </summary>
+        [NotNull]
+        public static IValueParser<FileInfo> FileInfo { get; } = new FileInfoValueParserImpl();
+
+        /// <summary>
+        ///     Value parser for <see cref="DirectoryInfo"/> values
+        /// </summary>
+        [NotNull]
+        public static IValueParser<DirectoryInfo> DirectoryInfo { get; } = new DirectoryInfoValueParserImpl();
+
+        /// <summary>
         ///     Value parser for DateTime values
         /// </summary>
         [NotNull]
@@ -137,6 +150,16 @@ namespace ITGlobal.CommandLine.Parsing
 
         private static object Get(Type type)
         {
+            if (type == typeof(FileInfo))
+            {
+                return FileInfo;
+            }
+
+            if (type == typeof(DirectoryInfo))
+            {
+                return DirectoryInfo;
+            }
+
             if (type.IsEnum)
             {
                 var method = typeof(ValueParser)

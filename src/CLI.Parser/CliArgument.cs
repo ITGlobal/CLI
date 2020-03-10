@@ -168,12 +168,12 @@ namespace ITGlobal.CommandLine.Parsing
         #region operators
 
         /// <summary>
-        ///     Implicit convertion to boolean
+        ///     Implicit conversion to boolean
         /// </summary>
         public static implicit operator bool(CliArgument<T> option) => option.IsSet;
 
         /// <summary>
-        ///     Implicit convertion to T
+        ///     Implicit conversion to T
         /// </summary>
         public static implicit operator T(CliArgument<T> cliOption) => cliOption.Value;
 

@@ -93,7 +93,7 @@ namespace ITGlobal.CommandLine.Parsing
         #region operators
 
         /// <summary>
-        ///     Implicit convertion to boolean
+        ///     Implicit conversion to boolean
         /// </summary>
         public static implicit operator bool(CliSwitch option) => option.IsSet;
 

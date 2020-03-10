@@ -195,7 +195,7 @@ namespace ITGlobal.CommandLine.Parsing
 
         #endregion
 
-        #region repeteable option tests
+        #region repeatable option tests
 
         [Fact]
         public void Repeatable_option_not_set()
@@ -591,7 +591,7 @@ namespace ITGlobal.CommandLine.Parsing
 
         #endregion
 
-        #region command repeteable option tests
+        #region command repeatable option tests
 
         [Fact]
         public void Command_repeatable_option_not_set()

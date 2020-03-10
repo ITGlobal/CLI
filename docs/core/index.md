@@ -41,7 +41,7 @@ that may be consumed by an ANSI compatible terminal.
 
 `AnsiString` offers few ways to to create and manage it:
 
-* explicit type convertion from a string:
+* explicit type conversion from a string:
 
   ```csharp
   var ansiStr = (AnsiString)"foo bar";
