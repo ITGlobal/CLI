@@ -76,6 +76,10 @@
       "commandName": "Project",
       "commandLineArgs": "sample unicode"
     },
+    "sample concurrent": {
+      "commandName": "Project",
+      "commandLineArgs": "sample concurrent"
+    },
     "nested-help-output": {
       "commandName": "Project",
       "commandLineArgs": "nested-help-output"

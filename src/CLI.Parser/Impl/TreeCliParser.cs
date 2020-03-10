@@ -528,10 +528,7 @@ namespace ITGlobal.CommandLine.Parsing.Impl
             _executeHandlers.Add(handler);
         }
 
-        /// <summary>
-        ///     Run the parser
-        /// </summary>
-        public ICliParserResult Parse(params string[] args)
+        private void CheckConfiguration()
         {
             foreach (var consumer in _consumers)
             {
@@ -542,6 +539,14 @@ namespace ITGlobal.CommandLine.Parsing.Impl
             {
                 c.CheckConfiguration();
             }
+        }
+
+        /// <summary>
+        ///     Run the parser
+        /// </summary>
+        public ICliParserResult Parse(params string[] args)
+        {
+            CheckConfiguration();
 
             var tokens = CommandLineTokenizer.Tokenize(Flags, args);
             var raw = new RawCommandLine(tokens);
@@ -632,6 +637,19 @@ namespace ITGlobal.CommandLine.Parsing.Impl
 
                 throw new UnknownCommandException(name, commandCandidates, GetUsage());
             }
+        }
+
+        /// <summary>
+        ///     Get autocompletion results
+        /// </summary>
+        public AutoCompletionItem[] Autocomplete(string[] args, int? position = null)
+        {
+            CheckConfiguration();
+
+            var tokens = CommandLineTokenizer.Tokenize(Flags, args);
+            var raw = new RawCommandLine(tokens);
+
+            throw new NotImplementedException();
         }
 
         /// <summary>

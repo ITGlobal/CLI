@@ -114,6 +114,7 @@ namespace ITGlobal.CommandLine.Example
                     }
                 });
 
+                var x = app.Parse(new[] { "live", "spin" });
                 return app.Parse(args).Run();
             });
         }

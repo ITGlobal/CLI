@@ -51,6 +51,12 @@ namespace ITGlobal.CommandLine.Example
                     var cmd = command.Command("unicode", helpText: "Test Win32 unicode output");
                     cmd.OnExecute(_ => { Unicode(); });
                 }
+
+                // sample concurrent
+                {
+                    var cmd = command.Command("concurrent", helpText: "Test interleaved writes both to stdout and stderr");
+                    cmd.OnExecute(_ => { ConcurrentWriteToStdErrAndStdOut(); });
+                }
             }
         }
 
@@ -185,6 +191,24 @@ namespace ITGlobal.CommandLine.Example
                                 "غير الدمج بوابة الشمال كل. سقطت لمحاكم البشريةً دنو مع"; // arabic
 
             Console.Out.WriteLine(text);
+        }
+
+        private static void ConcurrentWriteToStdErrAndStdOut()
+        {
+            const string foo = "foo";
+            const string bar = "bar";
+
+            const int count = 100;
+
+            for (var i = 0; i < count; i++)
+            {
+                Console.Out.Write(foo);
+                Console.Error.Write(bar);
+                Console.Out.WriteLine();
+            }
+
+            Console.Error.Flush();
+            Console.Out.Flush();
         }
     }
 }

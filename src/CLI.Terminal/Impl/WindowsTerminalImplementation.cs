@@ -29,6 +29,8 @@ namespace ITGlobal.CommandLine.Impl
         private readonly TextWriter _originalStdErr;
         private readonly TextWriter _originalStdOut;
 
+        private readonly WindowsTerminalWriteQueue _writeQueue = new WindowsTerminalWriteQueue();
+
         public WindowsTerminalImplementation()
         {
             _originalStdErr = Console.Error;
@@ -54,7 +56,7 @@ namespace ITGlobal.CommandLine.Impl
                     throw new Win32Exception();
                 }
 
-                var width = bufferInfo.srWindow.Right - bufferInfo.srWindow.Left ;
+                var width = bufferInfo.srWindow.Right - bufferInfo.srWindow.Left;
                 return width;
             }
         }
@@ -130,8 +132,9 @@ namespace ITGlobal.CommandLine.Impl
             if (!isStdErrRedirected)
             {
                 var stderr = new WindowsTerminalWriter(_hStdErr, consoleOutputLock);
-                Console.SetError(new BufferedAnsiTextWriter(stderr, Console.Error.Encoding));
+                Console.SetError(new WindowsTerminalAnsiTextWriter(Console.Error.Encoding, _writeQueue, ConsoleStream.StdErr));
                 Stderr = stderr;
+                _writeQueue.StdErrWriter = stderr;
             }
             else
             {
@@ -145,8 +148,9 @@ namespace ITGlobal.CommandLine.Impl
             if (!isStdOutRedirected)
             {
                 var stdout = new WindowsTerminalWriter(_hStdOut, consoleOutputLock);
-                Console.SetOut(new BufferedAnsiTextWriter(stdout, Console.Out.Encoding));
+                Console.SetOut(new WindowsTerminalAnsiTextWriter(Console.Error.Encoding, _writeQueue, ConsoleStream.StdOut));
                 Stdout = stdout;
+                _writeQueue.StdOutWriter = stdout;
             }
             else
             {
@@ -253,6 +257,8 @@ namespace ITGlobal.CommandLine.Impl
             Console.SetOut(_originalStdOut);
 
             Win32.CloseHandle(_hConsoleBuffer);
+
+            _writeQueue.Dispose();
         }
 
         public bool IsWrapAtEolOutputEnabled { get; private set; }

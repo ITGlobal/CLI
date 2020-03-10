@@ -161,6 +161,37 @@ namespace ITGlobal.CommandLine.Parsing
         /// <summary>
         ///     Run the parser
         /// </summary>
+        [NotNull] 
         ICliParserResult Parse([NotNull] params string[] args);
+
+        /// <summary>
+        ///     Get autocompletion results
+        /// </summary>
+        [NotNull]
+        AutoCompletionItem[] Autocomplete([NotNull] string[] args, int? position = null);
+    }
+
+    public sealed class AutoCompletionItem
+    {
+        public AutoCompletionItem(AutoCompletionItemType type, string value)
+        {
+            Type = type;
+            Value = value;
+        }
+
+        public AutoCompletionItemType Type { get; }
+        public string Value { get; }
+
+        internal static AutoCompletionItem Command(string value) 
+            => new AutoCompletionItem(AutoCompletionItemType.Command, value);
+    }
+
+    public enum AutoCompletionItemType
+    {
+        Command = 1,
+        Option,
+        Switch,
+        ArgumentValue,
+        OptionValue,
     }
 }

@@ -554,6 +554,23 @@ namespace ITGlobal.CommandLine.Parsing.Impl
         }
 
         /// <summary>
+        ///     Get autocompletion results
+        /// </summary>
+        public AutoCompletionItem[] Autocomplete(string[] args, int? position = null)
+        {
+            foreach (var consumer in _consumers)
+            {
+                consumer.CheckConfiguration();
+            }
+
+            var tokens = CommandLineTokenizer.Tokenize(Flags, args);
+            var raw = new RawCommandLine(tokens);
+
+
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
         ///     Get usage info
         /// </summary>
         public SimpleCliParserUsage GetUsage()
