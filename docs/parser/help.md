@@ -87,6 +87,18 @@ In some cases you might need to opt-out built-in help feature.
   
   Note that implicit help is avaiable for `CliParser.NewTreeParser()` only.
 
+* To disable `help` command:
+
+  Set `CliParser.NewTreeParser()`'s `disableHelpCommand` method parameter to `true`:
+
+  ```csharp
+  var parser = CliParser.NewTreeParser(disableHelpCommand: true);
+  ```
+
+  This will prevent parser from adding `help` command.
+  
+  Note that help command is avaiable for `CliParser.NewTreeParser()` only.
+
 ## Customizing help output
 
 You may override the way help output is rendered to console.

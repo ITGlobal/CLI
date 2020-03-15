@@ -36,13 +36,21 @@
       "commandName": "Project",
       "commandLineArgs": "nested-colors"
     },
-    "help": {
+    "--help": {
       "commandName": "Project",
       "commandLineArgs": "--help"
     },
     "live spinner --help": {
       "commandName": "Project",
       "commandLineArgs": "live spinner --help"
+    },
+    "help": {
+      "commandName": "Project",
+      "commandLineArgs": "help"
+    },
+    "help live spinner": {
+      "commandName": "Project",
+      "commandLineArgs": "help live spinner"
     },
     "did-you-mean-demo": {
       "commandName": "Project",

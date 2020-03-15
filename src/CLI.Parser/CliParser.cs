@@ -51,7 +51,7 @@ namespace ITGlobal.CommandLine.Parsing
 
             if (!disableHelpSwitch)
             {
-                parser.EnableHelp();
+                parser.EnableHelpSwitch();
             }
 
             return parser;
@@ -68,6 +68,7 @@ namespace ITGlobal.CommandLine.Parsing
             CliParserFlags flags = CliParserFlags.Default,
             bool? suppressLogo = null,
             bool disableHelpSwitch = false,
+            bool disableHelpCommand = false,
             bool disableImplicitHelp = false)
         {
             Terminal.Initialize();
@@ -98,7 +99,12 @@ namespace ITGlobal.CommandLine.Parsing
 
             if (!disableHelpSwitch)
             {
-                parser.EnableHelp();
+                parser.EnableHelpSwitch();
+            }
+
+            if (!disableHelpCommand)
+            {
+                parser.EnableHelpCommand();
             }
 
             if (!disableImplicitHelp)

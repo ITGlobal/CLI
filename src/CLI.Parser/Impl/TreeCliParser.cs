@@ -632,30 +632,30 @@ namespace ITGlobal.CommandLine.Parsing.Impl
                 logo: !ctx.IsLogoSuppressed ? Logo : null,
                 ctx: ctx
             );
-
-            ICliCommand SelectCommand(RawCommandLine r)
-            {
-                if (_commands.Count == 0)
-                {
-                    return this;
-                }
-
-                var name = r.ConsumeArgument(0);
-                if (name == null)
-                {
-                    return this;
-                }
-                
-                var (cmd, commandCandidates) = SelectCommandHelper.SelectCommand(r, _commands, name);
-                if (cmd != null)
-                {
-                    return cmd;
-                }
-
-                throw new UnknownCommandException(name, commandCandidates, GetUsage());
-            }
         }
-        
+
+        internal ICliCommand SelectCommand(RawCommandLine r)
+        {
+            if (_commands.Count == 0)
+            {
+                return this;
+            }
+
+            var name = r.ConsumeArgument(0);
+            if (name == null)
+            {
+                return this;
+            }
+
+            var (cmd, commandCandidates) = SelectCommandHelper.SelectCommand(r, _commands, name);
+            if (cmd != null)
+            {
+                return cmd;
+            }
+
+            throw new UnknownCommandException(name, commandCandidates, GetUsage());
+        }
+
         /// <summary>
         ///     Get usage info
         /// </summary>
