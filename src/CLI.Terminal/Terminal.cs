@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 #if !NET45
 using System.Runtime.InteropServices;
@@ -228,6 +229,12 @@ namespace ITGlobal.CommandLine
             }
         }
 
+        #region Ctrl-C/SIGINT
+
+        private static readonly object CtrlCInterceptorsLock = new object();
+        private static readonly Stack<CtrlCInterceptorImpl> CtrlCInterceptors
+            = new Stack<CtrlCInterceptorImpl>();
+
         /// <summary>
         ///     Attach a handler for Ctrl-C/SIGINT
         /// </summary>
@@ -235,8 +242,69 @@ namespace ITGlobal.CommandLine
         public static ICtrlCInterceptor OnCtrlC()
         {
             Initialize();
-            return new CtrlCInterceptorImpl();
+
+            var interceptor = new CtrlCInterceptorImpl();
+            var shouldAttachHandler = false;
+            lock (CtrlCInterceptorsLock)
+            {
+                if (CtrlCInterceptors.Count == 0)
+                {
+                    shouldAttachHandler = true;
+                }
+
+                CtrlCInterceptors.Push(interceptor);
+            }
+
+            if (shouldAttachHandler)
+            {
+                Console.CancelKeyPress += OnCancelKeyPress;
+            }
+
+            return interceptor;
         }
+
+        internal static void DetachCtrlCInterceptor()
+        {
+            var shouldDetachHandler = false;
+            lock (CtrlCInterceptorsLock)
+            {
+                if (CtrlCInterceptors.Count == 0)
+                {
+                    return;
+                }
+
+                if (CtrlCInterceptors.Count ==1)
+                {
+                    shouldDetachHandler = true;
+                }
+
+                CtrlCInterceptors.Pop();
+            }
+
+            if (shouldDetachHandler)
+            {
+                Console.CancelKeyPress -= OnCancelKeyPress;
+            }
+        }
+
+        private static void OnCancelKeyPress(object sender, ConsoleCancelEventArgs e)
+        {
+            CtrlCInterceptorImpl interceptor;
+            lock (CtrlCInterceptorsLock)
+            {
+                if (CtrlCInterceptors.Count == 0)
+                {
+                    return;
+                }
+
+                interceptor = CtrlCInterceptors.Peek();
+            }
+
+            e.Cancel = true;
+            interceptor.Trigger();
+        }
+
+        #endregion
 
         /// <summary>
         ///     Get terminal driver

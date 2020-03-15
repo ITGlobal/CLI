@@ -7,23 +7,16 @@ namespace ITGlobal.CommandLine.Impl
     {
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
 
-        public CtrlCInterceptorImpl()
-        {
-            Console.CancelKeyPress += OnCancelKeyPress;
-        }
-
         public CancellationToken CancellationToken => _cts.Token;
+
+        public void Trigger()
+        {
+            _cts.Cancel();
+        }
 
         public void Dispose()
         {
-            Console.CancelKeyPress -= OnCancelKeyPress;
-        }
-
-        private void OnCancelKeyPress(object sender, ConsoleCancelEventArgs e)
-        {
-            e.Cancel = true;
-            _cts.Cancel();
+            Terminal.DetachCtrlCInterceptor();
         }
     }
-
 }
