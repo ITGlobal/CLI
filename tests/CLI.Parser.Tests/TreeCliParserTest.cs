@@ -15,7 +15,9 @@ namespace ITGlobal.CommandLine.Parsing
             var parser = CliParser.NewTreeParser(
                 flags: testOptions,
                 disableHelpSwitch: true,
-                disableImplicitHelp: true);
+                disableHelpCommand: true,
+                disableImplicitHelp: true
+            );
             return parser;
         }
 
