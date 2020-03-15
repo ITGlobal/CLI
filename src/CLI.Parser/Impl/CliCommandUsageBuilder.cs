@@ -1,11 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
+using ITGlobal.CommandLine.Parsing.Help;
 
 namespace ITGlobal.CommandLine.Parsing.Impl
 {
     internal sealed class CliCommandUsageBuilder : ICliCommandUsageBuilder
     {
-        private readonly TreeCliParserUsageBuilder _rootBuilder;
+        private readonly CliParserUsageBuilder _rootBuilder;
         private readonly string[] _names;
         private readonly string _helpText;
         private readonly bool _isHidden;
@@ -17,7 +18,7 @@ namespace ITGlobal.CommandLine.Parsing.Impl
         private readonly List<CliCommandUsageBuilder> _commands = new List<CliCommandUsageBuilder>();
 
         internal CliCommandUsageBuilder(
-            TreeCliParserUsageBuilder rootBuilder,
+            CliParserUsageBuilder rootBuilder,
             string[] names,
             string helpText, 
             bool isHidden, 

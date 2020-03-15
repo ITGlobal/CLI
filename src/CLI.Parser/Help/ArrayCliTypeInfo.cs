@@ -1,4 +1,4 @@
-﻿namespace ITGlobal.CommandLine.Parsing
+namespace ITGlobal.CommandLine.Parsing.Help
 {
     public sealed class ArrayCliTypeInfo : CliTypeInfo
     {

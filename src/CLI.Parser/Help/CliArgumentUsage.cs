@@ -1,6 +1,6 @@
 using JetBrains.Annotations;
 
-namespace ITGlobal.CommandLine.Parsing
+namespace ITGlobal.CommandLine.Parsing.Help
 {
     /// <summary>
     ///     Usage info for command line argument

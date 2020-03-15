@@ -1,6 +1,7 @@
 using System;
+using ITGlobal.CommandLine.Parsing.Help;
 
-namespace ITGlobal.CommandLine.Parsing
+namespace ITGlobal.CommandLine.Parsing.Impl
 {
     internal sealed class EnumValueParser<T> : IValueParser<T>
         where T: struct, Enum

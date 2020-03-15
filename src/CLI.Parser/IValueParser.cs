@@ -1,3 +1,4 @@
+using ITGlobal.CommandLine.Parsing.Help;
 using JetBrains.Annotations;
 
 namespace ITGlobal.CommandLine.Parsing

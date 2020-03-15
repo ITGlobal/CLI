@@ -7,9 +7,11 @@ layout: default
 
 ---
 
-* [Using an auto-generated help](#using-an-auto-generated-help)
-* [Programmatic usage access](#programmatic-usage-access)
-* [Disabling built-in help](#disabling-built-in-help)
+- [Built-in help](#built-in-help)
+  - [Using an auto-generated help](#using-an-auto-generated-help)
+  - [Programmatic usage access](#programmatic-usage-access)
+  - [Disabling built-in help](#disabling-built-in-help)
+  - [Customizing help output](#customizing-help-output)
 
 `ITGlobal.CLI` command line parser contains a built-in support for auto-generated help.
 
@@ -84,3 +86,26 @@ In some cases you might need to opt-out built-in help feature.
   This will prevent parser from adding default `OnExecute` callback, allowing you to set your own one.
   
   Note that implicit help is avaiable for `CliParser.NewTreeParser()` only.
+
+## Customizing help output
+
+You may override the way help output is rendered to console.
+For example, you might need to localize it or to change its visual style.
+
+In order to archieve that, you will need to:
+
+1. Implement a `IHelpPrinter` interface in a custom class (try using `HelpPrinterBase` to simplify your code):
+
+   ```csharp
+   public class MyHelpPrinter : HelpPrinterBase
+   {
+       // TODO implement required methods
+   }
+   ```
+
+2. Pass an instance of `IHelpPrinter` to `ICliParser.UseHelpPrinter()` method:
+
+   ```csharp
+   var parser = CliParser.NewTreeParser();
+   parser.UseHelpPrinter(new MyHelpPrinter());
+   ```

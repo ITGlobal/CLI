@@ -1,6 +1,6 @@
 using System;
 
-namespace ITGlobal.CommandLine.Parsing
+namespace ITGlobal.CommandLine.Parsing.Impl
 {
     internal static class TypeNameHelper
     {

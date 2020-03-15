@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using ITGlobal.CommandLine.Parsing.Help;
 
 namespace ITGlobal.CommandLine.Parsing.Impl
 {
-    internal sealed class TreeCliParser : ITreeCliParser, ICliCommand
+    internal sealed class TreeCliParser : ITreeCliParser, ICliParserInternal, ICliCommand
     {
         #region fields
 
@@ -53,6 +54,11 @@ namespace ITGlobal.CommandLine.Parsing.Impl
         ///     Parser result factory
         /// </summary>
         public ICliParserResultFactory ResultFactory { get; private set; } = new DefaultCliParserResultFactory();
+
+        /// <summary>
+        ///     Help printer
+        /// </summary>
+        public IHelpPrinter HelpPrinter { get; private set; } = new DefaultHelpPrinter();
 
         #endregion
 
@@ -128,6 +134,19 @@ namespace ITGlobal.CommandLine.Parsing.Impl
             }
 
             ResultFactory = factory;
+        }
+
+        /// <summary>
+        ///     Set help printer implementation
+        /// </summary>
+        void ICliParser.UseHelpPrinter(IHelpPrinter printer)
+        {
+            if (printer == null)
+            {
+                throw new ArgumentNullException(nameof(printer));
+            }
+
+            HelpPrinter = printer;
         }
 
         /// <summary>
@@ -601,9 +620,7 @@ namespace ITGlobal.CommandLine.Parsing.Impl
                 return new SuccessfulCliParserResult(
                     handlers: new[]
                     {
-                        CliHandlerHelper.ToAsyncHandler(
-                            context => TreeCliParserHelpExtension.PrintUsage(this, context)
-                        )
+                        CliHandlerHelper.ToAsyncHandler(context => CliParserHelpExtension.PrintUsage(this, context))
                     },
                     logo: null,
                     ctx: ctx
@@ -642,9 +659,9 @@ namespace ITGlobal.CommandLine.Parsing.Impl
         /// <summary>
         ///     Get usage info
         /// </summary>
-        public TreeCliParserUsage GetUsage()
+        public CliParserUsage GetUsage()
         {
-            var builder = new TreeCliParserUsageBuilder(this);
+            var builder = new CliParserUsageBuilder(this);
 
             foreach (var consumer in _consumers)
             {

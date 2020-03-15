@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
 
-namespace ITGlobal.CommandLine.Parsing
+namespace ITGlobal.CommandLine.Parsing.Impl
 {
     internal sealed class EnumMetadata<T>
         where T : struct, Enum

@@ -8,10 +8,5 @@ namespace ITGlobal.CommandLine.Parsing
     [PublicAPI]
     public interface ITreeCliParser : ICliCommandRoot, ICliParser
     {
-        /// <summary>
-        ///     Get usage info
-        /// </summary>
-        [NotNull]
-        TreeCliParserUsage GetUsage();
     }
 }

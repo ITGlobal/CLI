@@ -1,4 +1,6 @@
-﻿namespace ITGlobal.CommandLine.Parsing.Impl
+﻿using ITGlobal.CommandLine.Parsing.Help;
+
+namespace ITGlobal.CommandLine.Parsing.Impl
 {
     internal interface IUsageBuilder
     {

@@ -1,6 +1,6 @@
-﻿using System.Text;
+using System.Text;
 
-namespace ITGlobal.CommandLine.Parsing
+namespace ITGlobal.CommandLine.Parsing.Impl
 {
     internal static class StringUtils
     {

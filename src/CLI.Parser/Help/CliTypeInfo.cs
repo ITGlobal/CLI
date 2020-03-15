@@ -1,7 +1,8 @@
 using System;
+using ITGlobal.CommandLine.Parsing.Impl;
 using JetBrains.Annotations;
 
-namespace ITGlobal.CommandLine.Parsing
+namespace ITGlobal.CommandLine.Parsing.Help
 {
     /// <summary>
     ///     Argument or option type information

@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using ITGlobal.CommandLine.Parsing.Help;
 
 namespace ITGlobal.CommandLine.Parsing.Impl
 {
-    internal sealed class SimpleCliParser : ISimpleCliParser
+    internal sealed class SimpleCliParser : ISimpleCliParser, ICliParserInternal
     {
         #region fields
 
@@ -19,7 +20,7 @@ namespace ITGlobal.CommandLine.Parsing.Impl
         #endregion
 
         #region properties
-        
+
         /// <summary>
         ///     Executable name
         /// </summary>
@@ -51,6 +52,11 @@ namespace ITGlobal.CommandLine.Parsing.Impl
         /// </summary>
         public ICliParserResultFactory ResultFactory { get; private set; } = new DefaultCliParserResultFactory();
 
+        /// <summary>
+        ///     Help printer
+        /// </summary>
+        public IHelpPrinter HelpPrinter { get; private set; } = new DefaultHelpPrinter();
+
         #endregion
 
         #region ISimpleCliParser
@@ -67,7 +73,7 @@ namespace ITGlobal.CommandLine.Parsing.Impl
 
             ExecutableName = name;
         }
-        
+
         /// <summary>
         ///     Set application logo
         /// </summary>
@@ -125,6 +131,19 @@ namespace ITGlobal.CommandLine.Parsing.Impl
             }
 
             ResultFactory = factory;
+        }
+
+        /// <summary>
+        ///     Set help printer implementation
+        /// </summary>
+        void ICliParser.UseHelpPrinter(IHelpPrinter printer)
+        {
+            if (printer == null)
+            {
+                throw new ArgumentNullException(nameof(printer));
+            }
+
+            HelpPrinter = printer;
         }
 
         /// <summary>
@@ -513,7 +532,7 @@ namespace ITGlobal.CommandLine.Parsing.Impl
             var tokens = CommandLineTokenizer.Tokenize(Flags, args);
             var raw = new RawCommandLine(tokens);
 
-            foreach (var consumer in _consumers.OrderBy(_=>_.Priority))
+            foreach (var consumer in _consumers.OrderBy(_ => _.Priority))
             {
                 consumer.Consume(raw);
             }
@@ -540,7 +559,7 @@ namespace ITGlobal.CommandLine.Parsing.Impl
             {
                 return ResultFactory.UnknownOptions(this, unknownOptions, GetUsage());
             }
-           
+
             if (unknownArguments.Length > 0 && !Flags.HasFlag(CliParserFlags.AllowFreeArguments))
             {
                 return ResultFactory.UnknownArguments(this, unknownArguments, GetUsage());
@@ -552,19 +571,19 @@ namespace ITGlobal.CommandLine.Parsing.Impl
                 ctx: ctx
             );
         }
-        
+
         /// <summary>
         ///     Get usage info
         /// </summary>
-        public SimpleCliParserUsage GetUsage()
+        public CliParserUsage GetUsage()
         {
-            var builder = new SimpleCliParserUsageBuilder(this);
+            var builder = new CliParserUsageBuilder(this);
             foreach (var consumer in _consumers)
             {
                 consumer.BuildUsage(builder);
             }
 
-            var usage = builder.BuildSimpleCliParserUsage();
+            var usage = builder.Build();
             return usage;
         }
 

@@ -1,4 +1,5 @@
 using System;
+using ITGlobal.CommandLine.Parsing.Help;
 using ITGlobal.CommandLine.Parsing.Impl;
 using JetBrains.Annotations;
 

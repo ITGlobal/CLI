@@ -1,3 +1,4 @@
+using ITGlobal.CommandLine.Parsing.Help;
 using JetBrains.Annotations;
 
 namespace ITGlobal.CommandLine.Parsing
@@ -37,6 +38,11 @@ namespace ITGlobal.CommandLine.Parsing
         ///     Set parser result factory
         /// </summary>
         void UseResultFactory(ICliParserResultFactory factory);
+
+        /// <summary>
+        ///     Set help printer implementation
+        /// </summary>
+        void UseHelpPrinter(IHelpPrinter printer);
         
         /// <summary>
         ///     Add a hook that will be executed before main handler
@@ -63,5 +69,11 @@ namespace ITGlobal.CommandLine.Parsing
         /// </summary>
         [NotNull] 
         ICliParserResult Parse([NotNull] params string[] args);
+
+        /// <summary>
+        ///     Get usage info
+        /// </summary>
+        [NotNull]
+        CliParserUsage GetUsage();
     }
 }

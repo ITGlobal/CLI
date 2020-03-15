@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using ITGlobal.CommandLine.Parsing.Help;
 
 namespace ITGlobal.CommandLine.Parsing.Impl.ValueParsers
 {

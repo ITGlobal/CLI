@@ -1,8 +1,7 @@
 using System.Collections.Generic;
-using ITGlobal.CommandLine.Parsing.Impl;
 using JetBrains.Annotations;
 
-namespace ITGlobal.CommandLine.Parsing
+namespace ITGlobal.CommandLine.Parsing.Help
 {
     /// <summary>
     ///     Usage info for <see cref="CliCommand"/>
@@ -31,7 +30,7 @@ namespace ITGlobal.CommandLine.Parsing
             Commands = commands;
         }
 
-        internal TreeCliParserUsage Root { get; set; }
+        internal CliParserUsage Root { get; set; }
         [CanBeNull]
         internal CliCommandUsage Parent { get; set; }
 

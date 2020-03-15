@@ -2,15 +2,15 @@ using System;
 using System.Linq;
 using JetBrains.Annotations;
 
-namespace ITGlobal.CommandLine.Parsing
+namespace ITGlobal.CommandLine.Parsing.Help
 {
     /// <summary>
     ///     Usage info for <see cref="ITreeCliParser"/>
     /// </summary>
     [PublicAPI]
-    public sealed class TreeCliParserUsage : IHelpUsage
+    public sealed class CliParserUsage : IHelpUsage
     {
-        internal TreeCliParserUsage(
+        internal CliParserUsage(
             string executableName,
             string logo,
             string helpText,
@@ -80,13 +80,14 @@ namespace ITGlobal.CommandLine.Parsing
         public string[] HelpSwitches { get; }
 
         private bool SupportsHelp => HelpSwitches?.Length > 0;
+
         bool IHelpUsage.SupportsHelp => SupportsHelp;
 
         string IHelpUsage.HelpCommand
         {
             get
             {
-                if (SupportsHelp)
+                if (SupportsHelp && HelpSwitches?.Length > 0)
                 {
                     return HelpSwitches[0];
                 }

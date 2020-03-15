@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using ITGlobal.CommandLine.Parsing.Help;
 using ITGlobal.CommandLine.Parsing.Impl;
 using JetBrains.Annotations;
 

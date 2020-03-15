@@ -1,18 +1,19 @@
 using System.Collections.Generic;
 using System.Linq;
+using ITGlobal.CommandLine.Parsing.Help;
 
 namespace ITGlobal.CommandLine.Parsing.Impl
 {
-    internal sealed class TreeCliParserUsageBuilder : ICliCommandUsageBuilder
+    internal sealed class CliParserUsageBuilder : ICliCommandUsageBuilder
     {
-        private readonly TreeCliParser _parser;
+        private readonly ICliParserInternal _parser;
 
         private readonly List<CliSwitchUsage> _switches = new List<CliSwitchUsage>();
         private readonly List<CliOptionUsage> _options = new List<CliOptionUsage>();
         private readonly List<CliArgumentUsage> _arguments = new List<CliArgumentUsage>();
         private readonly List<CliCommandUsageBuilder> _commands = new List<CliCommandUsageBuilder>();
 
-        public TreeCliParserUsageBuilder(TreeCliParser parser)
+        public CliParserUsageBuilder(ICliParserInternal parser)
         {
             _parser = parser;
         }
@@ -42,10 +43,10 @@ namespace ITGlobal.CommandLine.Parsing.Impl
             return builder;
         }
 
-        public TreeCliParserUsage Build()
+        public CliParserUsage Build()
         {
             var helpSwitches = _switches.Where(_ => _.IsHelpSwitch).SelectMany(_ => _.Names).ToArray();
-            var usage = new TreeCliParserUsage(
+            var usage = new CliParserUsage(
                 executableName: _parser.ExecutableName,
                 logo: _parser.Logo,
                 helpText: _parser.HelpText,

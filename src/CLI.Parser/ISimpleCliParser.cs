@@ -1,4 +1,5 @@
-﻿using JetBrains.Annotations;
+using ITGlobal.CommandLine.Parsing.Help;
+using JetBrains.Annotations;
 
 namespace ITGlobal.CommandLine.Parsing
 {
@@ -8,10 +9,5 @@ namespace ITGlobal.CommandLine.Parsing
     [PublicAPI]
     public interface ISimpleCliParser : ICliParser
     {
-        /// <summary>
-        ///     Get usage info
-        /// </summary>
-        [NotNull]
-        SimpleCliParserUsage GetUsage();
     }
 }

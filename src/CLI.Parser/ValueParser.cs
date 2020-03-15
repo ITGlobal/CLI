@@ -2,6 +2,7 @@ using System;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
+using ITGlobal.CommandLine.Parsing.Impl;
 using ITGlobal.CommandLine.Parsing.Impl.ValueParsers;
 using JetBrains.Annotations;
 
