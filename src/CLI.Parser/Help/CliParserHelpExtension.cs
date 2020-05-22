@@ -53,7 +53,7 @@ namespace ITGlobal.CommandLine.Parsing.Help
                 .HelpText("Print help and exit")
                 .DisplayOrder(10000);
 
-            var arguments = parser.RepeatableArgument("command")
+            var arguments = command.RepeatableArgument("command")
                 .HelpText("Command name");
 
             command.OnExecute(ctx =>
