@@ -51,7 +51,7 @@ namespace ITGlobal.CommandLine.Impl
             lock (_queueLock)
             {
                 _queue.Enqueue(new QueuedChar(c, fg, bg, stream));
-                Monitor.Pulse(_queueLock);
+                Monitor.PulseAll(_queueLock);
             }
         }
 
@@ -60,15 +60,15 @@ namespace ITGlobal.CommandLine.Impl
             long iteration;
             lock (_queueLock)
             {
-                iteration = _iteration;
-                Monitor.Pulse(_queueLock);
+                iteration = _iteration + _queue.Count;
+                Monitor.PulseAll(_queueLock);
             }
 
             while (true)
             {
                 lock (_queueLock)
                 {
-                    if (_iteration > iteration)
+                    if (_iteration >= iteration)
                     {
                         return;
                     }
@@ -83,7 +83,7 @@ namespace ITGlobal.CommandLine.Impl
             lock (_queueLock)
             {
                 _isRunning = false;
-                Monitor.Pulse(_queueLock);
+                Monitor.PulseAll(_queueLock);
             }
 
             try
@@ -113,13 +113,14 @@ namespace ITGlobal.CommandLine.Impl
                     }
 
                     FlushQueue(localQueue, stream);
-                    localQueue.Clear();
-
+                    
                     lock (_queueLock)
                     {
-                        _iteration++;
+                        _iteration+= localQueue.Count;
                         Monitor.PulseAll(_queueLock);
                     }
+
+                    localQueue.Clear();
                 }
             }
         }

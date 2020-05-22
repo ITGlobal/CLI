@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
 using ITGlobal.CommandLine.Impl;
 using ITGlobal.CommandLine.Parsing;
 
@@ -9,6 +10,7 @@ namespace ITGlobal.CommandLine.Example
 {
     public static class SamplesCommand
     {
+
         public static void Setup(ICliCommandRoot app)
         {
             // sample *
@@ -18,7 +20,10 @@ namespace ITGlobal.CommandLine.Example
 
                 // sample nested-ansi
                 {
-                    var cmd = command.Command("nested-ansi", helpText: "Test for https://github.com/ITGlobal/CLI/issues/18");
+                    var cmd = command.Command(
+                        "nested-ansi",
+                        helpText: "Test for https://github.com/ITGlobal/CLI/issues/18"
+                    );
                     cmd.OnExecute(_ => { NestedAnsiOutput(); });
                 }
 
@@ -52,9 +57,21 @@ namespace ITGlobal.CommandLine.Example
                     cmd.OnExecute(_ => { Unicode(); });
                 }
 
+                // sample interleaved
+                {
+                    var cmd = command.Command(
+                        "interleaved",
+                        helpText: "Test interleaved writes both to stdout and stderr"
+                    );
+                    cmd.OnExecute(_ => { InterleavedtWriteToStdErrAndStdOut(); });
+                }
+
                 // sample concurrent
                 {
-                    var cmd = command.Command("concurrent", helpText: "Test interleaved writes both to stdout and stderr");
+                    var cmd = command.Command(
+                        "concurrent",
+                        helpText: "Test concurrent writes both to stdout and stderr"
+                    );
                     cmd.OnExecute(_ => { ConcurrentWriteToStdErrAndStdOut(); });
                 }
             }
@@ -118,12 +135,13 @@ namespace ITGlobal.CommandLine.Example
 
             // First try to write a long text into terminal using direct access to ITerminalWriter
             Terminal.Stdout.Write("............");
-            var str = AnsiString.Create(text);
+            var str    = AnsiString.Create(text);
             var chunks = str.SplitIntoChunks();
             foreach (var c in chunks)
             {
                 Terminal.Stdout.Write(c);
             }
+
             Terminal.Stdout.WriteLine();
 
             // Then try again using a Console class
@@ -193,7 +211,7 @@ namespace ITGlobal.CommandLine.Example
             Console.Out.WriteLine(text);
         }
 
-        private static void ConcurrentWriteToStdErrAndStdOut()
+        private static void InterleavedtWriteToStdErrAndStdOut()
         {
             const string foo = "foo";
             const string bar = "bar";
@@ -210,5 +228,39 @@ namespace ITGlobal.CommandLine.Example
             Console.Error.Flush();
             Console.Out.Flush();
         }
+
+        private static void ConcurrentWriteToStdErrAndStdOut()
+        {
+            const string foo = "foo";
+            const string bar = "bar";
+
+            using var ctrlC = Terminal.OnCtrlC();
+            var       token = ctrlC.CancellationToken;
+            ;
+            var t1 = Task.Run(
+                () =>
+                {
+                    while (!token.IsCancellationRequested)
+                    {
+                        Console.Out.WriteLine(foo);
+                        Console.Out.Flush();
+                    }
+                }
+            );
+
+            var t2 = Task.Run(
+                () =>
+                {
+                    while (!token.IsCancellationRequested)
+                    {
+                        Console.Out.WriteLine(bar);
+                        Console.Out.Flush();
+                    }
+                }
+            );
+
+            Task.WaitAll(t1, t2);
+        }
+
     }
 }
