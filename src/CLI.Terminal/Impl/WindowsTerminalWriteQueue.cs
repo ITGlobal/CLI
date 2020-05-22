@@ -39,8 +39,6 @@ namespace ITGlobal.CommandLine.Impl
         public WindowsTerminalWriteQueue()
         {
             _flushTask = Task.Factory.StartNew(FlushThread, TaskCreationOptions.LongRunning);
-
-            AppDomain.CurrentDomain.ProcessExit += (_, e) => { Dispose(); };
         }
 
         public WindowsTerminalWriter StdErrWriter { get; set; }
