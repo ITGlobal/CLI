@@ -15,21 +15,42 @@ namespace ITGlobal.CommandLine
     [PublicAPI]
     public static class Terminal
     {
-        private const int MinWindowWidth = 40;
+
+        private const  int MinWindowWidth     = 40;
         internal const int DefaultWindowWidth = 150;
 
-        private static readonly object SyncRoot = new object();
-        private static bool _isInitialized;
-        private static ITerminalImplementation _implementation;
-        private static ITerminalImplementation _defaultImplementation;
-        private static int _windowWidth;
-        private static ConsoleColor _defaultForegroundColor;
-        private static ConsoleColor _defaultBackgroundColor;
+        private static readonly object                  SyncRoot = new object();
+        private static          bool                    _isInitialized;
+        private static          ITerminalImplementation _implementation;
+        private static          ITerminalImplementation _defaultImplementation;
+        private static          int                     _windowWidth;
+
+        private static readonly object       ColorsSyncRoot = new object();
+        private static          bool         _isAreColorsInitialized;
+        private static          ConsoleColor _defaultForegroundColor;
+        private static          ConsoleColor _defaultBackgroundColor;
+
+        private sealed class ShutdownToken : IDisposable
+        {
+
+            public void Dispose()
+            {
+                Shutdown();
+            }
+
+        }
 
         /// <summary>
         ///     Initializes terminal output
         /// </summary>
-        public static void Initialize()
+        public static IDisposable Initialize()
+        {
+            InitializeColors();
+            InitializeTerminal();
+            return new ShutdownToken();
+        }
+
+        private static void InitializeTerminal()
         {
             lock (SyncRoot)
             {
@@ -64,8 +85,22 @@ namespace ITGlobal.CommandLine
                     Debug.WriteLine($"CLI: falling back to {_defaultImplementation.DriverName}");
                 }
 
+                _implementation = _defaultImplementation;
+                _isInitialized = true;
+            }
+        }
+
+        private static void InitializeColors()
+        {
+            lock (ColorsSyncRoot)
+            {
+                if (_isAreColorsInitialized)
+                {
+                    return;
+                }
+
                 Console.ResetColor();
-                
+
                 _defaultForegroundColor = Console.ForegroundColor;
                 if (!Enum.IsDefined(typeof(ConsoleColor), _defaultForegroundColor))
                 {
@@ -78,8 +113,7 @@ namespace ITGlobal.CommandLine
                     _defaultBackgroundColor = ConsoleColor.Black;
                 }
 
-                _implementation = _defaultImplementation;
-                _isInitialized = true;
+                _isAreColorsInitialized = true;
             }
         }
 
@@ -88,6 +122,7 @@ namespace ITGlobal.CommandLine
         /// </summary>
         public static void Shutdown()
         {
+            IDisposable disposable1 = null, disposable2 = null;
             lock (SyncRoot)
             {
                 if (!_isInitialized)
@@ -95,16 +130,19 @@ namespace ITGlobal.CommandLine
                     return;
                 }
 
-                _defaultImplementation?.Dispose();
+                disposable1 = _defaultImplementation;
                 if (!ReferenceEquals(_defaultImplementation, _implementation))
                 {
-                    _implementation?.Dispose();
+                    disposable2 = _implementation;
                 }
 
                 _implementation = null;
                 _defaultImplementation = null;
                 _isInitialized = true;
             }
+
+            disposable1?.Dispose();
+            disposable2?.Dispose();
         }
 
 #if !NET45
@@ -171,8 +209,8 @@ namespace ITGlobal.CommandLine
         {
             get
             {
-                Initialize();
-                lock (SyncRoot)
+                InitializeColors();
+                lock (ColorsSyncRoot)
                 {
                     return _defaultForegroundColor;
                 }
@@ -186,8 +224,8 @@ namespace ITGlobal.CommandLine
         {
             get
             {
-                Initialize();
-                lock (SyncRoot)
+                InitializeColors();
+                lock (ColorsSyncRoot)
                 {
                     return _defaultBackgroundColor;
                 }
@@ -223,6 +261,7 @@ namespace ITGlobal.CommandLine
                 {
                     _implementation = lockedTerminal;
                 }
+
                 lockedTerminal.Initialize();
 
                 return lockedTerminal;
@@ -232,6 +271,7 @@ namespace ITGlobal.CommandLine
         #region Ctrl-C/SIGINT
 
         private static readonly object CtrlCInterceptorsLock = new object();
+
         private static readonly Stack<CtrlCInterceptorImpl> CtrlCInterceptors
             = new Stack<CtrlCInterceptorImpl>();
 
@@ -243,7 +283,7 @@ namespace ITGlobal.CommandLine
         {
             Initialize();
 
-            var interceptor = new CtrlCInterceptorImpl();
+            var interceptor         = new CtrlCInterceptorImpl();
             var shouldAttachHandler = false;
             lock (CtrlCInterceptorsLock)
             {
@@ -273,7 +313,7 @@ namespace ITGlobal.CommandLine
                     return;
                 }
 
-                if (CtrlCInterceptors.Count ==1)
+                if (CtrlCInterceptors.Count == 1)
                 {
                     shouldDetachHandler = true;
                 }
@@ -333,13 +373,14 @@ namespace ITGlobal.CommandLine
 
                 _implementation = implementation ?? _defaultImplementation.Clone();
                 _implementation.Initialize();
-                
+
                 return new UseImplementationToken(resetToImplementation);
             }
         }
 
         private sealed class UseImplementationToken : IDisposable
         {
+
             private readonly ITerminalImplementation _resetToImplementation;
 
             public UseImplementationToken(ITerminalImplementation resetToImplementation)
@@ -356,6 +397,7 @@ namespace ITGlobal.CommandLine
                     _implementation.Initialize();
                 }
             }
+
         }
 
         /// <summary>
@@ -365,5 +407,6 @@ namespace ITGlobal.CommandLine
         {
             return UseImplementation(new NoColorTerminalImplementation(GetImplementation()));
         }
+
     }
 }

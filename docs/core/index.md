@@ -20,7 +20,7 @@ and provide the following abilities:
 Before you may use any of `ITGlobal.CLI`'s features, you need to initialize terminal driver:
 
 ```csharp
-Terminal.Initialize();
+using var _ = Terminal.Initialize();
 ```
 
 You may call this method multiple times, it will run initialization only one anyway.
@@ -111,7 +111,7 @@ that may be consumed by an ANSI compatible terminal.
 Once created, an `AnsiString` may be printed to a console using default `System.Console` class:
 
 ```csharp
-Terminal.Initialize();
+using var _ = Terminal.Initialize();
 
 Console.WriteLine("GREEN on DEFAULT".Green());
 Console.WriteLine($"GREEN on RED {"(but this would be RED on GREEN)".RedOnGreen()} GREEN on RED".GreenOnRed());

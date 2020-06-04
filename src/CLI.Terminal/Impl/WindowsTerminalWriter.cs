@@ -7,13 +7,18 @@ namespace ITGlobal.CommandLine.Impl
 {
     internal sealed class WindowsTerminalWriter : TerminalWriterBase
     {
-        private readonly IntPtr _hConsole;
-        private readonly object _consoleOutputLock;
+
+        private readonly IntPtr       _hConsole;
+        private readonly object       _consoleOutputLock;
+        private readonly ConsoleColor _defaultForegroundColor;
+        private readonly ConsoleColor _defaultBackgroundColor;
 
         public WindowsTerminalWriter(IntPtr hConsole, object consoleOutputLock)
         {
             _hConsole = hConsole;
             _consoleOutputLock = consoleOutputLock;
+            _defaultForegroundColor = Terminal.DefaultForegroundColor;
+            _defaultBackgroundColor = Terminal.DefaultBackgroundColor;
         }
 
         public override void Write(AnsiString.Chunk str)
@@ -28,10 +33,10 @@ namespace ITGlobal.CommandLine.Impl
 
         private unsafe void DoWrite(AnsiString.Chunk str)
         {
-            var fg = str.ForegroundColor ?? Terminal.DefaultForegroundColor;
-            var bg = str.BackgroundColor ?? Terminal.DefaultBackgroundColor;
+            var fg    = str.ForegroundColor ?? _defaultForegroundColor;
+            var bg    = str.BackgroundColor ?? _defaultBackgroundColor;
             var attrs = WindowsTerminalImplementation.GetCharAttributes(fg, bg);
-            
+
             lock (_consoleOutputLock)
             {
                 GetConsoleScreenBufferInfo(out var bufferInfo);
@@ -120,5 +125,6 @@ namespace ITGlobal.CommandLine.Impl
         }
 
         #endregion
+
     }
 }
