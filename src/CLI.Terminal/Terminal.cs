@@ -15,7 +15,6 @@ namespace ITGlobal.CommandLine
     [PublicAPI]
     public static class Terminal
     {
-
         private const  int MinWindowWidth     = 40;
         internal const int DefaultWindowWidth = 150;
 
@@ -32,12 +31,10 @@ namespace ITGlobal.CommandLine
 
         private sealed class ShutdownToken : IDisposable
         {
-
             public void Dispose()
             {
                 Shutdown();
             }
-
         }
 
         /// <summary>
@@ -84,6 +81,9 @@ namespace ITGlobal.CommandLine
                     Debug.WriteLine($"CLI: unable to initialize terminal driver: {e}");
                     Debug.WriteLine($"CLI: falling back to {_defaultImplementation.DriverName}");
                 }
+
+                // Subscribe to ProcessExit event so terminal will properly shutdown on process exit
+                AppDomain.CurrentDomain.ProcessExit += ProcessExitHandler;
 
                 _implementation = _defaultImplementation;
                 _isInitialized = true;
@@ -136,6 +136,8 @@ namespace ITGlobal.CommandLine
                     disposable2 = _implementation;
                 }
 
+                AppDomain.CurrentDomain.ProcessExit -= ProcessExitHandler;
+
                 _implementation = null;
                 _defaultImplementation = null;
                 _isInitialized = true;
@@ -143,6 +145,11 @@ namespace ITGlobal.CommandLine
 
             disposable1?.Dispose();
             disposable2?.Dispose();
+        }
+
+        private static void ProcessExitHandler(object sender, EventArgs args)
+        {
+            Shutdown();
         }
 
 #if !NET45
@@ -283,7 +290,7 @@ namespace ITGlobal.CommandLine
         {
             Initialize();
 
-            var interceptor         = new CtrlCInterceptorImpl();
+            var interceptor = new CtrlCInterceptorImpl();
             var shouldAttachHandler = false;
             lock (CtrlCInterceptorsLock)
             {
@@ -380,7 +387,6 @@ namespace ITGlobal.CommandLine
 
         private sealed class UseImplementationToken : IDisposable
         {
-
             private readonly ITerminalImplementation _resetToImplementation;
 
             public UseImplementationToken(ITerminalImplementation resetToImplementation)
@@ -397,7 +403,6 @@ namespace ITGlobal.CommandLine
                     _implementation.Initialize();
                 }
             }
-
         }
 
         /// <summary>
@@ -407,6 +412,5 @@ namespace ITGlobal.CommandLine
         {
             return UseImplementation(new NoColorTerminalImplementation(GetImplementation()));
         }
-
     }
 }
